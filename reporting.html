@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Lattice Markets | Reporting</title>
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+      <link href="css/animate.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+      <!-- FooTable -->
+      <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="wrapper">
+         <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+               <ul class="nav metismenu" id="side-menu">
+                  <li class="nav-header">
+                     <div class="dropdown profile-element">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Zohar Etzioni</strong>
+                        </span> <span class="text-muted text-xs block">Top Dog <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                           <li><a href="#">Logout</a></li>
+                        </ul>
+                     </div>
+                     <div class="logo-element">
+                        IN+
+                     </div>
+                  </li>
+                  <li>
+                     <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Main</span></a>
+                  </li>
+                  <li>
+                     <a href="portfolio.html"><i class="fa fa-th-large"></i> <span class="nav-label">Portfolio</span> </a>
+                  </li>
+                  <li>
+                     <a href="loans.html"><i class="fa fa-th-large"></i> <span class="nav-label">Loans</span> </a>
+                  </li>
+                  <li>
+                     <a href="analytics.html"><i class="fa fa-th-large"></i> <span class="nav-label">Analytics</span> </a>
+                  </li>
+                  <li class="active">
+                     <a href="reporting.html"><i class="fa fa-th-large"></i> <span class="nav-label">Reporting</span> </a>
+                  </li>
+                  <li>
+                     <a href="marketplace.html"><i class="fa fa-th-large"></i> <span class="nav-label">Config</span> </a>
+                  </li>
+               </ul>
+            </div>
+         </nav>
+         <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+               <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                  <div class="navbar-header">
+                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                     <form role="search" class="navbar-form-custom" method="post" action="#">
+                        <div class="form-group">
+                           <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                        </div>
+                     </form>
+                  </div>
+                  <ul class="nav navbar-top-links navbar-right">
+                     <li>
+                        <a href="#">
+                        <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                     </li>
+                  </ul>
+               </nav>
+            </div>
+            <div class="wrapper wrapper-content animated fadeInRight">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                           <h5>Daily Reports</h5>
+                        </div>
+                        <div class="ibox-content">
+                           <input type="text" class="form-control input-sm m-b-xs" id="filter"
+                              placeholder="Search in table">
+                           <table class="footable table table-stripped" data-page-size="8" data-filter=#filter>
+                              <thead>
+                                 <tr>
+                                    <th>Report Name</th>
+                                    <th>Originator</th>
+                                    <th>Date</th>
+                                    <th>Download</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-03</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-03</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-03</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-03</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-02</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-02</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-02</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-02</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-01</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-01</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-05</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-05</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-05</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-05</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-06</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-06</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-06</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-06</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-07</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-07</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-07</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-07</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-08</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-08</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-08</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-08</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-09</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-09</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-09</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-09</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-10</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-10</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-10</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-10</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-11</td>
+                                    <td>Lending Club</td>
+                                    <td>2015-Oct-11</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>Daily 2015-Oct-12</td>
+                                    <td>Prosper</td>
+                                    <td>2015-Oct-12</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                              </tbody>
+                              <tfoot>
+                                 <tr>
+                                    <td colspan="10">
+                                       <ul class="pagination pull-right"></ul>
+                                    </td>
+                                 </tr>
+                              </tfoot>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-12">
+                     <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                           <h5>Order History</h5>
+                        </div>
+                        <div class="ibox-content">
+                           <input type="text" class="form-control input-sm m-b-xs" id="filter"
+                              placeholder="Search in table">
+                           <table class="footable table table-stripped" data-page-size="8" data-filter=#filter>
+                              <thead>
+                                 <tr>
+                                    <th>Listing Id</th>
+                                    <th>Amount</th>
+                                    <th>Full/Fractional</th>
+                                    <th>Grade</th>
+                                    <th>Interest Rate</th>
+                                    <th>Term</th>
+                                    <th>Purpose</th>
+                                    <th>Originator</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Details</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr class="gradeX">
+                                    <td>111</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>10%</td>
+                                    <td>36</td>
+                                    <td>Consolidation</td>
+                                    <td>Lending Club</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>112</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>113</td>
+                                    <td>100</td>
+                                    <td>Fractional</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>114</td>
+                                    <td>12000</td>
+                                    <td>Full</td>
+                                    <td>C</td>
+                                    <td>16%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>115</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>116</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>117</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>118</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>119</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>120</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>121</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                                 <tr class="gradeX">
+                                    <td>122</td>
+                                    <td>1000</td>
+                                    <td>Full</td>
+                                    <td>A</td>
+                                    <td>11%</td>
+                                    <td>36</td>
+                                    <td>Car</td>
+                                    <td>Prosper</td>
+                                    <td>Success</td>
+                                    <td>2015-Oct-01</td>
+                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                 </tr>
+                              </tbody>
+                              <tfoot>
+                                 <tr>
+                                    <td colspan="10">
+                                       <ul class="pagination pull-right"></ul>
+                                    </td>
+                                 </tr>
+                              </tfoot>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="footer">
+               <div>
+                  <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
+               </div>
+            </div>
+         </div>
+      </div>
+      </div>
+      <!-- Mainly scripts -->
+      <script src="js/jquery-2.1.1.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+      <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+      <!-- Custom and plugin javascript -->
+      <script src="js/inspinia.js"></script>
+      <script src="js/plugins/pace/pace.min.js"></script>
+      <script src="js/plugins/footable/footable.all.min.js"></script>
+      <script>
+         $(document).ready(function() {
+         
+             $('.footable').footable();
+             $('.footable2').footable();
+         
+         });
+         
+      </script>
+   </body>
+</html>
