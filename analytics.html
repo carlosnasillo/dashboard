@@ -163,8 +163,6 @@
         </div>
 
         <div class="row">
-            <div class-
-            "col-md-8">
             <div class="tabs-container">
                 <ul class="nav nav-tabs ">
                     <li class="active"><a data-toggle="tab" href="#tab-1"> Yearly Grade </a></li>
@@ -184,7 +182,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tab-2" class="tab-pane">
+                    <div id="tab-2" class="tab-pane active">
                         <div class="panel-body">
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
@@ -196,7 +194,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tab-3" class="tab-pane">
+                    <div id="tab-3" class="tab-pane active">
                         <div class="panel-body">
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
@@ -208,372 +206,372 @@
                             </div>
                         </div>
                     </div>
+        </div>
+            </div>
+            <div class="footer">
+                <div>
+                    <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
                 </div>
             </div>
         </div>
-        <div class="footer">
-            <div>
-                <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
-            </div>
-        </div>
     </div>
-</div>
-<!-- Mainly scripts -->
-<script src="js/jquery-2.1.1.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<!-- Flot -->
-<script src="js/plugins/flot/jquery.flot.js"></script>
-<script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-<script src="js/plugins/flot/jquery.flot.spline.js"></script>
-<script src="js/plugins/flot/jquery.flot.resize.js"></script>
-<script src="js/plugins/flot/jquery.flot.pie.js"></script>
-<!-- Peity -->
-<script src="js/plugins/peity/jquery.peity.min.js"></script>
-<script src="js/demo/peity-demo.js"></script>
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
-<script src="js/plugins/pace/pace.min.js"></script>
-<!-- jQuery UI -->
-<script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- GITTER -->
-<script src="js/plugins/gritter/jquery.gritter.min.js"></script>
-<!-- Sparkline -->
-<script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
-<!-- Sparkline demo data  -->
-<script src="js/demo/sparkline-demo.js"></script>
-<!-- ChartJS-->
-<script src="js/plugins/chartJs/Chart.min.js"></script>
-<!-- ChartList-->
-<script src="js/plugins/chartist/chartist.min.js"></script>
-<!-- Toastr -->
-<script src="js/plugins/toastr/toastr.min.js"></script>
-<script>
-    $(document).ready(function () {
-        setTimeout(function () {
-            toastr.options = {
-                closeButton: true,
-                progressBar: true,
-                showMethod: 'slideDown',
-                timeOut: 4000
-            };
-            toastr.success('Responsive Admin Theme', 'Welcome to INSPINIA');
+    <!-- Mainly scripts -->
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Flot -->
+    <script src="js/plugins/flot/jquery.flot.js"></script>
+    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/plugins/flot/jquery.flot.spline.js"></script>
+    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
+    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
+    <!-- Peity -->
+    <script src="js/plugins/peity/jquery.peity.min.js"></script>
+    <script src="js/demo/peity-demo.js"></script>
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- GITTER -->
+    <script src="js/plugins/gritter/jquery.gritter.min.js"></script>
+    <!-- Sparkline -->
+    <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- Sparkline demo data  -->
+    <script src="js/demo/sparkline-demo.js"></script>
+    <!-- ChartJS-->
+    <script src="js/plugins/chartJs/Chart.min.js"></script>
+    <!-- ChartList-->
+    <script src="js/plugins/chartist/chartist.min.js"></script>
+    <!-- Toastr -->
+    <script src="js/plugins/toastr/toastr.min.js"></script>
 
-        }, 1300);
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 4000
+                };
+                toastr.success('Responsive Admin Theme', 'Welcome to INSPINIA');
 
-
-        var orders_by_grade_data = [{
-            label: "AA",
-            data: 21,
-            color: "#d3d3d3",
-        }, {
-            label: "A",
-            data: 3,
-            color: "#bababa",
-        }, {
-            label: "B",
-            data: 15,
-            color: "#79d2c0",
-        }, {
-            label: "C",
-            data: 52,
-            color: "#1ab394",
-        }, {
-            label: "D",
-            data: 52,
-            color: "#1ab394",
-        }];
-
-        var plotObj = $.plot($("#orders_by_grade"), orders_by_grade_data, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                shifts: {
-                    x: 20,
-                    y: 0
-                },
-                defaultTheme: false
-            }
-        });
-
-        var orders_by_yield_data = [{
-            label: "AA",
-            data: 21,
-            color: "#d3d3d3",
-        }, {
-            label: "5-8.9%",
-            data: 3,
-            color: "#bababa",
-        }, {
-            label: "9-12.9%",
-            data: 15,
-            color: "#79d2c0",
-        }, {
-            label: "13-16.9",
-            data: 52,
-            color: "#1ab394",
-        }, {
-            label: "17-22%",
-            data: 52,
-            color: "#1ab394",
-        }];
-
-        var plotObj = $.plot($("#orders_by_yield"), orders_by_yield_data, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                shifts: {
-                    x: 20,
-                    y: 0
-                },
-                defaultTheme: false
-            }
-        });
-
-        var orders_by_marketplace_data = [{
-            label: "Lending Club",
-            data: 21,
-            color: "#d3d3d3",
-        }, {
-            label: "Prosper",
-            data: 3,
-            color: "#79d2c0"
-        }];
-
-        var plotObj = $.plot($("#orders_by_marketplace"), orders_by_marketplace_data, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                shifts: {
-                    x: 20,
-                    y: 0
-                },
-                defaultTheme: false
-            }
-        });
-
-        var orders_by_notional_data = [{
-            label: "100-999",
-            data: 21,
-            color: "#d3d3d3",
-        }, {
-            label: "1000-4999",
-            data: 3,
-            color: "#79d2c0"
-        }, {
-            label: "5000-5999",
-            data: 15,
-            color: "#79d2c0",
-        }, {
-            label: "6000-9999",
-            data: 52,
-            color: "#1ab394",
-        }, {
-            label: "10000-49999",
-            data: 52,
-            color: "#1ab394",
-        }];
-
-        var plotObj = $.plot($("#orders_by_notional"), orders_by_notional_data, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                shifts: {
-                    x: 20,
-                    y: 0
-                },
-                defaultTheme: false
-            }
-        });
-
-        var orders_by_mechanism_data = [{
-            label: "Automatic",
-            data: 21,
-            color: "#d3d3d3",
-        }, {
-            label: "Manual",
-            data: 3,
-            color: "#79d2c0"
-        }];
-
-        var plotObj = $.plot($("#orders_by_mechanism"), orders_by_mechanism_data, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                shifts: {
-                    x: 20,
-                    y: 0
-                },
-                defaultTheme: false
-            }
-        });
-
-        var orders_by_portion_data = [{
-            label: "Full",
-            data: 21,
-            color: "#d3d3d3",
-        }, {
-            label: "Fractional",
-            data: 3,
-            color: "#79d2c0"
-        }];
-
-        var plotObj = $.plot($("#orders_by_portion"), orders_by_portion_data, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                shifts: {
-                    x: 20,
-                    y: 0
-                },
-                defaultTheme: false
-            }
-        });
+            }, 1300);
 
 
-        new Chartist.Bar('#annually-stacked-by-grade', {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            series: [
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
-            ]
-        }, {
-            stackBars: true,
-            axisY: {
-                labelInterpolationFnc: function (value) {
-                    return (value / 1000) + 'k';
-                }
-            }
-        }).on('draw', function (data) {
-                    if (data.type === 'bar') {
-                        data.element.attr({
-                            style: 'stroke-width: 10px'
-                        });
+            var orders_by_grade_data = [{
+                label: "AA",
+                data: 21,
+                color: "#d3d3d3",
+            }, {
+                label: "A",
+                data: 3,
+                color: "#bababa",
+            }, {
+                label: "B",
+                data: 15,
+                color: "#79d2c0",
+            }, {
+                label: "C",
+                data: 52,
+                color: "#1ab394",
+            }, {
+                label: "D",
+                data: 52,
+                color: "#1ab394",
+            }];
+
+            var plotObj = $.plot($("#orders_by_grade"), orders_by_grade_data, {
+                series: {
+                    pie: {
+                        show: true
                     }
-                });
-
-        new Chartist.Bar('#annually-stacked-by-yield', {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            series: [
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
-            ]
-        }, {
-            stackBars: true,
-            axisY: {
-                labelInterpolationFnc: function (value) {
-                    return (value / 1000) + 'k';
+                },
+                grid: {
+                    hoverable: true
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                    shifts: {
+                        x: 20,
+                        y: 0
+                    },
+                    defaultTheme: false
                 }
-            }
-        }).on('draw', function (data) {
-                    if (data.type === 'bar') {
-                        data.element.attr({
-                            style: 'stroke-width: 10px'
-                        });
-                    }
-                });
+            });
 
-        new Chartist.Bar('#annually-stacked-by-notional', {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            series: [
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
-                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
-            ]
-        }, {
-            stackBars: true,
-            axisY: {
-                labelInterpolationFnc: function (value) {
-                    return (value / 1000) + 'k';
+            var orders_by_yield_data = [{
+                label: "AA",
+                data: 21,
+                color: "#d3d3d3",
+            }, {
+                label: "5-8.9%",
+                data: 3,
+                color: "#bababa",
+            }, {
+                label: "9-12.9%",
+                data: 15,
+                color: "#79d2c0",
+            }, {
+                label: "13-16.9",
+                data: 52,
+                color: "#1ab394",
+            }, {
+                label: "17-22%",
+                data: 52,
+                color: "#1ab394",
+            }];
+
+            var plotObj = $.plot($("#orders_by_yield"), orders_by_yield_data, {
+                series: {
+                    pie: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                    shifts: {
+                        x: 20,
+                        y: 0
+                    },
+                    defaultTheme: false
                 }
-            }
-        }).on('draw', function (data) {
-                    if (data.type === 'bar') {
-                        data.element.attr({
-                            style: 'stroke-width: 10px'
-                        });
-                    }
-                });
+            });
 
-        new Chartist.Line('#ct-monthly-return', {
-            labels: ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'],
-            series: [
-                [1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
-                [1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
-                [1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
-            ]
-        }, {
-            fullWidth: true,
-            chartPadding: {
-                right: 40
-            }
+            var orders_by_marketplace_data = [{
+                label: "Lending Club",
+                data: 21,
+                color: "#d3d3d3",
+            }, {
+                label: "Prosper",
+                data: 3,
+                color: "#79d2c0"
+            }];
+
+            var plotObj = $.plot($("#orders_by_marketplace"), orders_by_marketplace_data, {
+                series: {
+                    pie: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                    shifts: {
+                        x: 20,
+                        y: 0
+                    },
+                    defaultTheme: false
+                }
+            });
+
+            var orders_by_notional_data = [{
+                label: "100-999",
+                data: 21,
+                color: "#d3d3d3",
+            }, {
+                label: "1000-4999",
+                data: 3,
+                color: "#79d2c0"
+            }, {
+                label: "5000-5999",
+                data: 15,
+                color: "#79d2c0",
+            }, {
+                label: "6000-9999",
+                data: 52,
+                color: "#1ab394",
+            }, {
+                label: "10000-49999",
+                data: 52,
+                color: "#1ab394",
+            }];
+
+            var plotObj = $.plot($("#orders_by_notional"), orders_by_notional_data, {
+                series: {
+                    pie: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                    shifts: {
+                        x: 20,
+                        y: 0
+                    },
+                    defaultTheme: false
+                }
+            });
+
+            var orders_by_mechanism_data = [{
+                label: "Automatic",
+                data: 21,
+                color: "#d3d3d3",
+            }, {
+                label: "Manual",
+                data: 3,
+                color: "#79d2c0"
+            }];
+
+            var plotObj = $.plot($("#orders_by_mechanism"), orders_by_mechanism_data, {
+                series: {
+                    pie: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                    shifts: {
+                        x: 20,
+                        y: 0
+                    },
+                    defaultTheme: false
+                }
+            });
+
+            var orders_by_portion_data = [{
+                label: "Full",
+                data: 21,
+                color: "#d3d3d3",
+            }, {
+                label: "Fractional",
+                data: 3,
+                color: "#79d2c0"
+            }];
+
+            var plotObj = $.plot($("#orders_by_portion"), orders_by_portion_data, {
+                series: {
+                    pie: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                    shifts: {
+                        x: 20,
+                        y: 0
+                    },
+                    defaultTheme: false
+                }
+            });
+
+
+            new Chartist.Bar('#annually-stacked-by-grade', {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                series: [
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
+                ]
+            }, {
+                stackBars: true,
+                axisY: {
+                    labelInterpolationFnc: function (value) {
+                        return (value / 1000) + 'k';
+                    }
+                }
+            }).on('draw', function (data) {
+                        if (data.type === 'bar') {
+                            data.element.attr({
+                                style: 'stroke-width: 10px'
+                            });
+                        }
+                    });
+
+            new Chartist.Bar('#annually-stacked-by-yield', {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                series: [
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
+                ]
+            }, {
+                stackBars: true,
+                axisY: {
+                    labelInterpolationFnc: function (value) {
+                        return (value / 1000) + 'k';
+                    }
+                }
+            }).on('draw', function (data) {
+                        if (data.type === 'bar') {
+                            data.element.attr({
+                                style: 'stroke-width: 10px'
+                            });
+                        }
+                    });
+
+            new Chartist.Bar('#annually-stacked-by-notional', {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                series: [
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                    [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
+                ]
+            }, {
+                stackBars: true,
+                axisY: {
+                    labelInterpolationFnc: function (value) {
+                        return (value / 1000) + 'k';
+                    }
+                }
+            }).on('draw', function (data) {
+                        if (data.type === 'bar') {
+                            data.element.attr({
+                                style: 'stroke-width: 10px'
+                            });
+                        }
+                    });
+
+            new Chartist.Line('#ct-monthly-return', {
+                labels: ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'],
+                series: [
+                    [1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
+                    [1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
+                    [1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
+                ]
+            }, {
+                fullWidth: true,
+                chartPadding: {
+                    right: 40
+                }
+            });
+
+
         });
-
-
-    });
-</script>
+    </script>
 </body>
 </html>
