@@ -1,6 +1,6 @@
 $(function () {
 
-     var lendingClubData = [
+    var lendingClubData = [
         {
             value: 501,
             color: "#a3e1d4",

@@ -1,573 +1,579 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Lattice Markets Analytics</title>
-      <link href="css/bootstrap.min.css" rel="stylesheet">
-      <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-      <link href="css/animate.css" rel="stylesheet">
-      <link href="css/style.css" rel="stylesheet">
-      <link href="css/plugins/chartist/chartist.min.css" rel="stylesheet">
-   </head>
-   <body>
-      <div id="wrapper">
-      <nav class="navbar-default navbar-static-side" role="navigation">
-         <div class="sidebar-collapse">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lattice Markets Analytics</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/plugins/chartist/chartist.min.css" rel="stylesheet">
+</head>
+<body>
+<div id="wrapper">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
-               <li class="nav-header">
-                  <div class="dropdown profile-element">
-                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                      <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Zohar Etzioni</strong>
                      </span> <span class="text-muted text-xs block">Top Dog <b class="caret"></b></span> </span> </a>
-                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a href="#">Logout</a></li>
-                     </ul>
-                  </div>
-                  <div class="logo-element">
-                     IN+
-                  </div>
-               </li>
-               <li>
-                  <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Main</span></a>
-               </li>
-               <li>
-                  <a href="portfolio.html"><i class="fa fa-th-large"></i> <span class="nav-label">Portfolio</span> </a>
-               </li>
-               <li>
-                  <a href="loans.html"><i class="fa fa-th-large"></i> <span class="nav-label">Loans</span> </a>
-               </li>
-               <li class="active">
-                  <a href="analytics.html"><i class="fa fa-th-large"></i> <span class="nav-label">Analytics</span> </a>
-               </li>
-               <li>
-                  <a href="reporting.html"><i class="fa fa-th-large"></i> <span class="nav-label">Reporting</span> </a>
-               </li>
-               <li>
-                  <a href="marketplace.html"><i class="fa fa-th-large"></i> <span class="nav-label">Config</span> </a>
-               </li>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        IN+
+                    </div>
+                </li>
+                <li>
+                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Main</span></a>
+                </li>
+                <li>
+                    <a href="portfolio.html"><i class="fa fa-th-large"></i> <span class="nav-label">Portfolio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="loans.html"><i class="fa fa-th-large"></i> <span class="nav-label">Loans</span> </a>
+                </li>
+                <li class="active">
+                    <a href="analytics.html"><i class="fa fa-th-large"></i> <span class="nav-label">Analytics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="reporting.html"><i class="fa fa-th-large"></i> <span class="nav-label">Reporting</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="marketplace.html"><i class="fa fa-th-large"></i> <span class="nav-label">Config</span> </a>
+                </li>
             </ul>
-         </div>
-      </nav>
-      <div id="page-wrapper" class="gray-bg">
-         <div class="row border-bottom">
+        </div>
+    </nav>
+    <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
             <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-               <div class="navbar-header">
-                  <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                  <form role="search" class="navbar-form-custom" method="post" action="#">
-                     <div class="form-group">
-                        <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                     </div>
-                  </form>
-               </div>
-               <ul class="nav navbar-top-links navbar-right">
-                  <li>
-                     <a href="#">
-                     <i class="fa fa-sign-out"></i> Log out
-                     </a>
-                  </li>
-               </ul>
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
+                    </a>
+
+                    <form role="search" class="navbar-form-custom" method="post" action="#">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search for something..." class="form-control"
+                                   name="top-search" id="top-search">
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
+                </ul>
             </nav>
-         </div>
-         <div class="row">
+        </div>
+        <div class="row">
             <div class="col-md-3">
-               <div class="ibox float-e-margins">
-                  <div class="ibox-title">
-                     <h5>Orders placed today by grade</h5>
-                  </div>
-                  <div class="ibox-content">
-                     <div class="flot-chart">
-                        <div class="flot-chart-pie-content" id="orders_by_grade"></div>
-                     </div>
-                  </div>
-               </div>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by grade</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="flot-chart">
+                            <div class="flot-chart-pie-content" id="orders_by_grade"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3">
-               <div class="ibox float-e-margins">
-                  <div class="ibox-title">
-                     <h5>Orders placed today by marketplace</h5>
-                  </div>
-                  <div class="ibox-content">
-                     <div class="flot-chart">
-                        <div class="flot-chart-pie-content" id="orders_by_marketplace"></div>
-                     </div>
-                  </div>
-               </div>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by marketplace</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="flot-chart">
+                            <div class="flot-chart-pie-content" id="orders_by_marketplace"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3">
-               <div class="ibox float-e-margins">
-                  <div class="ibox-title">
-                     <h5>Orders placed today by yield</h5>
-                  </div>
-                  <div class="ibox-content">
-                     <div class="flot-chart">
-                        <div class="flot-chart-pie-content" id="orders_by_yield"></div>
-                     </div>
-                  </div>
-               </div>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by yield</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="flot-chart">
+                            <div class="flot-chart-pie-content" id="orders_by_yield"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3">
-               <div class="ibox float-e-margins">
-                  <div class="ibox-title">
-                     <h5>Orders placed today by notional</h5>
-                  </div>
-                  <div class="ibox-content">
-                     <div class="flot-chart">
-                        <div class="flot-chart-pie-content" id="orders_by_notional"></div>
-                     </div>
-                  </div>
-               </div>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by notional</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="flot-chart">
+                            <div class="flot-chart-pie-content" id="orders_by_notional"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row">
-               <div class="col-md-3">
-                  <div class="ibox float-e-margins">
-                     <div class="ibox-title">
-                        <h5>Orders placed today auto vs manual</h5>
-                     </div>
-                     <div class="ibox-content">
-                        <div class="flot-chart">
-                           <div class="flot-chart-pie-content" id="orders_by_mechanism"></div>
+                <div class="col-md-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Orders placed today auto vs manual</h5>
                         </div>
-                     </div>
-                  </div>
-                  <div class="ibox float-e-margins">
-                     <div class="ibox-title">
-                        <h5>Orders placed today fractional vs full</h5>
-                     </div>
-                     <div class="ibox-content">
-                        <div class="flot-chart">
-                           <div class="flot-chart-pie-content" id="orders_by_portion"></div>
+                        <div class="ibox-content">
+                            <div class="flot-chart">
+                                <div class="flot-chart-pie-content" id="orders_by_mechanism"></div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-6">
-               <div class="ibox float-e-margins">
-                  <div class="ibox-title">
-                     <h5>Monthly return - Lending Club A vs Prosper A vs Lending Club B
-                     </h5>
-                  </div>
-                  <div class="ibox-content">
-                     <div id="ct-monthly-return" class="ct-perfect-fourth"></div>
-                  </div>
-               </div>
+                    </div>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Orders placed today fractional vs full</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="flot-chart">
+                                <div class="flot-chart-pie-content" id="orders_by_portion"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Monthly return - Lending Club A vs Prosper A vs Lending Club B
+                            </h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div id="ct-monthly-return" class="ct-perfect-fourth"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            </div>
-            
-         </div>
-     
-      <div class="row">
-         <div class-"col-md-8">
+
+        </div>
+
+        <div class="row">
+            <div class-
+            "col-md-8">
             <div class="tabs-container">
-               <ul class="nav nav-tabs ">
-                  <li class="active"><a data-toggle="tab" href="#tab-1"> Yearly Grade </a></li>
-                  <li><a data-toggle="tab" href="#tab-2">Yearly Yield</a></li>
-                  <li><a data-toggle="tab" href="#tab-3">Yearly Notional</a></li>
-               </ul>
-               <div class="tab-content">
-                  <div id="tab-1" class="tab-pane active">
-                     <div class="panel-body">
-                        <div class="ibox float-e-margins">
-                           <div class="ibox-title">
-                              <h5>Order placed by Grade</h5>
-                           </div>
-                           <div class="ibox-content">
-                              <div id="annually-stacked-by-grade" class="ct-perfect-fourth"></div>
-                           </div>
+                <ul class="nav nav-tabs ">
+                    <li class="active"><a data-toggle="tab" href="#tab-1"> Yearly Grade </a></li>
+                    <li><a data-toggle="tab" href="#tab-2">Yearly Yield</a></li>
+                    <li><a data-toggle="tab" href="#tab-3">Yearly Notional</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>Order placed by Grade</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div id="annually-stacked-by-grade" class="ct-perfect-fourth"></div>
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-                  <div id="tab-2" class="tab-pane">
-                     <div class="panel-body">
-                        <div class="ibox float-e-margins">
-                           <div class="ibox-title">
-                              <h5>Order placed by Yield</h5>
-                           </div>
-                           <div class="ibox-content">
-                              <div id="annually-stacked-by-yield" class="ct-perfect-fourth"></div>
-                           </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        <div class="panel-body">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>Order placed by Yield</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div id="annually-stacked-by-yield" class="ct-perfect-fourth"></div>
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-                  <div id="tab-3" class="tab-pane">
-                     <div class="panel-body">
-                        <div class="ibox float-e-margins">
-                           <div class="ibox-title">
-                              <h5>Order placed by Notional</h5>
-                           </div>
-                           <div class="ibox-content">
-                              <div id="annually-stacked-by-notional" class="ct-perfect-fourth"></div>
-                           </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane">
+                        <div class="panel-body">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>Order placed by Notional</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div id="annually-stacked-by-notional" class="ct-perfect-fourth"></div>
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="footer">
+        </div>
+        <div class="footer">
             <div>
-               <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
+                <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
             </div>
-         </div>
-          </div>
-      </div>
-      <!-- Mainly scripts -->
-      <script src="js/jquery-2.1.1.js"></script>
-      <script src="js/bootstrap.min.js"></script>
-      <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-      <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-      <!-- Flot -->
-      <script src="js/plugins/flot/jquery.flot.js"></script>
-      <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-      <script src="js/plugins/flot/jquery.flot.spline.js"></script>
-      <script src="js/plugins/flot/jquery.flot.resize.js"></script>
-      <script src="js/plugins/flot/jquery.flot.pie.js"></script>
-      <!-- Peity -->
-      <script src="js/plugins/peity/jquery.peity.min.js"></script>
-      <script src="js/demo/peity-demo.js"></script>
-      <!-- Custom and plugin javascript -->
-      <script src="js/inspinia.js"></script>
-      <script src="js/plugins/pace/pace.min.js"></script>
-      <!-- jQuery UI -->
-      <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
-      <!-- GITTER -->
-      <script src="js/plugins/gritter/jquery.gritter.min.js"></script>
-      <!-- Sparkline -->
-      <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
-      <!-- Sparkline demo data  -->
-      <script src="js/demo/sparkline-demo.js"></script>
-      <!-- ChartJS-->
-      <script src="js/plugins/chartJs/Chart.min.js"></script>
-      <!-- ChartList-->
-      <script src="js/plugins/chartist/chartist.min.js"></script>
-      <!-- Toastr -->
-      <script src="js/plugins/toastr/toastr.min.js"></script>
-      <script>
-         $(document).ready(function() {
-             setTimeout(function() {
-                 toastr.options = {
-                     closeButton: true,
-                     progressBar: true,
-                     showMethod: 'slideDown',
-                     timeOut: 4000
-                 };
-                 toastr.success('Responsive Admin Theme', 'Welcome to INSPINIA');
-         
-             }, 1300);
-         
-         
-            var orders_by_grade_data = [{
-         label: "AA",
-         data: 21,
-         color: "#d3d3d3",
-         }, {
-         label: "A",
-         data: 3,
-         color: "#bababa",
-         }, {
-         label: "B",
-         data: 15,
-         color: "#79d2c0",
-         }, {
-         label: "C",
-         data: 52,
-         color: "#1ab394",
-         }, {
-         label: "D",
-         data: 52,
-         color: "#1ab394",
-         }];
-         
-         var plotObj = $.plot($("#orders_by_grade"), orders_by_grade_data, {
-         series: {
-            pie: {
-                show: true
-            }
-         },
-         grid: {
-            hoverable: true
-         },
-         tooltip: true,
-         tooltipOpts: {
-            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-            shifts: {
-                x: 20,
-                y: 0
+        </div>
+    </div>
+</div>
+<!-- Mainly scripts -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- Flot -->
+<script src="js/plugins/flot/jquery.flot.js"></script>
+<script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+<script src="js/plugins/flot/jquery.flot.spline.js"></script>
+<script src="js/plugins/flot/jquery.flot.resize.js"></script>
+<script src="js/plugins/flot/jquery.flot.pie.js"></script>
+<!-- Peity -->
+<script src="js/plugins/peity/jquery.peity.min.js"></script>
+<script src="js/demo/peity-demo.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="js/inspinia.js"></script>
+<script src="js/plugins/pace/pace.min.js"></script>
+<!-- jQuery UI -->
+<script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- GITTER -->
+<script src="js/plugins/gritter/jquery.gritter.min.js"></script>
+<!-- Sparkline -->
+<script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
+<!-- Sparkline demo data  -->
+<script src="js/demo/sparkline-demo.js"></script>
+<!-- ChartJS-->
+<script src="js/plugins/chartJs/Chart.min.js"></script>
+<!-- ChartList-->
+<script src="js/plugins/chartist/chartist.min.js"></script>
+<!-- Toastr -->
+<script src="js/plugins/toastr/toastr.min.js"></script>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'slideDown',
+                timeOut: 4000
+            };
+            toastr.success('Responsive Admin Theme', 'Welcome to INSPINIA');
+
+        }, 1300);
+
+
+        var orders_by_grade_data = [{
+            label: "AA",
+            data: 21,
+            color: "#d3d3d3",
+        }, {
+            label: "A",
+            data: 3,
+            color: "#bababa",
+        }, {
+            label: "B",
+            data: 15,
+            color: "#79d2c0",
+        }, {
+            label: "C",
+            data: 52,
+            color: "#1ab394",
+        }, {
+            label: "D",
+            data: 52,
+            color: "#1ab394",
+        }];
+
+        var plotObj = $.plot($("#orders_by_grade"), orders_by_grade_data, {
+            series: {
+                pie: {
+                    show: true
+                }
             },
-            defaultTheme: false
-         }
-         });
-            
-         var orders_by_yield_data = [{
-         label: "AA",
-         data: 21,
-         color: "#d3d3d3",
-         }, {
-         label: "5-8.9%",
-         data: 3,
-         color: "#bababa",
-         }, {
-         label: "9-12.9%",
-         data: 15,
-         color: "#79d2c0",
-         }, {
-         label: "13-16.9",
-         data: 52,
-         color: "#1ab394",
-         }, {
-         label: "17-22%",
-         data: 52,
-         color: "#1ab394",
-         }];
-         
-         var plotObj = $.plot($("#orders_by_yield"), orders_by_yield_data, {
-         series: {
-            pie: {
-                show: true
-            }
-         },
-         grid: {
-            hoverable: true
-         },
-         tooltip: true,
-         tooltipOpts: {
-            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-            shifts: {
-                x: 20,
-                y: 0
+            grid: {
+                hoverable: true
             },
-            defaultTheme: false
-         }
-         });
-         
-         var orders_by_marketplace_data = [{
-         label: "Lending Club",
-         data: 21,
-         color: "#d3d3d3",
-         }, {
-         label: "Prosper",
-         data: 3,
-         color: "#79d2c0"
-         }];
-         
-         var plotObj = $.plot($("#orders_by_marketplace"), orders_by_marketplace_data, {
-         series: {
-            pie: {
-                show: true
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
             }
-         },
-         grid: {
-            hoverable: true
-         },
-         tooltip: true,
-         tooltipOpts: {
-            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-            shifts: {
-                x: 20,
-                y: 0
+        });
+
+        var orders_by_yield_data = [{
+            label: "AA",
+            data: 21,
+            color: "#d3d3d3",
+        }, {
+            label: "5-8.9%",
+            data: 3,
+            color: "#bababa",
+        }, {
+            label: "9-12.9%",
+            data: 15,
+            color: "#79d2c0",
+        }, {
+            label: "13-16.9",
+            data: 52,
+            color: "#1ab394",
+        }, {
+            label: "17-22%",
+            data: 52,
+            color: "#1ab394",
+        }];
+
+        var plotObj = $.plot($("#orders_by_yield"), orders_by_yield_data, {
+            series: {
+                pie: {
+                    show: true
+                }
             },
-            defaultTheme: false
-         }
-         });
-         
-         var orders_by_notional_data = [{
-         label: "100-999",
-         data: 21,
-         color: "#d3d3d3",
-         }, {
-         label: "1000-4999",
-         data: 3,
-         color: "#79d2c0"
-         }, {
-         label: "5000-5999",
-         data: 15,
-         color: "#79d2c0",
-         }, {
-         label: "6000-9999",
-         data: 52,
-         color: "#1ab394",
-         }, {
-         label: "10000-49999",
-         data: 52,
-         color: "#1ab394",
-         }];
-         
-         var plotObj = $.plot($("#orders_by_notional"), orders_by_notional_data, {
-         series: {
-            pie: {
-                show: true
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
             }
-         },
-         grid: {
-            hoverable: true
-         },
-         tooltip: true,
-         tooltipOpts: {
-            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-            shifts: {
-                x: 20,
-                y: 0
+        });
+
+        var orders_by_marketplace_data = [{
+            label: "Lending Club",
+            data: 21,
+            color: "#d3d3d3",
+        }, {
+            label: "Prosper",
+            data: 3,
+            color: "#79d2c0"
+        }];
+
+        var plotObj = $.plot($("#orders_by_marketplace"), orders_by_marketplace_data, {
+            series: {
+                pie: {
+                    show: true
+                }
             },
-            defaultTheme: false
-         }
-         });
-         
-         var orders_by_mechanism_data = [{
-         label: "Automatic",
-         data: 21,
-         color: "#d3d3d3",
-         }, {
-         label: "Manual",
-         data: 3,
-         color: "#79d2c0"
-         }];
-         
-         var plotObj = $.plot($("#orders_by_mechanism"), orders_by_mechanism_data, {
-         series: {
-            pie: {
-                show: true
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
             }
-         },
-         grid: {
-            hoverable: true
-         },
-         tooltip: true,
-         tooltipOpts: {
-            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-            shifts: {
-                x: 20,
-                y: 0
+        });
+
+        var orders_by_notional_data = [{
+            label: "100-999",
+            data: 21,
+            color: "#d3d3d3",
+        }, {
+            label: "1000-4999",
+            data: 3,
+            color: "#79d2c0"
+        }, {
+            label: "5000-5999",
+            data: 15,
+            color: "#79d2c0",
+        }, {
+            label: "6000-9999",
+            data: 52,
+            color: "#1ab394",
+        }, {
+            label: "10000-49999",
+            data: 52,
+            color: "#1ab394",
+        }];
+
+        var plotObj = $.plot($("#orders_by_notional"), orders_by_notional_data, {
+            series: {
+                pie: {
+                    show: true
+                }
             },
-            defaultTheme: false
-         }
-         });
-         
-         var orders_by_portion_data = [{
-         label: "Full",
-         data: 21,
-         color: "#d3d3d3",
-         }, {
-         label: "Fractional",
-         data: 3,
-         color: "#79d2c0"
-         }];
-         
-         var plotObj = $.plot($("#orders_by_portion"), orders_by_portion_data, {
-         series: {
-            pie: {
-                show: true
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
             }
-         },
-         grid: {
-            hoverable: true
-         },
-         tooltip: true,
-         tooltipOpts: {
-            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-            shifts: {
-                x: 20,
-                y: 0
+        });
+
+        var orders_by_mechanism_data = [{
+            label: "Automatic",
+            data: 21,
+            color: "#d3d3d3",
+        }, {
+            label: "Manual",
+            data: 3,
+            color: "#79d2c0"
+        }];
+
+        var plotObj = $.plot($("#orders_by_mechanism"), orders_by_mechanism_data, {
+            series: {
+                pie: {
+                    show: true
+                }
             },
-            defaultTheme: false
-         }
-         });
-         
-         
-         new Chartist.Bar('#annually-stacked-by-grade', {
-                labels: ['January', 'February', 'March', 'April', 'May','June','July','August','September','October','November','December'],
-                series: [
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [200000, 400000, 500000, 300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [100000, 200000, 400000, 600000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [200000, 400000, 500000, 300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000]
-                ]
-            }, {
-                stackBars: true,
-                axisY: {
-                    labelInterpolationFnc: function(value) {
-                        return (value / 1000) + 'k';
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
+            }
+        });
+
+        var orders_by_portion_data = [{
+            label: "Full",
+            data: 21,
+            color: "#d3d3d3",
+        }, {
+            label: "Fractional",
+            data: 3,
+            color: "#79d2c0"
+        }];
+
+        var plotObj = $.plot($("#orders_by_portion"), orders_by_portion_data, {
+            series: {
+                pie: {
+                    show: true
+                }
+            },
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
+            }
+        });
+
+
+        new Chartist.Bar('#annually-stacked-by-grade', {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            series: [
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
+            ]
+        }, {
+            stackBars: true,
+            axisY: {
+                labelInterpolationFnc: function (value) {
+                    return (value / 1000) + 'k';
+                }
+            }
+        }).on('draw', function (data) {
+                    if (data.type === 'bar') {
+                        data.element.attr({
+                            style: 'stroke-width: 10px'
+                        });
                     }
+                });
+
+        new Chartist.Bar('#annually-stacked-by-yield', {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            series: [
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
+            ]
+        }, {
+            stackBars: true,
+            axisY: {
+                labelInterpolationFnc: function (value) {
+                    return (value / 1000) + 'k';
                 }
-            }).on('draw', function(data) {
-                        if(data.type === 'bar') {
-                            data.element.attr({
-                                style: 'stroke-width: 10px'
-                            });
-                        }
-                    });
-         
-         new Chartist.Bar('#annually-stacked-by-yield', {
-                labels: ['January', 'February', 'March', 'April', 'May','June','July','August','September','October','November','December'],
-                series: [
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [200000, 400000, 500000, 300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [100000, 200000, 400000, 600000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [200000, 400000, 500000, 300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000]
-                ]
-            }, {
-                stackBars: true,
-                axisY: {
-                    labelInterpolationFnc: function(value) {
-                        return (value / 1000) + 'k';
+            }
+        }).on('draw', function (data) {
+                    if (data.type === 'bar') {
+                        data.element.attr({
+                            style: 'stroke-width: 10px'
+                        });
                     }
+                });
+
+        new Chartist.Bar('#annually-stacked-by-notional', {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            series: [
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [100000, 200000, 400000, 600000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [200000, 400000, 500000, 300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000],
+                [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000, 2000, 30000, 1000, 112000, 7000]
+            ]
+        }, {
+            stackBars: true,
+            axisY: {
+                labelInterpolationFnc: function (value) {
+                    return (value / 1000) + 'k';
                 }
-            }).on('draw', function(data) {
-                        if(data.type === 'bar') {
-                            data.element.attr({
-                                style: 'stroke-width: 10px'
-                            });
-                        }
-                    });
-         
-         new Chartist.Bar('#annually-stacked-by-notional', {
-                labels: ['January', 'February', 'March', 'April', 'May','June','July','August','September','October','November','December'],
-                series: [
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [200000, 400000, 500000, 300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [100000, 200000, 400000, 600000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [200000, 400000, 500000, 300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000],
-                    [800000, 1200000, 1400000, 1300000,50000,80000,3000,2000,30000,1000,112000,7000]
-                ]
-            }, {
-                stackBars: true,
-                axisY: {
-                    labelInterpolationFnc: function(value) {
-                        return (value / 1000) + 'k';
+            }
+        }).on('draw', function (data) {
+                    if (data.type === 'bar') {
+                        data.element.attr({
+                            style: 'stroke-width: 10px'
+                        });
                     }
-                }
-            }).on('draw', function(data) {
-                        if(data.type === 'bar') {
-                            data.element.attr({
-                                style: 'stroke-width: 10px'
-                            });
-                        }
-                    });
-         
-            new Chartist.Line('#ct-monthly-return', {
-                labels: ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15','Mar15','Apr15','May15','Jun15','Jul15','Aug15','Sep15','Oct'],
-                series: [
-                    [1.4, 1.2, 1.5, 1.5, 1.46,1.89,2.1,1.2,1.5,1.6,1.45,1.23],
-                    [1.2, 1.5, 1.5, 1.46,1.89,2.1,1.2,1.5,1.6,1.45,1.23,1.4],
-                    [1.46,1.89,2.1,1.2,1.5,1.6,1.45,1.23,1.4,1.4, 1.2, 1.5]
-                ]
-            }, {
-                fullWidth: true,
-                chartPadding: {
-                    right: 40
-                }
-            });
-         
-         
-         
-         });
-      </script>
-   </body>
+                });
+
+        new Chartist.Line('#ct-monthly-return', {
+            labels: ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'],
+            series: [
+                [1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
+                [1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
+                [1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
+            ]
+        }, {
+            fullWidth: true,
+            chartPadding: {
+                right: 40
+            }
+        });
+
+
+    });
+</script>
+</body>
 </html>
