@@ -29,16 +29,16 @@
                 <li class="nav-header">
                     <div class="dropdown profile-element">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Zohar
-                                Etzioni</strong>
-                             </span> <span class="text-muted text-xs block">Top Dog <b class="caret"></b></span> </span>
+                            <span class="clear"> <span class="block m-t-xs">
+                                <strong class="font-bold">Demo Account</strong>
+                             </span> <span class="text-muted text-xs block">Blackstone <b class="caret"></b></span> </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="#">Logout</a></li>
                         </ul>
                     </div>
                     <div class="logo-element">
-                        IN+
+                        <img alt="logo" class="img-circle" src="img/logo-mini.png">
                     </div>
                 </li>
                 <li>
@@ -73,13 +73,6 @@
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
                     </a>
-
-                    <form role="search" class="navbar-form-custom" method="post" action="#">
-                        <div class="form-group">
-                            <input type="text" placeholder="Search for something..." class="form-control"
-                                   name="top-search" id="top-search">
-                        </div>
-                    </form>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
@@ -102,7 +95,7 @@
                             <input type="text" class="form-control input-sm m-b-xs" id="filter"
                                    placeholder="Search in table">
 
-                            <table class="footable table table-stripped" data-page-size="8" data-filter=#filter>
+                            <table class="footable table table-responsive" data-page-size="7" data-filter=#filter>
                                 <thead>
                                 <tr>
                                     <th>Originator</th>
@@ -111,12 +104,11 @@
                                     <th>Requested</th>
                                     <th>Funded</th>
                                     <th>Term</th>
-                                    <th>Interest Rate</th>
+                                    <th>Yield</th>
                                     <th>PG Score</th>
                                     <th>D&B Score</th>
-                                    <th>Payment Score</th>
+                                    <th>PayNet Score</th>
                                     <th>Purpose</th>
-                                    <th>Buy Loan</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -125,14 +117,21 @@
                                     <td>29053621</td>
                                     <td>Oct 1, 2015</td>
                                     <td>$22,400</td>
-                                    <td>$6,975 (31.14%)</td>
+                                    <td class="text-center">
+                                        <svg class="peity" height="16" width="16">
+                                            <path d="M 8 8 L 8 0 A 8 8 0 0 1 14.933563796318165 11.990700825968545 Z"
+                                                  fill="#1ab394"></path>
+                                            <path d="M 8 8 L 14.933563796318165 11.990700825968545 A 8 8 0 1 1 7.999999999999998 0 Z"
+                                                  fill="#d7d7d7"></path>
+                                        </svg>
+                                    </td>
                                     <td>60</td>
                                     <td>28.49%</td>
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -145,8 +144,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -159,8 +158,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -173,8 +172,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -187,8 +186,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -201,8 +200,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -215,8 +214,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -229,8 +228,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -243,8 +242,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -257,8 +256,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -271,8 +270,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -285,8 +284,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -299,8 +298,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -313,8 +312,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -327,8 +326,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -341,8 +340,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -355,8 +354,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -369,8 +368,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -383,8 +382,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -397,8 +396,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -411,8 +410,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -425,8 +424,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -439,8 +438,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -453,8 +452,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-warning-light">Unavailable</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -467,8 +466,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 <tr class="gradeX">
                                     <td>Prosper</td>
@@ -481,8 +480,8 @@
                                     <td>783</td>
                                     <td>80</td>
                                     <td>686</td>
-                                    <td>Small Business</td>
-                                    <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    <td>SME</td>
+                                    <td><span class="label label-primary">Add to Cart</span></td>
                                 </tr>
                                 </tbody>
                                 <tfoot>
