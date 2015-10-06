@@ -19,7 +19,8 @@
                     <div class="dropdown profile-element">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Demo Account</strong>
-                        </span> <span class="text-muted text-xs block">Blackstone <b class="caret"></b></span> </span> </a>
+                        </span> <span class="text-muted text-xs block">Blackstone <b class="caret"></b></span> </span>
+                        </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="#">Logout</a></li>
                         </ul>
@@ -79,8 +80,8 @@
             <div class="col-md-12">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs ">
-                        <li class><a data-toggle="tab" href="#tab-1"> Lending Club</a></li>
-                        <li class="active"><a data-toggle="tab" href="#tab-2">Prosper</a></li>
+                        <li class="active"><a data-toggle="tab" href="#tab-1"> Lending Club</a></li>
+                        <li><a data-toggle="tab" href="#tab-2">Prosper</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane active">
@@ -232,7 +233,7 @@
                                             <h5>Porfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="lc-stacked-status-amount" class="ct-perfect-fourth"></div>
+                                            <div id="lc-stacked-status-amount" class="ct-chart ct-perfect-fourth"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -242,7 +243,7 @@
                                             <h5>Porfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="lc-stacked-status-number" class="ct-perfect-fourth"></div>
+                                            <div id="lc-stacked-status-number" class="ct-chart ct-perfect-fourth"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -397,7 +398,7 @@
                                             <h5>Porfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="pp-stacked-status-amount" class="ct-perfect-fourth"></div>
+                                            <div id="pp-stacked-status-amount" class="ct-chart ct-perfect-fourth"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -407,7 +408,7 @@
                                             <h5>Porfolio status - $ Number</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="pp-stacked-status-number" class="ct-perfect-fourth"></div>
+                                            <div id="pp-stacked-status-number" class="ct-chart ct-perfect-fourth"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -871,7 +872,7 @@
             }
         });
 
-        new Chartist.Bar('#lc-stacked-status-amount', {
+        var lcAmount=new Chartist.Bar('#lc-stacked-status-amount', {
             labels: ['FullyPaid', 'Current', 'InGracePeriod', 'Late16-30days', 'Late31-120Days', 'Defaulted', 'Charged Off'],
             series: [
                 [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000],
@@ -889,7 +890,8 @@
                     return (value / 1000) + 'k';
                 }
             }
-        }).on('draw', function (data) {
+        });
+        lcAmount.on('draw', function (data) {
                     if (data.type === 'bar') {
                         data.element.attr({
                             style: 'stroke-width: 30px'
@@ -897,7 +899,7 @@
                     }
                 });
 
-        new Chartist.Bar('#lc-stacked-status-number', {
+        var lcNum=new Chartist.Bar('#lc-stacked-status-number', {
             labels: ['FullyPaid', 'Current', 'InGracePeriod', 'Late16-30days', 'Late31-120Days', 'Defaulted', 'Charged Off'],
             series: [
                 [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000],
@@ -915,7 +917,8 @@
                     return (value / 100000) + 'k';
                 }
             }
-        }).on('draw', function (data) {
+        });
+        lcNum.on('draw', function (data) {
                     if (data.type === 'bar') {
                         data.element.attr({
                             style: 'stroke-width: 30px'
@@ -923,7 +926,7 @@
                     }
                 });
 
-        new Chartist.Bar('#pp-stacked-status-amount', {
+        var ppAmount = new Chartist.Bar('#pp-stacked-status-amount', {
             labels: ['FullyPaid', 'Current', 'InGracePeriod', 'Late16-30days', 'Late31-120Days', 'Defaulted', 'Charged Off'],
             series: [
                 [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000],
@@ -941,15 +944,16 @@
                     return (value / 100000) + 'k';
                 }
             }
-        }).on('draw', function (data) {
-                    if (data.type === 'bar') {
-                        data.element.attr({
-                            style: 'stroke-width: 30px'
-                        });
-                    }
+        });
+        ppAmount.on('draw', function (data) {
+            if (data.type === 'bar') {
+                data.element.attr({
+                    style: 'stroke-width: 30px'
                 });
+            }
+        });
 
-        new Chartist.Bar('#pp-stacked-status-number', {
+        var ppNum = new Chartist.Bar('#pp-stacked-status-number', {
             labels: ['FullyPaid', 'Current', 'InGracePeriod', 'Late16-30days', 'Late31-120Days', 'Defaulted', 'Charged Off'],
             series: [
                 [800000, 1200000, 1400000, 1300000, 50000, 80000, 3000],
@@ -967,13 +971,27 @@
                     return (value / 100000) + 'k';
                 }
             }
-        }).on('draw', function (data) {
-                    if (data.type === 'bar') {
-                        data.element.attr({
-                            style: 'stroke-width: 30px'
-                        });
-                    }
+        });
+        ppNum.on('draw', function (data) {
+            if (data.type === 'bar') {
+                data.element.attr({
+                    style: 'stroke-width: 30px'
                 });
+            }
+        });
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var tab= $(e.target).attr('href');
+            if (tab=="#tab-2") {
+                ppNum.update();
+                ppAmount.update();
+            }
+            else {
+                lcNum.update();
+                lcAmount.update();
+            }
+         });
+
 
     });
 </script>
