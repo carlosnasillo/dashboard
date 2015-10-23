@@ -21,7 +21,10 @@ class Login extends Controller {
   )
 
   def login = Action { implicit request =>
-    Ok(views.html.login( loginForm ))
+    request.session.get("email") match {
+      case Some(userEmail) => Redirect( routes.Dashboard.dashboard() )
+      case None            => Ok( views.html.login( loginForm ) )
+    }
   }
 
   def logout = Action { implicit request =>
