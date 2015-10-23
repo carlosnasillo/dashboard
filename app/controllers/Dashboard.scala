@@ -16,7 +16,13 @@ import play.api.mvc._
  * Created by Julien Déray on 23/10/2015.
  */
 class Dashboard extends Controller {
-  def dashboard = Action {
-    Ok("")
+  def dashboard = Action { implicit request =>
+    request.session.get("email") match {
+      case Some(userEmail) =>
+          Ok( views.html.dashboard() )
+      case None =>
+        Redirect( routes.Login.login() )
+          .flashing("danger" -> "Please reconnect.")
+    }
   }
 }
