@@ -41,3 +41,7 @@ userdata
 /.cache-main
 /.cache-tests
 /target/
+
+# Play!
+.sbtserver/
+logs/
