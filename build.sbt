@@ -1,4 +1,4 @@
-name := """lattice-backend"""
+name := """dashboard"""
 
 version := "1.0-SNAPSHOT"
 
