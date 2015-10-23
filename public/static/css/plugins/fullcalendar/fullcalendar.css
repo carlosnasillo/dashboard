@@ -651,7 +651,7 @@ a.fc-more:hover {
     box-sizing: content-box;
 }
 
-.fc-view, /* scope positioning and z-index's for everything within the view */
+.fc-view, /* scope positioning and z-login's for everything within the view */
 .fc-view > table {
     /* so dragged elements can be above the view's main element */
     position: relative;
@@ -768,7 +768,7 @@ a.fc-more:hover {
 /* TimeGrid Structure
 --------------------------------------------------------------------------------------------------*/
 
-.fc-time-grid-container, /* so scroll container's z-index is below all-day */
+.fc-time-grid-container, /* so scroll container's z-login is below all-day */
 .fc-time-grid {
     /* so slats/bg/content/etc positions get scoped within here */
     position: relative;
@@ -873,7 +873,7 @@ a.fc-more:hover {
 .fc-time-grid .fc-event,
 .fc-time-grid .fc-bgevent {
     position: absolute;
-    z-index: 1; /* scope inner z-index's */
+    z-index: 1; /* scope inner z-login's */
 }
 
 .fc-time-grid .fc-bgevent {

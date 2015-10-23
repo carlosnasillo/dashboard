@@ -1,0 +1,30 @@
+@(userForm: Form[LoginFormObj])(implicit flash: Flash, session: Session)
+
+@main {
+    <div class="container">
+
+        @wflash()
+
+        <div class="row">
+            <div class="well well-lg col-md-4 col-md-offset-4">
+                <form class="form-horizontal" action="@{routes.Login.authentification()}" method="post" role="form">
+                    <legend>Log in</legend>
+                    <div class="form-group">
+                        <input name="email" type="text" class="form-control login-field" value="" placeholder="Email" id="login-email" required autofocus>
+                        <label class="login-field-icon fui-login" for="login-email"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <input name="password" type="password" class="form-control login-field" value="" placeholder="Password" id="login-password" required>
+                        <label class="login-field-icon fui-lock" for="login-password"></label>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-1 col-lg-1">
+                            <button type="submit" class="btn btn-primary">Log in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+} { }
