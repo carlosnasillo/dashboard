@@ -26,25 +26,25 @@ import scala.concurrent.Future
  */
 trait LendingClubDb extends Log {
   // persist loan listing to lattice database
-  def persistLoans(availableLoans: LoanListing): Unit
+  def persistLoans(availableLoans: LoanListing): Future[Unit]
 
   // load currently available loans from lattice database
   def availableLoans: Future[LoanListing]
 
   // upsert an order
-  def persistOrder(orderPlaced: OrderPlaced)
+  def persistOrder(orderPlaced: OrderPlaced):Future[Unit]
 
   // load an order
   def loadOrders: Future[Seq[OrderPlaced]]
 
   // persist a transfer or withdrawal transaction
-  def persistTransaction(transaction: Transaction)
+  def persistTransaction(transaction: Transaction) : Future[Unit]
 
   // load all transactions 
   def loadTransactions: Future[Seq[Transaction]]
   
   // persists loans analytics to lattice db
-  def persistAnalytics(loanAnalytics: Future[LoanAnalytics]): Unit
+  def persistAnalytics(loanAnalytics: Future[LoanAnalytics]): Future[Unit]
 
   // load loans analytics from lattice db
   def loadAnalyticsByDate(date: LocalDate): Future[LoanAnalytics]

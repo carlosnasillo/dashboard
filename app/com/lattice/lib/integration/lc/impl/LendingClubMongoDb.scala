@@ -31,17 +31,11 @@ import scala.util.{Failure, Success}
 class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
   implicit val ec = ExecutionContext.Implicits.global
 
-  override def persistLoans(availableLoans: LoanListing) {
+  override def persistLoans(availableLoans: LoanListing) :Future[Unit] = {
     log.info(s"persisting available loans: $availableLoans")
     val loans = db.collection("loans")
     val loansJs=Json.toJson(availableLoans)
-    val future = loans.insert(loansJs.as[JsObject])
-    future.onComplete {
-      case Failure(e) => throw e
-      case Success(lastError) => {
-        log.info(s"successfully inserted document: $lastError")
-      }
-    }
+    loans.insert(loansJs.as[JsObject]) map (x=> ())
   }
 
   override def availableLoans: Future[LoanListing] = {
@@ -51,25 +45,16 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
     availableJsonFuture.map(json => Json.fromJson[LoanListing](json.get).asOpt.get )
   }
 
-  override def persistOrder(orderPlaced: OrderPlaced) = {
+  override def persistOrder(orderPlaced: OrderPlaced):Future[Unit] = {
     val orders = db.collection("orders")
     val selector = Json.obj("investorId" -> orderPlaced.investorId, "orderId" -> orderPlaced.orderId)
     val modifier = Json.toJson(orderPlaced).as[JsObject]
-    val future = orders.update(selector, modifier, upsert = true)
-    Await.ready(future, Duration.Inf)
+    orders.update(selector, modifier, upsert = true) map (x=> ())
   }
 
-  override def persistAnalytics(futureLoanAnalytics: Future[LoanAnalytics]): Unit = {
+  override def persistAnalytics(futureLoanAnalytics: Future[LoanAnalytics]): Future[Unit] = {
     val loanAnalyticsCol = db.collection("loanAnalytics")
-    futureLoanAnalytics.onComplete {
-      case Success(loanAnalytics) =>
-        val future = loanAnalyticsCol.insert(Json.toJson(loanAnalytics).as[JsObject])
-        future.onComplete {
-          case Failure(e) => throw e
-          case Success(lastError) => log.info(s"successfully inserted document: $lastError")
-        }
-      case Failure(e) => throw e
-    }
+    futureLoanAnalytics.map(loanAnalytics => loanAnalyticsCol.insert(Json.toJson(loanAnalytics).as[JsObject])). map (x=> ())
   }
 
   override def loadOrders: Future[Seq[OrderPlaced]] = {
@@ -89,10 +74,9 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
     collection.find(Json.obj()).cursor[Transaction].toList(Int.MaxValue)
   }
 
-  override def persistTransaction(transaction:Transaction) = {
+  override def persistTransaction(transaction:Transaction):Future[Unit] = {
     val orders = db.collection("transactions")
     val transactionJs = Json.toJson(transaction).as[JsObject]
-    val future = orders.insert(transaction)
-    Await.ready(future, Duration.Inf)
+    orders.insert(transaction) map (x=> ())
   }
 }  
