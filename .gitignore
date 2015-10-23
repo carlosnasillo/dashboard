@@ -45,3 +45,5 @@ userdata
 # Play!
 .sbtserver/
 logs/
+/.classpath
+/.project
