@@ -44,7 +44,7 @@ trait LendingClubDb extends Log {
   def loadTransactions: Future[Seq[Transaction]]
   
   // persists loans analytics to lattice db
-  def persistAnalytics(loanAnalytics: Future[LoanAnalytics]): Future[Unit]
+  def persistAnalytics(loanAnalytics: LoanAnalytics): Future[Unit]
 
   // load loans analytics from lattice db
   def loadAnalyticsByDate(date: LocalDate): Future[LoanAnalytics]

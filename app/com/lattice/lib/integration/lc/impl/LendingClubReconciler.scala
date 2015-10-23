@@ -44,12 +44,12 @@ class LendingClubReconciler(
   /**
    * persist current available loans from lending club
    */
-  private[impl] def reconcileAvailableLoans(availableLoans: Seq[LendingClubLoan]) {
+  private[impl] def reconcileAvailableLoans(availableLoans: Seq[LendingClubLoan]):Future[Unit] = {
     log.info("reconciling available loans")
     val availableLoans = lc.availableLoans
-    db.persistLoans(availableLoans)
-    val futureLoanAnalytics: Future[LoanAnalytics] = calculateLoanAnalytics(availableLoans)
-    db.persistAnalytics(futureLoanAnalytics)
+    val future= db.persistLoans(availableLoans) flatMap (x=> calculateLoanAnalytics(availableLoans)) 
+    future.foreach (db.persistAnalytics(_))
+    future map (x=> ())
   }
 
   private[impl] def calculateLoanAnalytics(loanListing: LoanListing): Future[LoanAnalytics] = {

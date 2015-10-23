@@ -52,9 +52,9 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
     orders.update(selector, modifier, upsert = true) map (x=> ())
   }
 
-  override def persistAnalytics(futureLoanAnalytics: Future[LoanAnalytics]): Future[Unit] = {
+  override def persistAnalytics(loanAnalytics:LoanAnalytics): Future[Unit] = {
     val loanAnalyticsCol = db.collection("loanAnalytics")
-    futureLoanAnalytics.map(loanAnalytics => loanAnalyticsCol.insert(Json.toJson(loanAnalytics).as[JsObject])). map (x=> ())
+    loanAnalyticsCol.insert(Json.toJson(loanAnalytics).as[JsObject]). map (x=> ())
   }
 
   override def loadOrders: Future[Seq[OrderPlaced]] = {
