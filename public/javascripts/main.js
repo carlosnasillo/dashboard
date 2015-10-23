@@ -1,9 +1,12 @@
 var app = angular.module("app", ["ngResource", "ngRoute"])
     .constant("apiUrl", "/api")
     .config(["$routeProvider", function($routeProvider) {
-      return $routeProvider.when("/", {
+      return $routeProvider
+      .when("/", {
         templateUrl: "/views/mainDashboard",
         controller: "MainDashboardCtrl"
+      }).when("/logout", {
+        templateUrl: "/logout"
       }).otherwise({
         redirectTo: "/"
       });
