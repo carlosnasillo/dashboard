@@ -40,7 +40,7 @@ case class LendingClubNote(
   loanStatusDate: ZonedDateTime
   ) {
  
-  val gradeEnum=Grade.withName(grade)
+  val gradeEnum=Grade.withName(""+grade.head)
   
   val loanLengthEnum=loanLength match {
     case 24=> Term._24
