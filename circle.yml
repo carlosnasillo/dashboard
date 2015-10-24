@@ -1,8 +1,14 @@
 dependencies:
-  cache_directories:
-    - ~/.m2
-    - ~/.ivy2
-    - ~/.sbt
+  pre:
+    - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.8.deb
+    - sudo dpkg -i sbt-0.13.8.deb
+  override:
+    - sbt compile
+
+cache_directories:
+    - "~/.ivy2"
+    - "~/.sbt"
+
 test:
   override:
-    - cd dashboard && sbt test
+    - sbt test
