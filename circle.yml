@@ -1,0 +1,14 @@
+dependencies:
+  pre:
+    - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.8.deb
+    - sudo dpkg -i sbt-0.13.8.deb
+  override:
+    - sbt compile
+
+cache_directories:
+    - "~/.ivy2"
+    - "~/.sbt"
+
+test:
+  override:
+    - sbt test
