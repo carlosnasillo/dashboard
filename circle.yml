@@ -5,4 +5,4 @@ dependencies:
     - ~/.sbt
 test:
   override:
-    - cd dashboard && ./activator clean test
+    - cd dashboard && sbt test
