@@ -3,10 +3,8 @@ dependencies:
     - ~/.m2
     - ~/.ivy2
     - ~/.sbt
-
   override:
-    - "./tools/activator/activator update"
-
+    - ./activator update
 test:
   override:
-    - "sbt test"
+    - ./activator clean test
