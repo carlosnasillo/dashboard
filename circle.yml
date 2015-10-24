@@ -9,4 +9,4 @@ dependencies:
 
 test:
   override:
-    - "./tools/activator/activator clean test"
+    - "sbt test"
