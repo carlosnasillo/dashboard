@@ -18,8 +18,7 @@ import models.Originator
  */
 trait MarketPlaceFactory {
   def analytics: MarketplaceAnalytics
-  def portfolio: MarketplacePortfolioAnalytics
-  def manager: MarketplacePortfolioManager
+  def portfolio: MarketplacePortfolioManager
 }
 
 object MarketPlaceFactory {
@@ -30,11 +29,6 @@ object MarketPlaceFactory {
 
   def portfolio(originator: Originator.Value) = originator match {
     case Originator.LendingClub => LendingClubFactory.portfolio
-    case _                      => throw new IllegalArgumentException(s"unsupported originator $originator")
-  }
-
-  def manager(originator: Originator.Value) = originator match {
-    case Originator.LendingClub => LendingClubFactory.manager
     case _                      => throw new IllegalArgumentException(s"unsupported originator $originator")
   }
 }

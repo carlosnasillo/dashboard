@@ -8,13 +8,18 @@
 package com.lattice.lib.integration.lc.impl
 
 import java.time.LocalDate
-
+import com.lattice.lib.utils.{DbUtil, Log}
+import com.lattice.lib.utils.Implicits.SeqImpl
 import com.lattice.lib.integration.lc.LendingClubDb
 import com.lattice.lib.portfolio.MarketplaceAnalytics
 import models.Grade.Grade
 import models.{Grade, Originator}
-
 import scala.concurrent.Future
+import com.lattice.lib.integration.lc.model.LoanListing
+import com.lattice.lib.integration.lc.model.LoanAnalytics
+import com.lattice.lib.integration.lc.model.LendingClubLoan
+import com.lattice.lib.integration.lc.LendingClubConnection
+import java.time.ZonedDateTime
 
 /**
  * Implementation for LendingClub of the Market
@@ -23,9 +28,83 @@ import scala.concurrent.Future
  * TODO implement
  * @author ze97286
  */
-class LendingClubAnalytics(db: LendingClubDb) extends MarketplaceAnalytics {
+class LendingClubAnalytics(lc:LendingClubConnection,db: LendingClubDb) extends MarketplaceAnalytics {
   override val originator = Originator.LendingClub
 
+  reload
+  
+  private def reload {
+    val availableLoans = lc.availableLoans
+    reconcileAvailableLoans(availableLoans.loans)
+  }
+  
+   private[impl] def reconcileAvailableLoans(availableLoans: Seq[LendingClubLoan]) {
+    log.info("reconciling available loans")
+    val availableLoans = lc.availableLoans
+    val future=db.persistLoans(availableLoans)
+    
+    future foreach (x=> {
+      val futureLoanAnalytics: Future[LoanAnalytics] = calculateLoanAnalytics(availableLoans)
+      futureLoanAnalytics map (db.persistAnalytics(_))
+    })
+    
+    
+  }
+  
+  private[impl] def calculateLoanAnalytics(loanListing: LoanListing): Future[LoanAnalytics] = {
+    val numLoans: Int = loanListing.loans.size
+    val liquidity: BigDecimal = loanListing.loans.sumBy[BigDecimal]( x => x.loanAmount - x.fundedAmount )
+    val numLoansByGrade: Map[String, Int] = loanListing.loans.groupBy(_.grade).mapValues(_.size)
+    val liquidityByGrade: Map[String, BigDecimal] = loanListing.loans.groupBy(_.grade).mapValues(_.map(lcl => lcl.loanAmount - lcl.fundedAmount).sum.toLong)
+
+    val loanOrigination: Int = loanListing.loans.count(loan => loan.listD.toLocalDate == LocalDate.now())
+    val loanOriginationByGrade: Map[String, Int] = loanListing.loans.filter(loan => loan.listD.toLocalDate == LocalDate.now()).groupBy(_.grade).mapValues(_.size)
+    val loanOriginationByYield: Map[Double, Int] = loanListing.loans.filter(loan => loan.listD.toLocalDate == LocalDate.now()).groupBy(_.intRate).mapValues(_.size)
+
+    val originatedNotional: BigDecimal =
+      loanListing.loans
+      .filter(loans => loans.listD.toLocalDate == LocalDate.now())
+      .sumBy[BigDecimal]( x => x.loanAmount - x.fundedAmount )
+
+    val originatedNotionalByGrade: Map[String, BigDecimal] =
+      loanListing.loans
+        .filter(loans => loans.listD.toLocalDate == LocalDate.now())
+        .groupBy(_.grade)
+        .mapValues( x => x.sumBy[BigDecimal]( x => x.loanAmount - x.fundedAmount) )
+
+    val originatedNotionalByYield: Map[Double, BigDecimal] =
+      loanListing.loans
+        .filter(loans => loans.listD.toLocalDate == LocalDate.now())
+        .groupBy(_.intRate)
+        .mapValues( x => x.sumBy[BigDecimal]( x => x.loanAmount - x.fundedAmount) )
+
+    val lendingClubMongoDb: LendingClubMongoDb = new LendingClubMongoDb(DbUtil.db)
+
+    val yesterdayAnalytics: Future[LoanAnalytics] = lendingClubMongoDb.loadAnalyticsByDate(LocalDate.now().minusDays(1))
+
+    yesterdayAnalytics.map{ analytics =>
+        val dailyChangeInNumLoans: Int = numLoans - analytics.numLoans
+        val dailyChangeInLiquidity: BigDecimal = liquidity - analytics.liquidity
+
+        LoanAnalytics(
+          ZonedDateTime.now(),
+          numLoans,
+          liquidity,
+          numLoansByGrade,
+          liquidityByGrade,
+          dailyChangeInNumLoans,
+          dailyChangeInLiquidity,
+          loanOrigination,
+          loanOriginationByGrade,
+          loanOriginationByYield,
+          originatedNotional,
+          originatedNotionalByGrade,
+          originatedNotionalByYield
+        )
+    }
+  }
+  
+  
   private def dateRange(from: LocalDate, to: LocalDate): Iterator[LocalDate] =
     Iterator.iterate(from)(_.plusDays(1)).takeWhile(!_.isAfter(to))
 

@@ -17,7 +17,7 @@ import com.lattice.lib.integration.lc.LendingClubConfig.SubmitOrderUrl
 import com.lattice.lib.integration.lc.LendingClubConnection
 import com.lattice.lib.integration.lc.model.AccountSummary
 import com.lattice.lib.integration.lc.model.ExecutionReport
-import com.lattice.lib.integration.lc.model.Formatters.accountSummaryFormat
+import com.lattice.lib.integration.lc.model.Formatters._
 import com.lattice.lib.integration.lc.model.Formatters.executionReportFormat
 import com.lattice.lib.integration.lc.model.Formatters.loanListingFormat
 import com.lattice.lib.integration.lc.model.Formatters.notesFormat
@@ -27,9 +27,10 @@ import com.lattice.lib.integration.lc.model.LoanListing
 import com.lattice.lib.integration.lc.model.Order
 import com.lattice.lib.integration.lc.model.Orders
 import com.lattice.lib.integration.lc.model.OwnedNotes
-
 import play.api.libs.json.Json
 import scalaj.http.Http
+import com.lattice.lib.integration.lc.model.PortfolioDetails
+import com.lattice.lib.integration.lc.model.InvestorPortfolios
 
 /**
  * Implementation for lending club connection api
@@ -127,5 +128,25 @@ object LendingClubConnectionImpl extends LendingClubConnection {
       (ApiKeyHeader, ApiKey)).postData(withdrawJson).asString.body
 
     println(withdrawResult)
+  }
+  
+  override def createPorfolio(name:String, description:String):PortfolioDetails = {
+    val portfolioJson = s"""{"investorId" : ${LendingClubConfig.Account}}, "portfolioName" : "${name}", "portfolioDescription" : "${description}""""
+    
+     val createResult = Http(LendingClubConfig.CreatePorfoliorUrl).headers(
+      ("Content-Type", "application/json"),
+      (AuthorisationHeader, Authorisation),
+      (ApiKeyHeader, ApiKey)).postData(portfolioJson).asString.body
+      
+     val resultJson=Json.parse(createResult)
+     Json.fromJson[PortfolioDetails](resultJson).asOpt.get
+  }
+  
+  override def loadPortfolios:Seq[PortfolioDetails]  = {
+    val portfoliosString = Http(LendingClubConfig.MyPortfoliosUrl)
+      .headers((AuthorisationHeader, Authorisation),
+        (ApiKeyHeader, ApiKey)).asString.body
+    val portfoliosJson = Json.parse(portfoliosString)
+    Json.fromJson[InvestorPortfolios](portfoliosJson).asOpt.get.myPortfolios
   }
 }

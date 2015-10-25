@@ -11,7 +11,7 @@ package com.lattice.lib.integration.lc
 /**
  * Lending club connectivity details
  * TODO: read authorisation details from config
- * 
+ *
  * @author ze97286
  */
 object LendingClubConfig {
@@ -23,9 +23,12 @@ object LendingClubConfig {
   val BaseUrl = "https://api-sandbox.lendingclub.com/api/investor/v1/"
   val LoanListingUrl = BaseUrl + "loans/listing?showAll=true"
   val AccountSummaryUrl = s"${BaseUrl}accounts/${Account}/summary"
+  val MyPortfoliosUrl = s"${BaseUrl}accounts/${Account}/portfolios"
   val OwnedNotesUrl = s"${BaseUrl}accounts/${Account}/detailednotes"
   val TransferFundsUrl = s"${BaseUrl}accounts/${Account}/funds/add"
   val WithdrawFundsUrl = s"${BaseUrl}accounts/${Account}/funds/withdraw"
   val SubmitOrderUrl = s"${BaseUrl}accounts/${Account}/orders"
+  val CreatePorfoliorUrl = s"${BaseUrl}accounts/${Account}/portfolios"
+
   val EmptyDoc = "{}"
 }

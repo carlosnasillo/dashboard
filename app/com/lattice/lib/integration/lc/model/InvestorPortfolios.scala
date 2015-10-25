@@ -5,11 +5,10 @@
  * proprietary information that shall be used or copied only with
  * Lattice Markets, except with written permission of Lattice Markets.
  */
-package com.lattice.lib.integration.lc.model
 
-import java.time.ZonedDateTime
+package com.lattice.lib.integration.lc.model
 
 /**
  * @author ze97286
  */
-case class Transaction(investorId:String, time:ZonedDateTime,amount:BigDecimal)
+case class InvestorPortfolios(myPortfolios:Seq[PortfolioDetails])

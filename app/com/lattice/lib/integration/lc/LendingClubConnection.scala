@@ -14,6 +14,7 @@ import com.lattice.lib.integration.lc.model.LoanListing
 import com.lattice.lib.integration.lc.model.Order
 import com.lattice.lib.utils.Log
 import play.api.libs.json.JsValue
+import com.lattice.lib.integration.lc.model.PortfolioDetails
 
 /**
  * @author ze97286
@@ -38,4 +39,10 @@ trait LendingClubConnection extends Log {
 
   // get lattice account summary in LC
   def accountSummary: AccountSummary
+  
+  // create a porfolio
+  def createPorfolio(name:String, description:String):PortfolioDetails
+  
+  // load configured portfolios
+  def loadPortfolios:Seq[PortfolioDetails]
 }
