@@ -25,6 +25,7 @@
         service.Login = Login;
         service.SetCredentials = SetCredentials;
         service.ClearCredentials = ClearCredentials;
+        service.GetCurrentUsername = GetCurrentUsername;
 
         return service;
 
@@ -52,6 +53,10 @@
             $rootScope.globals = {};
             $cookieStore.remove('globals');
             $http.defaults.headers.common.Authorization = 'Basic';
+        }
+
+        function GetCurrentUsername() {
+            return $rootScope.globals.currentUser.username;
         }
     }
 

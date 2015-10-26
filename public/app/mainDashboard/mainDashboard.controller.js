@@ -29,6 +29,8 @@
 
         };
 
+        vm.username = AuthenticationService.GetCurrentUsername();
+
         var Analytics = $resource("api/analytics"); // a RESTful-capable resource object
         vm.analytics = Analytics.query(); // for the list of analytics in public/html/mainDashboard.html
     }
