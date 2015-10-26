@@ -5,15 +5,15 @@
  * proprietary information that shall be used or copied only with
  * Lattice Markets, except with written permission of Lattice Markets.
  */
-package com.lattice.lib.utils
 
-import org.slf4j.LoggerFactory
+package com.lattice.lib.integration.lc.model
+
+import java.time.ZonedDateTime
 
 /**
- * TODO decide on log config
- * 
  * @author ze97286
  */
-trait Log {
-   def log = LoggerFactory.getLogger(this.getClass)
-}
+case class WithdrawFundsResponse(
+  investorId: Int,
+  amount: BigDecimal,
+  estimatedFundsTransferDate: String)

@@ -9,7 +9,6 @@
 package com.lattice.lib.integration.lc.impl
 
 import java.time.LocalDate
-
 import com.lattice.lib.integration.lc.LendingClubDb
 import com.lattice.lib.integration.lc.model.Formatters.{loanAnalyticsFormat, loanListingFormat, orderPlacedFormat, transactionFormat}
 import com.lattice.lib.integration.lc.model.{LoanAnalytics, LoanListing, OrderPlaced, Transaction}
@@ -18,10 +17,11 @@ import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json.JsObjectDocumentWriter
 import play.modules.reactivemongo.json.collection.JSONCollectionProducer
 import reactivemongo.api.DefaultDB
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
+import com.lattice.lib.utils.DbUtil
+import play.api.Logger
 /**
  * TODO implement all
  * TODO add logging
@@ -32,7 +32,7 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
   implicit val ec = ExecutionContext.Implicits.global
 
   override def persistLoans(availableLoans: LoanListing) :Future[Unit] = {
-    log.info(s"persisting available loans: $availableLoans")
+    Logger.info(s"persisting available loans: $availableLoans")
     val loans = db.collection("loans")
     val loansJs=Json.toJson(availableLoans)
     loans.insert(loansJs.as[JsObject]) map (x=> ())

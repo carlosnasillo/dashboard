@@ -7,16 +7,17 @@
  */
 package com.lattice.lib.portfolio
 
-import models.Originator
-import com.lattice.lib.utils.Log
 import scala.concurrent.Future
+
+import models.Note
+import models.Originator
 
 /**
  * manage interaction with marketplace
  * 
  * @author ze97286
  */
-trait MarketplacePortfolioManager extends Log {
+trait MarketplacePortfolioManager {
   def originator: Originator.Value
 
   def newInvestor(investorId:String, investorDescription:String)
@@ -36,7 +37,10 @@ trait MarketplacePortfolioManager extends Log {
   // get account balance details
   def accountBalance(investorId: String): AccountBalance
 
-  
   // reconcile state with market
   def reconcilePortfolio: Unit
+
+  // get the notes for the given investor id
+  def notes(investorId:String):Seq[Note]
+  
 }

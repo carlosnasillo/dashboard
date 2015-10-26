@@ -9,8 +9,6 @@ package com.lattice.lib.portfolio
 
 import java.time.LocalDate
 
-import com.lattice.lib.utils.Log
-
 import models.Grade
 import models.Originator
 import models.Term
@@ -20,7 +18,7 @@ import models.Term
  *
  * @author ze97286
  */
-trait MarketplacePortfolioAnalytics extends Log {
+trait MarketplacePortfolioAnalytics {
   def originator: Originator.Value
 
   // how much principal is invested in the market pending to be returned

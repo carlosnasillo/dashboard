@@ -16,4 +16,13 @@ object AccountBalance {
   def newAccount(investorId: String) = AccountBalance(investorId, 0, 0, 0, 0, 0, 0, 0,0)
 }
 
-case class AccountBalance(portfolioName: String, availableCash: BigDecimal, invested: BigDecimal, pendingInvestment: BigDecimal, principalOutstanding: BigDecimal, principalReceived: BigDecimal, interestReceived: BigDecimal, paymentReceived: BigDecimal,earmarked:BigDecimal) 
+case class AccountBalance(
+    portfolioName: String, // the name of the portfolio
+    availableCash: BigDecimal, // currently available cash in the account
+    invested: BigDecimal, // total investment in notes for the portfolio
+    pendingInvestment: BigDecimal, // total pending investment - notes not yet initiated
+    principalOutstanding: BigDecimal, // total outstanding principal portfolio
+    principalReceived: BigDecimal, // total principal received for the portfolio
+    interestReceived: BigDecimal, // total interest received for the portfolio
+    paymentReceived: BigDecimal, // total payment received for the portfolio
+    earmarked:BigDecimal) // inflight investment - sent to the market, not yet confirmed
