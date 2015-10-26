@@ -36,7 +36,6 @@ import com.lattice.lib.integration.lc.model.TransferFundsResponse
 /**
  * Implementation for lending club connection api
  *
- * TODO add full logging
  * TODO test all
  *
  * @author ze97286
@@ -138,10 +137,8 @@ object LendingClubConnectionImpl extends LendingClubConnection {
       (AuthorisationHeader, Authorisation),
       (ApiKeyHeader, ApiKey)).postData(transferJson).asString.body
 
-    val transferResultJson = Json.toJson(transferResult)
-
+    val transferResultJson = Json.parse(transferResult)
     val result = Json.fromJson[TransferFundsResponse](transferResultJson).asOpt
-    Logger.info(s"result=$result")
     result match {
       case None =>
         val errors = Json.fromJson[Errors](transferResultJson).asOpt

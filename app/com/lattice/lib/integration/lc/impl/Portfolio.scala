@@ -165,7 +165,7 @@ class Portfolio(portfolioDetails: PortfolioDetails, db: LendingClubDb, lc: Lendi
     val investedAmount = er.orderConfirmations.head.investedAmount
     if (investedAmount > 0) {
       reloadNotes = true
-      val order = OrderPlaced(portfolioDetails.portfolioName, er.orderInstructId, loanId.toInt, None, investedAmount, ZonedDateTime.now, None, 0, "pending")
+      val order = OrderPlaced(portfolioDetails.portfolioName, er.orderInstructId.get, loanId.toInt, None, investedAmount, ZonedDateTime.now, None, 0, "pending")
       // persist the order
       db.persistOrder(order)
     }
