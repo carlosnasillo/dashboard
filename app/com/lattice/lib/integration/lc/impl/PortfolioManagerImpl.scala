@@ -19,6 +19,8 @@ import com.lattice.lib.integration.lc.model.Transaction
 import com.lattice.lib.portfolio.MarketplacePortfolioManager
 import models.Originator
 import com.lattice.lib.integration.lc.model.PortfolioDetails
+import models.Note
+import play.api.Logger
 
 /**
  * @author ze97286
@@ -26,12 +28,11 @@ import com.lattice.lib.integration.lc.model.PortfolioDetails
 class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends MarketplacePortfolioManager {
   private var portfolioNameToPortfolio: MMap[String, Portfolio] = MMap()
 
-  reconcilePortfolio
-
   override def originator = Originator.LendingClub
 
   // load all notes, orders, and transactions from db, split by portfolio name and reconcile
   override def reconcilePortfolio() {
+    Logger.info("starting portfolio reconciliation")
     val transactions = db.loadTransactions
     val ownedNotes = lc.ownedNotes
     val placedOrders = db.loadOrders
@@ -40,13 +41,22 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
     transactions.onComplete {
       case Success(trans) => placedOrders.onComplete {
         case Success(orders) => reconcilePortfolio(portfolios, trans, ownedNotes, orders)
-        case Failure(e)      => throw new IllegalStateException("Failed to reconcile state with Lending Club", e)
+        case Failure(e)      =>
+          Logger.error(e.getMessage, e)
+          throw new IllegalStateException("Failed to reconcile state with Lending Club", e)
       }
-      case Failure(e) => throw new IllegalStateException("Failed to reconcile state with Lending Club", e)
+      case Failure(e) => 
+        Logger.error(e.getMessage, e)
+        throw new IllegalStateException("Failed to reconcile state with Lending Club", e)
     }
   }
 
   private def reconcilePortfolio(portfolios: Seq[PortfolioDetails], transactions: Seq[Transaction], notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]) {
+    Logger.info(s"reconciling portfolios for: ${portfolios mkString "\n"}")
+    Logger.info(s"transactions: ${transactions mkString "\n"}")
+    Logger.info(s"notes: ${notes mkString "\n"}")
+    Logger.info(s"orders: ${orders mkString "\n"}")
+    
     val transfersByPortfolio = transactions.groupBy(_.investorId)
     val notesByPortfolio = notes.filter(_.portfolioName.isDefined).groupBy(_.portfolioName.get)
     val ordersByPortfolio = orders.groupBy(_.portfolioName)
@@ -110,4 +120,6 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
 
   override def portfolioAnalytics(portfolioName: String) = portfolioNameToPortfolio(portfolioName).portfolioAnalytics
 
+  override def notes(portfolioName:String):Seq[Note] = portfolioNameToPortfolio(portfolioName).ownedNotes map (_.toNote)
+  
 }

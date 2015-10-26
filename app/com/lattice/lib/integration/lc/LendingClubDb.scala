@@ -16,7 +16,6 @@ import com.lattice.lib.integration.lc.model.LoanAnalytics
 import com.lattice.lib.integration.lc.model.LoanListing
 import com.lattice.lib.integration.lc.model.OrderPlaced
 import com.lattice.lib.integration.lc.model.Transaction
-import com.lattice.lib.utils.Log
 
 /**
  * Trait for lending club data persistence
@@ -25,7 +24,7 @@ import com.lattice.lib.utils.Log
  *
  * @author ze97286
  */
-trait LendingClubDb extends Log {
+trait LendingClubDb {
   // persist loan listing to lattice database
   def persistLoans(availableLoans: LoanListing): Future[Unit]
 
@@ -49,5 +48,4 @@ trait LendingClubDb extends Log {
 
   // load loans analytics from lattice db
   def loadAnalyticsByDate(date: LocalDate): Future[LoanAnalytics]
-
 }

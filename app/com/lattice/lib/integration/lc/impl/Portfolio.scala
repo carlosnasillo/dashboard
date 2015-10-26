@@ -43,6 +43,8 @@ class Portfolio(portfolioDetails: PortfolioDetails, db: LendingClubDb, lc: Lendi
     }
   }
 
+  def ownedNotes=currentNotes
+  
   def balance = accountBalance
 
   def portfolioAnalytics: Future[PortfolioAnalytics] = {

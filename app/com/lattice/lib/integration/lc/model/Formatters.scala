@@ -26,7 +26,11 @@ object Formatters {
   implicit val accountSummaryFormat = Json.format[AccountSummary]
   implicit val portfolioDetailsFormat = Json.format[PortfolioDetails]
   implicit val myPortfoliosFormat = Json.format[InvestorPortfolios]
-
+  implicit val errorFormat = Json.format[Error]
+  implicit val errorsFormat = Json.format[Errors]
+  implicit val withdrawResponseFormat = Json.format[WithdrawFundsResponse]
+  implicit val transferReponseFormat = Json.format[TransferFundsResponse]
+  
   def writes[A, B] = new Writes[Map[A, B]] {
     def writes(map: Map[A, B]): JsValue =
       Json.obj(map.map {

@@ -7,22 +7,25 @@
  */
 package com.lattice.lib.portfolio
 
-import models.Grade
 import java.time.LocalDate
-import models.Originator
-import com.lattice.lib.utils.Log
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import models.Grade
+import models.Originator
 
 /**
  * Defines a set of analytics for marketplace lending
  * 
  * @author ze97286
  */
-trait MarketplaceAnalytics extends Log {
+trait MarketplaceAnalytics {
   implicit val ec = ExecutionContext.Implicits.global
 
   def originator:Originator.Value
+
+  def loadLoansFromMarket():Unit
   
   // the number of loans currently available in the marketplace
   def numLoans: Future[Int]

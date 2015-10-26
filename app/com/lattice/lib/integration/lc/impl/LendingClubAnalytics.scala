@@ -26,6 +26,7 @@ import com.lattice.lib.utils.Implicits.SeqImpl
 import models.Grade
 import models.Grade.Grade
 import models.Originator
+import play.api.Logger
 
 /**
  * Implementation for LendingClub of the Market
@@ -37,17 +38,17 @@ import models.Originator
 class LendingClubAnalytics(lc: LendingClubConnection, db: LendingClubDb) extends MarketplaceAnalytics {
   override val originator = Originator.LendingClub
 
-  reload
-  
-  //TODO reschedule to run a number of times a day
-  private def reload {
+  override def loadLoansFromMarket() {
+    Logger.info("loading loans from LendingClub")
     val availableLoans = lc.availableLoans
+    Logger.info(s"Loaded loans from LendingClub (${availableLoans.asOfDate}): \n ${availableLoans.loans mkString "\n"}")
     reconcileAvailableLoans(availableLoans.loans)
   }
 
   private[impl] def reconcileAvailableLoans(availableLoans: Seq[LendingClubLoan]) {
-    log.info("reconciling available loans")
+    Logger.info("reconciling available loans")
     val availableLoans = lc.availableLoans
+    Logger.info(s"Persisting loans from LendingClub (${availableLoans.asOfDate}): \n ${availableLoans.loans mkString "\n"}")
     val future = db.persistLoans(availableLoans)
 
     future foreach (x => {
@@ -58,6 +59,7 @@ class LendingClubAnalytics(lc: LendingClubConnection, db: LendingClubDb) extends
   }
 
   private[impl] def calculateLoanAnalytics(loanListing: LoanListing): Future[LoanAnalytics] = {
+    Logger.info(s"calculating loan analytics for ${loanListing.asOfDate}")
     val numLoans: Int = loanListing.loans.size
     val liquidity: BigDecimal = loanListing.loans.sumBy[BigDecimal](x => x.loanAmount - x.fundedAmount)
     val numLoansByGrade: Map[String, Int] = loanListing.loans.groupBy(_.grade).mapValues(_.size)
@@ -88,25 +90,38 @@ class LendingClubAnalytics(lc: LendingClubConnection, db: LendingClubDb) extends
 
     val yesterdayAnalytics: Future[LoanAnalytics] = lendingClubMongoDb.loadAnalyticsByDate(LocalDate.now().minusDays(1))
 
+    val v = yesterdayAnalytics.map { analytics =>
+      val dailyChangeInNumLoans: Int = numLoans - analytics.numLoans
+      val dailyChangeInLiquidity: BigDecimal = liquidity - analytics.liquidity
+      (dailyChangeInNumLoans, dailyChangeInLiquidity)
+    }
+
+    def newAnalytics(dailyChangeInNumLoans: Int, dailyChangeInLiquidity: BigDecimal) = LoanAnalytics(
+      ZonedDateTime.now(),
+      numLoans,
+      liquidity,
+      numLoansByGrade,
+      liquidityByGrade,
+      dailyChangeInNumLoans,
+      dailyChangeInLiquidity,
+      loanOrigination,
+      loanOriginationByGrade,
+      loanOriginationByYield,
+      originatedNotional,
+      originatedNotionalByGrade,
+      originatedNotionalByYield)
+
     yesterdayAnalytics.map { analytics =>
       val dailyChangeInNumLoans: Int = numLoans - analytics.numLoans
       val dailyChangeInLiquidity: BigDecimal = liquidity - analytics.liquidity
-
-      LoanAnalytics(
-        ZonedDateTime.now(),
-        numLoans,
-        liquidity,
-        numLoansByGrade,
-        liquidityByGrade,
-        dailyChangeInNumLoans,
-        dailyChangeInLiquidity,
-        loanOrigination,
-        loanOriginationByGrade,
-        loanOriginationByYield,
-        originatedNotional,
-        originatedNotionalByGrade,
-        originatedNotionalByYield)
-    }
+      val res = newAnalytics(dailyChangeInNumLoans, dailyChangeInLiquidity)
+      Logger.info(s"calculated analytics for ${loanListing.asOfDate}: $res")
+      res
+    }.fallbackTo(Future {
+      val res = newAnalytics(0, 0)
+      Logger.info(s"calculated analytics for ${loanListing.asOfDate}: $res")
+      res
+    })
   }
 
   private def dateRange(from: LocalDate, to: LocalDate): Iterator[LocalDate] =
