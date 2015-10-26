@@ -10,12 +10,13 @@ package com.lattice.lib.integration.lc
 
 import java.time.LocalDate
 
-import com.lattice.lib.integration.lc.model.{LoanAnalytics, LoanListing, OrderPlaced, Transaction}
-import com.lattice.lib.utils.Log
-
-import play.api.libs.json.JsValue
-
 import scala.concurrent.Future
+
+import com.lattice.lib.integration.lc.model.LoanAnalytics
+import com.lattice.lib.integration.lc.model.LoanListing
+import com.lattice.lib.integration.lc.model.OrderPlaced
+import com.lattice.lib.integration.lc.model.Transaction
+import com.lattice.lib.utils.Log
 
 /**
  * Trait for lending club data persistence
@@ -26,25 +27,25 @@ import scala.concurrent.Future
  */
 trait LendingClubDb extends Log {
   // persist loan listing to lattice database
-  def persistLoans(availableLoans: LoanListing): Unit
+  def persistLoans(availableLoans: LoanListing): Future[Unit]
 
   // load currently available loans from lattice database
   def availableLoans: Future[LoanListing]
 
   // upsert an order
-  def persistOrder(orderPlaced: OrderPlaced)
+  def persistOrder(orderPlaced: OrderPlaced):Future[Unit]
 
   // load an order
   def loadOrders: Future[Seq[OrderPlaced]]
 
   // persist a transfer or withdrawal transaction
-  def persistTransaction(transaction: Transaction)
+  def persistTransaction(transaction: Transaction) : Future[Unit]
 
   // load all transactions 
   def loadTransactions: Future[Seq[Transaction]]
   
   // persists loans analytics to lattice db
-  def persistAnalytics(loanAnalytics: Future[LoanAnalytics]): Unit
+  def persistAnalytics(loanAnalytics: LoanAnalytics): Future[Unit]
 
   // load loans analytics from lattice db
   def loadAnalyticsByDate(date: LocalDate): Future[LoanAnalytics]

@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
  * @author ze97286
  */
 case class OrderPlaced(
-  investorId: String,
+  portfolioName: String,
   orderId: Int,
   loanId: Int,
   noteId: Option[Int],

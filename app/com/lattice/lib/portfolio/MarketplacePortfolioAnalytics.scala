@@ -21,97 +21,93 @@ import models.Term
  * @author ze97286
  */
 trait MarketplacePortfolioAnalytics extends Log {
-  protected var portfolios: Map[String, Portfolio] = _
-  
-  def resetPortfolios(p: Map[String, Portfolio]) { portfolios = p }
-  
   def originator: Originator.Value
 
   // how much principal is invested in the market pending to be returned
-  def principalOutstanding(investorId: String): BigDecimal
+  def principalOutstanding: BigDecimal
 
   // how much is invested in loans not yet originated
-  def pendingInvestment(investorId: String): BigDecimal
+  def pendingInvestment: BigDecimal
 
   // how much cash has been received from loan repaid
-  def cashReceived(investorId: String): BigDecimal
+  def cashReceived: BigDecimal
 
   // how much interest has been received on the investor account
-  def interestReceived(investorId: String): BigDecimal
+  def interestReceived: BigDecimal
 
   // how many notes are owned by the investor by grade
-  def notesByGrade(investorId: String): Map[Grade.Value, Int]
+  def notesByGrade: Map[Grade.Value, Int]
 
   // how many notes are owned by the investor by the note state
-  def notesByState(investorId: String): Map[String, Int]
+  def notesByState: Map[String, Int]
 
   // how many notes are owned by the intvestor by state, for each grouped by grade
-  def notesByStateByGrade(investorId: String): Map[String, Map[Grade.Value, Int]]
+  def notesByStateByGrade: Map[String, Map[Grade.Value, Int]]
 
   // how much principal is outstanding by grade
-  def principalOutstandingByGrade(investorId: String): Map[Grade.Value, BigDecimal]
+  def principalOutstandingByGrade: Map[Grade.Value, BigDecimal]
 
   // how much principal is outstanding by yield buckets
-  def principalOutstandingByYield(investorId: String): Map[(Double, Double), BigDecimal]
+  def principalOutstandingByYield: Map[(Double, Double), BigDecimal]
 
   // how much principal is outstanding by term 
-  def principalOutstandingByTerm(investorId: String): Map[Term.Value, BigDecimal]
+  def principalOutstandingByTerm: Map[Term.Value, BigDecimal]
 
   // how much principal is outstanding by note state
-  def principalOutstandingByState(investorId: String): Map[String, BigDecimal]
+  def principalOutstandingByState: Map[String, BigDecimal]
 
   // how much principal is outstanding by state by grade
-  def principalOutstandingByStateByGrade(investorId: String): Map[String, Map[Grade.Value, BigDecimal]]
+  def principalOutstandingByStateByGrade: Map[String, Map[Grade.Value, BigDecimal]]
 
   // how many active notes are owned by the investor
-  def currentNotes(investorId: String): Int
+  def currentNotes: Int
 
   // how many notes were acquired today
-  def notesAcquiredToday(investorId: String): Int
+  def notesAcquiredToday: Int
 
   // how many notes were acquired today by grade
-  def notesAcquiredTodayByGrade(investorId: String): Map[Grade.Value, Int]
+  def notesAcquiredTodayByGrade: Map[Grade.Value, Int]
 
   // how many notes were acquired today by yield buckets
-  def notesAcquiredTodayByYield(investorId: String): Map[(Double, Double), Int]
+  def notesAcquiredTodayByYield: Map[(Double, Double), Int]
 
   // how many notes were acquired today by purpose 
-  def notesAcquiredTodayByPurpose(investorId: String): Map[String, Int]
+  def notesAcquiredTodayByPurpose: Map[String, Int]
 
   // how many notes were acquired in the given period
-  def notesAcquired(investorId: String, from: LocalDate, to: LocalDate):Map[LocalDate,Int] 
+  def notesAcquired(from: LocalDate, to: LocalDate):Map[LocalDate,Int] 
 
   // how many notes were acquired by the given period by Grade
-  def notesAcquiredByGrade(investorId: String, from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, Int]]
+  def notesAcquiredByGrade(from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, Int]]
 
   // how many notes were acquired by the given period by Yield
-  def notesAcquiredByYield(investorId: String, from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), Int]]
+  def notesAcquiredByYield(from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), Int]]
 
   // how many notes were acquired by the given period by purpose
-  def notesAcquiredByPurpose(investorId: String, from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, Int]]
+  def notesAcquiredByPurpose(from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, Int]]
 
   // how much was invested in notes today
-  def amountInvestedToday(investorId: String): BigDecimal
+  def amountInvestedToday: BigDecimal
 
   // how much was invested in notes today by grade
-  def amountInvestedTodayByGrade(investorId: String): Map[Grade.Value, BigDecimal]
+  def amountInvestedTodayByGrade: Map[Grade.Value, BigDecimal]
 
   // how much was invested in notes today by yield buckets
-  def amountInvestedTodayByYield(investorId: String): Map[(Double, Double), BigDecimal]
+  def amountInvestedTodayByYield: Map[(Double, Double), BigDecimal]
 
   // how much was invested in notes today by purpose 
-  def amountInvestedTodayByPurpose(investorId: String): Map[String, BigDecimal]
+  def amountInvestedTodayByPurpose: Map[String, BigDecimal]
 
   // how much was invested in notes in the given period
-  def amountInvested(investorId: String, from: LocalDate, to: LocalDate):  Map[LocalDate,BigDecimal]
+  def amountInvested(from: LocalDate, to: LocalDate):  Map[LocalDate,BigDecimal]
 
   // how much was invested in notes in the given period by grade 
-  def amountInvestedByGrade(investorId: String, from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, BigDecimal]]
+  def amountInvestedByGrade(from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, BigDecimal]]
 
   // how much was invested in notes in the given period by yield buckets
-  def amountInvestedByYield(investorId: String, from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), BigDecimal]]
+  def amountInvestedByYield(from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), BigDecimal]]
 
   // how much was invested in notes in the given period by purpose
-  def amountInvestedByPurpose(investorId: String, from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, BigDecimal]]
+  def amountInvestedByPurpose(from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, BigDecimal]]
 
 }

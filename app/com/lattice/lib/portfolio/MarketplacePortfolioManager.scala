@@ -9,6 +9,7 @@ package com.lattice.lib.portfolio
 
 import models.Originator
 import com.lattice.lib.utils.Log
+import scala.concurrent.Future
 
 /**
  * manage interaction with marketplace
@@ -18,6 +19,8 @@ import com.lattice.lib.utils.Log
 trait MarketplacePortfolioManager extends Log {
   def originator: Originator.Value
 
+  def newInvestor(investorId:String, investorDescription:String)
+  
   // submit an order to the marketplace
   def submitOrder(investorId: String, loanId: String, amount: BigDecimal)
 
@@ -27,6 +30,13 @@ trait MarketplacePortfolioManager extends Log {
   // withdraw funds from marketplace to lattice - this needs to be called when investor wants to withdraw money from a marketplace
   def withdrawFunds(investorId:String, amount: BigDecimal)
 
+  // get portfolio analytics details
+  def portfolioAnalytics(investorId: String): Future[MarketplacePortfolioAnalytics]
+  
+  // get account balance details
+  def accountBalance(investorId: String): AccountBalance
+
+  
   // reconcile state with market
-  def reconcileWithMarket: Unit
+  def reconcilePortfolio: Unit
 }

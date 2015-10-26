@@ -5,9 +5,10 @@
  * proprietary information that shall be used or copied only with
  * Lattice Markets, except with written permission of Lattice Markets.
  */
+
 package com.lattice.lib.integration.lc.model
 
 /**
  * @author ze97286
  */
-case class Order(loanId:Int, portfolioId:Int, requestedAmount:BigDecimal)
+case class InvestorPortfolios(myPortfolios:Seq[PortfolioDetails])

@@ -12,13 +12,14 @@ import com.lattice.lib.integration.lc.model.ExecutionReport
 import com.lattice.lib.integration.lc.model.LendingClubNote
 import com.lattice.lib.integration.lc.model.LoanListing
 import com.lattice.lib.integration.lc.model.Order
+import com.lattice.lib.integration.lc.model.PortfolioDetails
 import com.lattice.lib.utils.Log
-import play.api.libs.json.JsValue
 
 /**
+ * interface for interaction with Lending Club API
+ * 
  * @author ze97286
  */
-
 trait LendingClubConnection extends Log {
 
   // submit an order to lending club
@@ -38,4 +39,10 @@ trait LendingClubConnection extends Log {
 
   // get lattice account summary in LC
   def accountSummary: AccountSummary
+  
+  // create a porfolio
+  def createPorfolio(name:String, description:String):PortfolioDetails
+  
+  // load configured portfolios
+  def loadPortfolios:Seq[PortfolioDetails]
 }

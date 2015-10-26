@@ -24,7 +24,8 @@ object Formatters {
   implicit val loanFormat = Json.format[LendingClubLoan]
   implicit val loanListingFormat = Json.format[LoanListing]
   implicit val accountSummaryFormat = Json.format[AccountSummary]
-
+  implicit val portfolioDetailsFormat = Json.format[PortfolioDetails]
+  implicit val myPortfoliosFormat = Json.format[InvestorPortfolios]
 
   def writes[A, B] = new Writes[Map[A, B]] {
     def writes(map: Map[A, B]): JsValue =
@@ -44,15 +45,13 @@ object Formatters {
 
   implicit val mapDoubleBigDecimalFormat: Format[Map[Double, BigDecimal]] =
     Format(
-    reads[Double, BigDecimal](_.toDouble, _.asInstanceOf[BigDecimal]),
-    writes[Double, BigDecimal]
-  )
+      reads[Double, BigDecimal](_.toDouble, _.asInstanceOf[BigDecimal]),
+      writes[Double, BigDecimal])
 
   implicit val mapDoubleIntFormat: Format[Map[Double, Int]] =
     Format(
       reads[Double, Int](_.toDouble, _.toInt),
-      writes[Double, Int]
-    )
+      writes[Double, Int])
 
   /**
    * Defines the formatter for LoanAnalytics
