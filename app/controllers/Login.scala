@@ -20,53 +20,24 @@ class Login extends Controller {
     )(LoginFormObj.apply)(LoginFormObj.unapply)
   )
 
-  def login = Action { implicit request =>
-    request.session.get("email") match {
-      case Some(userEmail) => Redirect( routes.Dashboard.dashboard() )
-      case None            => Ok( views.html.login( loginForm ) )
-    }
-  }
-
-  def logout = Action { implicit request =>
-    Redirect( routes.Login.login() )
-      .withNewSession
-      .flashing("info" -> "You have been logged out.")
-  }
-
-  def authenticate = Action { implicit request =>
-    request.session.get("email") match {
-      case Some(userEmail) => Redirect( routes.Dashboard.dashboard() )
-      case None => Ok( views.html.login( loginForm ) )
-    }
-  }
-
   def authentification = Action.async { implicit request =>
-
-    def goLoginWithFlash(flashMessage: String): Result = {
-      Redirect( routes.Login.login() )
-        .flashing("danger" -> flashMessage)
-    }
-
     loginForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(
-          goLoginWithFlash("Wrong data sent.")
+          BadRequest("Wrong data sent.")
         )
       },
       providedLogin => {
         UserLogin.getByEmail( providedLogin.email ).map {
           case Some(user) =>
             if ( Hash.checkPassword(providedLogin.password, user.password) ) {
-              Redirect( routes.Dashboard.dashboard() )
-                .withSession(
-                  "email" -> user.email
-                )
+              Ok("")
             }
             else {
-              goLoginWithFlash("The password is incorrect.")
+              BadRequest("The password is incorrect.")
             }
           case None =>
-            goLoginWithFlash("Incorrect email or password.")
+            BadRequest("Incorrect email or password.")
         }
       }
     )

@@ -3,12 +3,11 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Login.login
-POST    /authentification           controllers.Login.authentification
-GET     /logout                     controllers.Login.logout
+GET     /                           controllers.Application.index
 
-GET     /dashboard                  controllers.Dashboard.dashboard
+POST    /api/authenticate           controllers.Login.authentification
 
-
+# Play routes serving HTML to AngularJS start with /views
+GET     /view/*any                  controllers.Application.loadPublicHTML(any)
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

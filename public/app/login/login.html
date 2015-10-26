@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright (c) 2015 Lattice Markets, All rights reserved.
+  ~
+  ~ Unpublished copyright. All rights reserved. This material contains
+  ~ proprietary information that shall be used or copied only with
+  ~ Lattice Markets, except with written permission of Lattice Markets.
+  ~
+  -->
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+        <span class="navbar-brand">Lattice Markets</span>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <!-- Main Content -->
+        <div class="content">
+            <div class="container">
+
+                <div data-ng-show="vm.error" class="alert alert-danger">{{vm.error}}</div>
+
+                <div class="row">
+                    <div class="well well-lg col-lg-4 col-md-offset-4">
+                        <form class="form-horizontal" data-ng-submit="vm.login()" method="post" role="form">
+                            <legend>Log in</legend>
+                            <div class="form-group" data-ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                                <input name="email" type="text" class="form-control login-field" value="" placeholder="Email" id="email" data-ng-model="vm.username" required autofocus />
+                                <label class="login-field-icon fui-login" for="email"></label>
+                                <span data-ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+                            </div>
+
+                            <div class="form-group" data-ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                                <input name="password" type="password" class="form-control login-field" value="" placeholder="Password" id="password" data-ng-model="vm.password" required />
+                                <label class="login-field-icon fui-lock" for="password"></label>
+                                <span data-ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-3 col-lg-1">
+                                    <button type="submit" data-ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Log in</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-4 col-lg-2">
+                                    <img data-ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
