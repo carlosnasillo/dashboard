@@ -11,7 +11,7 @@ package com.lattice.lib.integration.lc.model
  * @author ze97286
  */
 case class ExecutionReport(
-  orderInstructId: Int, // A unique LC assigned id identifying the OrderInstruct.
+  orderInstructId: Option[Int], // A unique LC assigned id identifying the OrderInstruct.
   orderConfirmations: Seq[OrderConfirmation]) // order status for each incoming order
   
   
