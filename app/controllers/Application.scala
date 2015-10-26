@@ -9,12 +9,13 @@ import play.api.Play.current
 class Application extends Controller {
 
   def index = Action {
-    Ok("")
+    Ok(views.html.index())
   }
 
   /** resolve "any" into the corresponding HTML page URI */
   def getURI(any: String): String = any match {
     case "mainDashboard" => "/public/app/mainDashboard/mainDashboard.html"
+    case "login" => "/public/app/login/login.html"
     case _ => "error"
   }
 

@@ -17,12 +17,19 @@
 
     angular
         .module('app')
-        .controller('MainDashboardCtrl', MainDashboardCtrl);
+        .controller('MainDashboardController', MainDashboardController);
 
-    MainDashboardCtrl.$inject = ["$scope", "$resource", "apiUrl"];
-    function MainDashboardCtrl($scope, $resource, apiUrl) {
-        var Analytics = $resource(apiUrl + "/analytics"); // a RESTful-capable resource object
-        $scope.analytics = Analytics.query(); // for the list of analytics in public/html/mainDashboard.html
+    MainDashboardController.$inject = ['$resource', '$location', 'AuthenticationService'];
+
+    function MainDashboardController($resource, $location, AuthenticationService) {
+        var vm = this;
+        vm.logout = function() {
+            AuthenticationService.ClearCredentials();
+            $location.path('/');
+
+        };
+
+        var Analytics = $resource("api/analytics"); // a RESTful-capable resource object
+        vm.analytics = Analytics.query(); // for the list of analytics in public/html/mainDashboard.html
     }
-
 })();

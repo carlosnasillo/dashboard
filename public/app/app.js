@@ -7,34 +7,46 @@
  *
  */
 
-var app = angular.module("app", ["ngResource", "ngRoute"])
-    .constant("apiUrl", "/api")
-    .config(["$routeProvider", function($routeProvider) {
-      return $routeProvider
-      .when("/", {
-        templateUrl: "view/mainDashboard",
-        controller: "MainDashboardCtrl"
-      }).when("/logout", {
-        templateUrl: "/logout"
-      }).otherwise({
-        redirectTo: "/"
-      });
+(function () {
+    'use strict';
+
+    angular
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource'])
+        .config(config)
+        .run(run);
+
+    config.$inject = ['$routeProvider', '$locationProvider'];
+    function config($routeProvider, $locationProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: "view/login",
+                controller: "LoginController",
+                controllerAs: 'vm'
+            })
+            .when('/dashboard', {
+                templateUrl: "view/mainDashboard",
+                controller: "MainDashboardController",
+                controllerAs: 'vm'
+            })
+            .otherwise({ redirectTo: '/' });
     }
-    ]).config([
-      "$locationProvider", function($locationProvider) {
-        return $locationProvider.html5Mode({
-          enabled: true,
-          requireBase: false
-        }).hashPrefix("!"); // enable the new HTML5 routing and history API
-        // return $locationProvider.html5Mode(true).hashPrefix("!"); // enable the new HTML5 routing and history API
-      }
-    ]);
 
-// the global controller
-app.controller("AppCtrl", ["$scope", "$location", function($scope, $location) {
-  // the go function is inherited by all other controllers
-  $scope.go = function (path) {
-    $location.path(path);
-  };
-}]);
+    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http'];
+    function run($rootScope, $location, $cookieStore, $http) {
+        // keep user logged in after page refresh
+        $rootScope.globals = $cookieStore.get('globals') || {};
+        if ($rootScope.globals.currentUser) {
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+        }
 
+        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+            // redirect to login page if not logged in and trying to access a restricted page
+            var restrictedPage = $.inArray($location.path(), ['/', '/register']) === -1;
+            var loggedIn = $rootScope.globals.currentUser;
+            if (restrictedPage && !loggedIn) {
+                $location.path('/');
+            }
+        });
+    }
+
+})();
