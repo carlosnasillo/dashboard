@@ -14,8 +14,13 @@ class Application extends Controller {
 
   /** resolve "any" into the corresponding HTML page URI */
   def getURI(any: String): String = any match {
+      // views
     case "mainDashboard" => "/public/app/mainDashboard/mainDashboard.html"
     case "login" => "/public/app/login/login.html"
+
+      // directive templates
+    case "mySimpleNumberDisplay" => "/public/app/directives/mySimpleNumberDisplay/my-simple-number-display.html"
+
     case _ => "error"
   }
 
@@ -28,5 +33,4 @@ class Application extends Controller {
     else
       NotFound
   }
-
 }
