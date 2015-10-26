@@ -10,12 +10,13 @@ package com.lattice.lib.integration.lc
 
 import java.time.LocalDate
 
-import com.lattice.lib.integration.lc.model.{LoanAnalytics, LoanListing, OrderPlaced, Transaction}
-import com.lattice.lib.utils.Log
-
-import play.api.libs.json.JsValue
-
 import scala.concurrent.Future
+
+import com.lattice.lib.integration.lc.model.LoanAnalytics
+import com.lattice.lib.integration.lc.model.LoanListing
+import com.lattice.lib.integration.lc.model.OrderPlaced
+import com.lattice.lib.integration.lc.model.Transaction
+import com.lattice.lib.utils.Log
 
 /**
  * Trait for lending club data persistence

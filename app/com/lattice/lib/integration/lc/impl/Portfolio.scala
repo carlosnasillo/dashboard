@@ -26,13 +26,13 @@ import com.lattice.lib.integration.lc.model.PortfolioDetails
 /**
  * @author ze97286
  */
-class Portfolio(portfolioDetails:PortfolioDetails,db: LendingClubDb, lc: LendingClubConnection, transfers: Seq[Transaction], notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]) {
+class Portfolio(portfolioDetails: PortfolioDetails, db: LendingClubDb, lc: LendingClubConnection, transfers: Seq[Transaction], notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]) {
   private val lock: Lock = new ReentrantLock()
   private var accountBalance: AccountBalance = reconcilePortfolio(transfers, notes, orders)
-  
-  @volatile private var currentNotes=notes
-  @volatile private var reloadNotes=false 
-  private var analytics=portfolioAnalytics
+
+  @volatile private var currentNotes = notes
+  @volatile private var reloadNotes = false
+  private var analytics = portfolioAnalytics
 
   private def reconcilePortfolio(transfers: Seq[Transaction], notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]) = {
     lock.tryLock
@@ -42,19 +42,18 @@ class Portfolio(portfolioDetails:PortfolioDetails,db: LendingClubDb, lc: Lending
       lock.unlock()
     }
   }
-  
-  def balance=accountBalance
-  
-  def portfolioAnalytics:Future[PortfolioAnalytics] = {
+
+  def balance = accountBalance
+
+  def portfolioAnalytics: Future[PortfolioAnalytics] = {
     val p = Promise[PortfolioAnalytics]()
     val f = p.future
-    
+
     Future {
       if (!reloadNotes) {
         p.success(PortfolioAnalytics.analyse(currentNotes))
-      }
-      else {
-        currentNotes=lc.ownedNotes.filter(_.portfolioName==portfolioDetails.portfolioName)
+      } else {
+        currentNotes = lc.ownedNotes.filter(_.portfolioName == portfolioDetails.portfolioName)
         p.success(PortfolioAnalytics.analyse(currentNotes))
       }
     }
@@ -79,7 +78,22 @@ class Portfolio(portfolioDetails:PortfolioDetails,db: LendingClubDb, lc: Lending
 
     //create contracts where needed 
     val orderIdToNote = notes.map(x => (x.orderId, x)).toMap
-    val materialisedOrders = orders.filter(x => orderIdToNote.contains(x.orderId))
+
+    val missingOrders = notes filter (x => !orderIdToNote.contains(x.orderId)) foreach (x => {
+      val contract =
+        if (x.loanStatus != "In Funding") {
+          Some(createLoanContract)
+        } else None
+
+      val order = OrderPlaced(portfolioDetails.portfolioName, x.orderId, x.loanId, None, x.noteAmount, x.orderDate, contract, x.paymentsReceived, x.loanStatus)
+      if (x.paymentsReceived > 0) {
+        contract foreach (sendPayment(_, x.paymentsReceived))
+      }
+      // persist the order
+      db.persistOrder(order)
+    })
+
+    val materialisedOrders = (orders).filter(x => orderIdToNote.contains(x.orderId))
     materialisedOrders foreach (order => {
       val note = orderIdToNote(order.orderId)
       order.contractAddress match {
@@ -92,7 +106,7 @@ class Portfolio(portfolioDetails:PortfolioDetails,db: LendingClubDb, lc: Lending
           sendPayment(address, paid)
       }
     })
-    
+
     accountBalance
   }
 
@@ -145,9 +159,10 @@ class Portfolio(portfolioDetails:PortfolioDetails,db: LendingClubDb, lc: Lending
 
     // submit the order
     //TODO add portfolio id
-    val er = lc.submitOrder(Seq(Order(loanId.toInt, amount)))
+    val er = lc.submitOrder(Seq(Order(loanId.toInt, portfolioDetails.portfolioId, amount)))
     val investedAmount = er.orderConfirmations.head.investedAmount
     if (investedAmount > 0) {
+      reloadNotes = true
       val order = OrderPlaced(portfolioDetails.portfolioName, er.orderInstructId, loanId.toInt, None, investedAmount, ZonedDateTime.now, None, 0, "pending")
       // persist the order
       db.persistOrder(order)

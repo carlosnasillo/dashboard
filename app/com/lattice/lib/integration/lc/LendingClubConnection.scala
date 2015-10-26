@@ -12,14 +12,14 @@ import com.lattice.lib.integration.lc.model.ExecutionReport
 import com.lattice.lib.integration.lc.model.LendingClubNote
 import com.lattice.lib.integration.lc.model.LoanListing
 import com.lattice.lib.integration.lc.model.Order
-import com.lattice.lib.utils.Log
-import play.api.libs.json.JsValue
 import com.lattice.lib.integration.lc.model.PortfolioDetails
+import com.lattice.lib.utils.Log
 
 /**
+ * interface for interaction with Lending Club API
+ * 
  * @author ze97286
  */
-
 trait LendingClubConnection extends Log {
 
   // submit an order to lending club

@@ -10,4 +10,4 @@ package com.lattice.lib.integration.lc.model
 /**
  * @author ze97286
  */
-case class Order(loanId:Int, requestedAmount:BigDecimal)
+case class Order(loanId:Int, portfolioId:Int, requestedAmount:BigDecimal)

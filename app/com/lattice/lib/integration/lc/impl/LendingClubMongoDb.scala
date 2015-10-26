@@ -47,7 +47,7 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
 
   override def persistOrder(orderPlaced: OrderPlaced):Future[Unit] = {
     val orders = db.collection("orders")
-    val selector = Json.obj("investorId" -> orderPlaced.investorId, "orderId" -> orderPlaced.orderId)
+    val selector = Json.obj("investorId" -> orderPlaced.portfolioName, "orderId" -> orderPlaced.orderId)
     val modifier = Json.toJson(orderPlaced).as[JsObject]
     orders.update(selector, modifier, upsert = true) map (x=> ())
   }

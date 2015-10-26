@@ -19,7 +19,6 @@ import com.lattice.lib.integration.lc.model.LendingClubNote
  * @author ze97286
  */
 
-//TODO - need to think how to distinguish between 
 object PortfolioAnalytics {
   val InterestRateBuckets = Seq((6d, 8.99d), (9d, 11.99d), (12d, 14.99d), (15d, 17.99d), (18d, 22.99d), (23d, 99d))
   

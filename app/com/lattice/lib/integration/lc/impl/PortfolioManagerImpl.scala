@@ -28,12 +28,10 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
 
   reconcilePortfolio
 
-  override def portfolioAnalytics(portfolioName: String) = portfolioNameToPortfolio(portfolioName).portfolioAnalytics
-
-  def originator = Originator.LendingClub
+  override def originator = Originator.LendingClub
 
   // load all notes, orders, and transactions from db, split by portfolio name and reconcile
-  def reconcilePortfolio() {
+  override def reconcilePortfolio() {
     val transactions = db.loadTransactions
     val ownedNotes = lc.ownedNotes
     val placedOrders = db.loadOrders
@@ -48,12 +46,10 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
     }
   }
 
-  override def accountBalance(portfolioName: String) = portfolioNameToPortfolio(portfolioName).balance
-
-  def reconcilePortfolio(portfolios:Seq[PortfolioDetails], transactions: Seq[Transaction], notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]) {
+  private def reconcilePortfolio(portfolios: Seq[PortfolioDetails], transactions: Seq[Transaction], notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]) {
     val transfersByPortfolio = transactions.groupBy(_.investorId)
-    val notesByPortfolio = notes.groupBy(_.portfolioName.getOrElse(""))
-    val ordersByPortfolio = orders.groupBy(_.investorId)
+    val notesByPortfolio = notes.filter(_.portfolioName.isDefined).groupBy(_.portfolioName.get)
+    val ordersByPortfolio = orders.groupBy(_.portfolioName)
 
     //find all portfolios for which we've recorded transactions
     val portfoliosByTrans = transactions.map(_.investorId).distinct.toSet
@@ -63,7 +59,7 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
 
     // check if there's any orders for a portfolio name for which we don't have transactions - there should be none
     //for each portfolio call reconcile with params
-    val portfolioByOrders = orders.map(_.investorId).distinct.toSet
+    val portfolioByOrders = orders.map(_.portfolioName).distinct.toSet
 
     val portfoliosWithNotesAndNoTransactions = portfoliosByTrans -- portfoliosByNotes
     if (!portfoliosWithNotesAndNoTransactions.isEmpty) {
@@ -75,9 +71,13 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
       throw new IllegalStateException("Found orders for which we don't have any transactions")
     }
 
-    portfolioNameToPortfolio = (portfolios.map { p => (p, new Portfolio(p, db, lc, transfersByPortfolio(p.portfolioName), notesByPortfolio(p.portfolioName), ordersByPortfolio(p.portfolioName))) }).asInstanceOf[MMap[String, Portfolio]]
+    portfolioNameToPortfolio = (portfolios.filter { x => x.portfolioName != "" }.
+      map { p => (p, new Portfolio(p, db, lc, transfersByPortfolio(p.portfolioName), notesByPortfolio(p.portfolioName), ordersByPortfolio(p.portfolioName))) }).
+      asInstanceOf[MMap[String, Portfolio]]
 
   }
+
+  override def accountBalance(portfolioName: String) = portfolioNameToPortfolio(portfolioName).balance
 
   override def transferFunds(portfolioName: String, amount: BigDecimal) {
     val portfolio = portfolioNameToPortfolio.get(portfolioName)
@@ -104,11 +104,10 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
   }
 
   override def newInvestor(portfolioName: String, portfolioDescription: String) {
-    // create portfolio with LC
     val portfolioDetails = lc.createPorfolio(portfolioName, portfolioDescription)
-
-    // add portfolio to map
     portfolioNameToPortfolio(portfolioName) = new Portfolio(portfolioDetails, db, lc, Seq(), Seq(), Seq())
   }
+
+  override def portfolioAnalytics(portfolioName: String) = portfolioNameToPortfolio(portfolioName).portfolioAnalytics
 
 }
