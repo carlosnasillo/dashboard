@@ -12,3 +12,8 @@ dependencies:
   override:
     - "./activator compile":
         timeout: 300
+
+test:
+  override:
+    - "./activator test":
+        timeout: 900
