@@ -49,7 +49,7 @@ object Formatters {
 
   implicit val mapDoubleBigDecimalFormat: Format[Map[Double, BigDecimal]] =
     Format(
-      reads[Double, BigDecimal](_.toDouble, _.asInstanceOf[BigDecimal]),
+      reads[Double, BigDecimal](_.toDouble, BigDecimal(_)),
       writes[Double, BigDecimal])
 
   implicit val mapDoubleIntFormat: Format[Map[Double, Int]] =
