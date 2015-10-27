@@ -19,9 +19,9 @@
         .module('app')
         .controller('MainDashboardController', MainDashboardController);
 
-    MainDashboardController.$inject = ['$resource', '$location', 'AuthenticationService'];
+    MainDashboardController.$inject = ['$location', 'AuthenticationService', 'lendingClubAnalytics'];
 
-    function MainDashboardController($resource, $location, AuthenticationService) {
+    function MainDashboardController($location, AuthenticationService, lendingClubAnalytics) {
         var vm = this;
         vm.logout = function() {
             AuthenticationService.ClearCredentials();
@@ -31,7 +31,8 @@
 
         vm.username = AuthenticationService.GetCurrentUsername();
 
-        var Analytics = $resource("/api/analytics/lendingClub"); // a RESTful-capable resource object
-        vm.analytics = Analytics.get(); // for the list of analytics in public/html/mainDashboard.html
+        lendingClubAnalytics().success(function(data) {
+            vm.analytics = data;
+        });
     }
 })();
