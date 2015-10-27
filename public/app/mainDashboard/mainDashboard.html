@@ -59,26 +59,20 @@
             <div class="row">
                 <my-simple-number-display
                         box-title="Lending Club Liquidity"
-                        box-value="1406"
+                        box-value="{{vm.analytics.numLoans}}"
                         legend="Available Loans #"
                         day="Today"
-                        lastValue="TTTT"
+                        last-value="{{vm.analytics.dailyChangeInNumLoans}}"
                         ></my-simple-number-display>
 
-                <div class="col-lg-3">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <span class="label label-primary pull-right">Today</span>
-                            <h5>Lending Club Liquidity</h5>
-                        </div>
-                        <div class="ibox-content">
-                            <h1 class="no-margins">30,234,239</h1>
+                <my-simple-number-display
+                        box-title="Lending Club Liquidity"
+                        box-value="{{vm.analytics.liquidity}}"
+                        legend="Loans Notional"
+                        day="Today"
+                        last-value="{{vm.analytics.dailyChangeInLiquidity}}"
+                        ></my-simple-number-display>
 
-                            <div class="stat-percent font-bold text-navy">44% <i class="fa fa-level-up"></i></div>
-                            <small>Loans Notional</small>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-lg-3">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">

@@ -30,7 +30,13 @@
                 day: '@day',
                 lastValue: '@lastValue'
             },
-            templateUrl: 'view/mySimpleNumberDisplay'
+            templateUrl: 'view/mySimpleNumberDisplay',
+            link: link
         };
+    }
+
+    function link(scope) {
+        scope.ratioLastValue = (scope.value - scope.lastValue) * 100;
+        scope.ratioLastValueNegative = scope.ratioLastValue < 0;
     }
 })();
