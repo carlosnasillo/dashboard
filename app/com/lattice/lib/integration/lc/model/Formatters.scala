@@ -33,44 +33,28 @@ object Formatters {
   implicit val errorsFormat = Json.format[Errors]
   implicit val withdrawResponseFormat = Json.format[WithdrawFundsResponse]
   implicit val transferReponseFormat = Json.format[TransferFundsResponse]
-  
-  def writes[A, B] = new Writes[Map[A, B]] {
-    def writes(map: Map[A, B]): JsValue =
-      Json.obj(map.map {
-        case (s, o) =>
-          val ret: (String, JsValueWrapper) = s.toString -> o.toString
-          ret
-      }.toSeq: _*)
-  }
-  def reads[A, B](strToA: String => A, strToB: String => B) = new Reads[Map[A, B]] {
-    def reads(jv: JsValue): JsResult[Map[A, B]] =
-      JsSuccess(jv.as[Map[String, String]].map {
-        case (k, v) =>
-          strToA(k) -> strToB(v)
-      })
-  }
 
-  implicit val mapDoubleBigDecimalFormat: Format[Map[Double, BigDecimal]] =
-    Format(
-      reads[Double, BigDecimal](_.toDouble, BigDecimal(_)),
-      writes[Double, BigDecimal])
-
-  implicit val mapDoubleIntFormat: Format[Map[Double, Int]] =
-    Format(
-      reads[Double, Int](_.toDouble, _.toInt),
-      writes[Double, Int])
-
-  implicit val mapGradeBigDecimalFormat = Format[Map[Grade, BigDecimal]] (
-    reads[Grade, BigDecimal](Grade.withName, BigDecimal(_)),
-    new Writes[Map[Grade, BigDecimal]] {
-      def writes(map: Map[Grade, BigDecimal]): JsValue =
+  def mapFormatFactory[A, B](strToA: String => A, strToB: String => B)(AtoKey: A => String, BtoValue: B => JsValueWrapper):  Format[Map[A, B]] = Format[Map[A, B]](
+    new Reads[Map[A, B]] {
+      def reads(jv: JsValue): JsResult[Map[A, B]] =
+        JsSuccess(jv.as[Map[String, String]].map {
+          case (k, v) =>
+            strToA(k) -> strToB(v)
+        })
+    },
+    new Writes[Map[A, B]] {
+      def writes(map: Map[A, B]): JsValue =
         Json.obj(map.map {
           case (s, o) =>
-            val ret: (String, JsValueWrapper) = s.toString -> o
+            val ret: (String, JsValueWrapper) = AtoKey(s) -> BtoValue(o)
             ret
         }.toSeq: _*)
     }
   )
+
+  implicit val mapDoubleBigDecimalFormat: Format[Map[Double, BigDecimal]] = mapFormatFactory[Double, BigDecimal](_.toDouble, BigDecimal(_))(_.toString, _.toString())
+  implicit val mapDoubleIntFormat: Format[Map[Double, Int]] = mapFormatFactory[Double, Int](_.toDouble, _.toInt)(_.toString, _.toString)
+  implicit val mapGradeBigDecimalFormat: Format[Map[Grade, BigDecimal]] = mapFormatFactory[Grade, BigDecimal](Grade.withName, BigDecimal(_))(_.toString, _.toInt)
 
   /**
    * Defines the formatter for LoanAnalytics
