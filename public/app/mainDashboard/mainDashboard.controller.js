@@ -29,6 +29,11 @@
 
         };
 
+        vm.minimizeSidebar = function() {
+            $("body").toggleClass("mini-navbar");
+            SmoothlyMenu();
+        };
+
         vm.username = AuthenticationService.GetCurrentUsername();
 
         lendingClubAnalytics().success(function(data) {
