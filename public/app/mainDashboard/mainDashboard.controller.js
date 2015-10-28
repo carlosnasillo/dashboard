@@ -36,8 +36,21 @@
 
         vm.username = AuthenticationService.GetCurrentUsername();
 
-        lendingClubAnalytics().success(function(data) {
-            vm.analytics = data;
+        vm.analytics = {};
+        lendingClubAnalytics.numLoans.success(function(numLoans) {
+            vm.analytics.numLoans = numLoans;
+        });
+        lendingClubAnalytics.liquidity.success(function(liquidity) {
+            vm.analytics.liquidity = liquidity;
+        });
+        lendingClubAnalytics.liquidityByGrade.success(function(liquidityByGrade) {
+            vm.analytics.liquidityByGrade = liquidityByGrade;
+        });
+        lendingClubAnalytics.dailyChangeInNumLoans.success(function(dailyChangeInNumLoans) {
+            vm.analytics.dailyChangeInNumLoans = dailyChangeInNumLoans;
+        });
+        lendingClubAnalytics.dailyChangeInLiquidity.success(function(dailyChangeInLiquidity) {
+            vm.analytics.dailyChangeInLiquidity = dailyChangeInLiquidity;
         });
     }
 })();

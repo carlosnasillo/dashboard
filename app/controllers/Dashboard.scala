@@ -9,24 +9,41 @@
 
 package controllers
 
-import java.time.LocalDate
-
-import com.lattice.lib.integration.lc.impl.LendingClubMongoDb
-import com.lattice.lib.utils.DbUtil
-import play.api.libs.json.{JsObject, Json}
+import com.lattice.lib.portfolio.MarketPlaceFactory
+import models.Originator
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.Json
 import play.api.mvc._
 
-import com.lattice.lib.integration.lc.model.Formatters.loanAnalyticsFormat
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-
+import com.lattice.lib.integration.lc.model.Formatters.mapGradeBigDecimalWrite
 
 /**
  * Created by Julien Déray on 26/10/2015.
  */
 class Dashboard extends Controller {
 
-  def lendingClubAnalytics = Action.async {
-    val lendingClubAnalytics = new LendingClubMongoDb(DbUtil.db).loadAnalyticsByDate( LocalDate.now() )
-    lendingClubAnalytics.map(lc => Ok( Json.toJson(lc).as[JsObject]) )
+  def lendingClubAnalyticsNumLoans = Action.async {
+    val numLoans = MarketPlaceFactory.analytics(Originator.LendingClub).numLoans
+    numLoans.map( nl => Ok( Json.toJson(nl) ) )
+  }
+
+  def lendingClubAnalyticsLiquidity = Action.async {
+    val liquidity = MarketPlaceFactory.analytics(Originator.LendingClub).liquidity
+    liquidity.map( l => Ok( Json.toJson(l) ) )
+  }
+
+  def lendingClubAnalyticsLiquidityByGrade = Action.async {
+    val liquidityByGrade = MarketPlaceFactory.analytics(Originator.LendingClub).liquidityByGrade
+    liquidityByGrade.map( lbg => Ok( Json.toJson(lbg) ) )
+  }
+
+  def lendingClubAnalyticsDailyChangeInNumLoans = Action.async {
+    val dailyChangeInNumLoans = MarketPlaceFactory.analytics(Originator.LendingClub).dailyChangeInNumLoans
+    dailyChangeInNumLoans.map( dcinl => Ok( Json.toJson(dcinl) ) )
+  }
+
+  def lendingClubAnalyticsDailyChangeInLiquidity = Action.async {
+    val dailyChangeInLiquidity = MarketPlaceFactory.analytics(Originator.LendingClub).dailyChangeInLiquidity
+    dailyChangeInLiquidity.map( dcil => Ok( Json.toJson(dcil) ) )
   }
 }

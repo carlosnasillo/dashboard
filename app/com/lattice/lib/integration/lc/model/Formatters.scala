@@ -7,6 +7,9 @@
  */
 package com.lattice.lib.integration.lc.model
 
+import models.Grade
+import models.Grade.Grade
+import models.Grade.Grade
 import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json._
 
@@ -56,6 +59,15 @@ object Formatters {
     Format(
       reads[Double, Int](_.toDouble, _.toInt),
       writes[Double, Int])
+
+  implicit val mapGradeBigDecimalWrite = new Writes[Map[Grade, BigDecimal]] {
+    def writes(map: Map[Grade, BigDecimal]): JsValue =
+      Json.obj(map.map {
+        case (s, o) =>
+          val ret: (String, JsValueWrapper) = s.toString -> o
+          ret
+      }.toSeq: _*)
+  }
 
   /**
    * Defines the formatter for LoanAnalytics
