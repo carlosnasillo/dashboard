@@ -147,55 +147,73 @@ class LendingClubAnalytics(lc: LendingClubConnection, db: LendingClubDb) extends
   // read the latest doc from loans for today and yesterday, diff in sum
   override def dailyChangeInLiquidity: Future[BigDecimal] = currentAnalytics.map(_.dailyChangeInLiquidity)
 
+  // read the latest doc from loans for today and return the number of loans *originated*
+  override def loanOrigination: Future[Int] = currentAnalytics.map(_.loanOrigination)
+
   // read the latest doc from loans for each of the days in the range and for each return the number of loans *originated* on this day
   override def loanOrigination(from: LocalDate, to: LocalDate): Future[Map[LocalDate, Int]] = {
     val mapOfFutures = dateRange(from, to)
-      .map(date => (date, currentAnalytics.map(_.loanOrigination)))
+      .map(date => (date, db.loadAnalyticsByDate(date).map(_.loanOrigination)))
       .toMap
 
     Future.sequence(mapOfFutures.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
   }
+
+  // read the latest doc from loans for today and return the number of loans  *originated* on this day partition by grade
+  override def loanOriginationByGrade: Future[Map[Grade.Value, Int]] = currentAnalytics.map(_.loanOriginationByGradeEnum)
 
   // read the latest doc from loans for each of the days in the range and for each return the number of loans  *originated* on this day partition by grade
   override def loanOriginationByGrade(from: LocalDate, to: LocalDate): Future[Map[LocalDate, Map[Grade.Value, Int]]] = {
     val mapOfFutures = dateRange(from, to)
-      .map(date => (date, currentAnalytics.map(_.loanOriginationByGradeEnum)))
+      .map(date => (date, db.loadAnalyticsByDate(date).map(_.loanOriginationByGradeEnum)))
       .toMap
 
     Future.sequence(mapOfFutures.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
   }
+
+  // read the latest doc from loans for today and return the number of loans  *originated* on this day partition by yield
+  override def loanOriginationByYield: Future[Map[Double, Int]] = currentAnalytics.map(_.loanOriginationByYield)
 
   // read the latest doc from loans for each of the days in the range and for each return the number of loans  *originated* on this day partition by yield
   override def loanOriginationByYield(from: LocalDate, to: LocalDate): Future[Map[LocalDate, Map[Double, Int]]] = {
     val mapOfFutures = dateRange(from, to)
-      .map(date => (date, currentAnalytics.map(_.loanOriginationByYield)))
+      .map(date => (date, db.loadAnalyticsByDate(date).map(_.loanOriginationByYield)))
       .toMap
 
     Future.sequence(mapOfFutures.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
   }
+
+  // read the latest doc from loans for today and return the sum of requested cash  *originated*
+  override def originatedNotional: Future[BigDecimal] = currentAnalytics.map(_.originatedNotional)
 
   // read the latest doc from loans for each of the days in the range and for each return the sum of requested cash  *originated* on this day
   override def originatedNotional(from: LocalDate, to: LocalDate): Future[Map[LocalDate, BigDecimal]] = {
     val mapOfFutures = dateRange(from, to)
-      .map(date => (date, currentAnalytics.map(_.originatedNotional)))
+      .map(date => (date, db.loadAnalyticsByDate(date).map(_.originatedNotional)))
       .toMap
 
     Future.sequence(mapOfFutures.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
   }
+
+  // read the latest doc from loans for today and return the sum of requested cash  *originated* on this day partition by grade
+  override def originatedNotionalByGrade: Future[Map[Grade.Value, BigDecimal]] = currentAnalytics.map(_.originatedNotionalByGradeEnum)
 
   // read the latest doc from loans for each of the days in the range and for each return the sum of requested cash  *originated* on this day partition by grade
   override def originatedNotionalByGrade(from: LocalDate, to: LocalDate): Future[Map[LocalDate, Map[Grade.Value, BigDecimal]]] = {
     val mapOfFutures = dateRange(from, to)
-      .map(date => (date, currentAnalytics.map(_.originatedNotionalByGradeEnum)))
+      .map(date => (date, db.loadAnalyticsByDate(date).map(_.originatedNotionalByGradeEnum)))
       .toMap
 
     Future.sequence(mapOfFutures.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
   }
 
+  // read the latest doc from loans for today and return the sum of requested cash  *originated* on this day partition by yield
+  def originatedNotionalByYield: Future[Map[Double, BigDecimal]] = currentAnalytics.map(_.originatedNotionalByYield)
+
   // read the latest doc from loans for each of the days in the range and for each return the sum of requested cash  *originated* on this day partition by yield
   override def originatedNotionalByYield(from: LocalDate, to: LocalDate): Future[Map[LocalDate, Map[Double, BigDecimal]]] = {
     val mapOfFutures = dateRange(from, to)
-      .map(date => (date, currentAnalytics.map(_.originatedNotionalByYield)))
+      .map(date => (date, db.loadAnalyticsByDate(date).map(_.originatedNotionalByYield)))
       .toMap
 
     Future.sequence(mapOfFutures.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)

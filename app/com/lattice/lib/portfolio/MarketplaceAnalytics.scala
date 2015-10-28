@@ -46,37 +46,37 @@ trait MarketplaceAnalytics {
   def dailyChangeInLiquidity: Future[BigDecimal]
   
   // the number of loans originated today
-  def loanOrigination: Future[Int] = loanOrigination(LocalDate.now, LocalDate.now).map(_.head._2)
+  def loanOrigination: Future[Int]
   
   // the number of loans originated within the date range (inclusive on both ends)
   def loanOrigination(from:LocalDate, to:LocalDate): Future[Map[LocalDate, Int]]
 
   // the number of loans originated today
-  def loanOriginationByGrade: Future[Map[Grade.Value, Int]] = loanOriginationByGrade(LocalDate.now, LocalDate.now).map(_.head._2)
+  def loanOriginationByGrade: Future[Map[Grade.Value, Int]]
 
   // the number of loans originated within the date range (inclusive on both ends) - breakdown by grade
   def loanOriginationByGrade(from:LocalDate, to:LocalDate): Future[Map[LocalDate,Map[Grade.Value, Int]]]
   
   // the number of loans originated today by yield 
-  def loanOriginationByYield: Future[Map[Double, Int]] = loanOriginationByYield(LocalDate.now, LocalDate.now).map(_.head._2)
+  def loanOriginationByYield: Future[Map[Double, Int]]
   
   // the number of loans originated within the date range (inclusive on both ends) breakdown by yield
   def loanOriginationByYield(from:LocalDate, to:LocalDate): Future[Map[LocalDate,Map[Double, Int]]]
   
   // the total notional originated today
-  def originatedNotional: Future[BigDecimal] = originatedNotional(LocalDate.now,LocalDate.now).map(_.head._2)
+  def originatedNotional: Future[BigDecimal]
   
   // the total notional originated within the date range (inclusive on both ends)
   def originatedNotional(from:LocalDate, to:LocalDate): Future[Map[LocalDate, BigDecimal]]
   
   // the total notional originated today - breakdown by grade
-  def originatedNotionalByGrade: Future[Map[Grade.Value, BigDecimal]] = originatedNotionalByGrade(LocalDate.now,LocalDate.now).map(_.head._2)
+  def originatedNotionalByGrade: Future[Map[Grade.Value, BigDecimal]]
   
   // the total notional originated within the date range (inclusive on both ends) - breakdown by grade
   def originatedNotionalByGrade(from:LocalDate, to:LocalDate): Future[Map[LocalDate,Map[Grade.Value, BigDecimal]]]
   
   // the total notional originated today - breakdown by yield
-  def originatedNotionalByYield: Future[Map[Double, BigDecimal]] = originatedNotionalByYield(LocalDate.now,LocalDate.now).map(_.head._2)
+  def originatedNotionalByYield: Future[Map[Double, BigDecimal]]
   
   // the total notional originated within the date range (inclusive on both ends) - breakdown by yield
   def originatedNotionalByYield(from:LocalDate, to:LocalDate): Future[Map[LocalDate,Map[Double, BigDecimal]]]
