@@ -50,7 +50,10 @@ trait MarketplaceAnalytics {
   
   // the number of loans originated within the date range (inclusive on both ends)
   def loanOrigination(from:LocalDate, to:LocalDate): Future[Map[LocalDate, Int]]
-  
+
+  // the number of loans originated today
+  def loanOriginationByGrade: Future[Map[Grade.Value, Int]] = loanOriginationByGrade(LocalDate.now, LocalDate.now).map(_.head._2)
+
   // the number of loans originated within the date range (inclusive on both ends) - breakdown by grade
   def loanOriginationByGrade(from:LocalDate, to:LocalDate): Future[Map[LocalDate,Map[Grade.Value, Int]]]
   
