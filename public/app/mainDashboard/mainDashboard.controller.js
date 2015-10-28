@@ -19,9 +19,9 @@
         .module('app')
         .controller('MainDashboardController', MainDashboardController);
 
-    MainDashboardController.$inject = ['$resource', '$location', 'AuthenticationService'];
+    MainDashboardController.$inject = ['$location', 'AuthenticationService', 'lendingClubAnalytics'];
 
-    function MainDashboardController($resource, $location, AuthenticationService) {
+    function MainDashboardController($location, AuthenticationService, lendingClubAnalytics) {
         var vm = this;
         vm.logout = function() {
             AuthenticationService.ClearCredentials();
@@ -29,9 +29,28 @@
 
         };
 
+        vm.minimizeSidebar = function() {
+            $("body").toggleClass("mini-navbar");
+            SmoothlyMenu();
+        };
+
         vm.username = AuthenticationService.GetCurrentUsername();
 
-        var Analytics = $resource("api/analytics"); // a RESTful-capable resource object
-        vm.analytics = Analytics.query(); // for the list of analytics in public/html/mainDashboard.html
+        vm.analytics = {};
+        lendingClubAnalytics.numLoans.success(function(numLoans) {
+            vm.analytics.numLoans = numLoans;
+        });
+        lendingClubAnalytics.liquidity.success(function(liquidity) {
+            vm.analytics.liquidity = liquidity;
+        });
+        lendingClubAnalytics.liquidityByGrade.success(function(liquidityByGrade) {
+            vm.analytics.liquidityByGrade = liquidityByGrade;
+        });
+        lendingClubAnalytics.dailyChangeInNumLoans.success(function(dailyChangeInNumLoans) {
+            vm.analytics.dailyChangeInNumLoans = dailyChangeInNumLoans;
+        });
+        lendingClubAnalytics.dailyChangeInLiquidity.success(function(dailyChangeInLiquidity) {
+            vm.analytics.dailyChangeInLiquidity = dailyChangeInLiquidity;
+        });
     }
 })();
