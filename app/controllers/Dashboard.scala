@@ -9,6 +9,7 @@
 
 package controllers
 
+import com.lattice.lib.integration.lc.impl.LendingClubAnalytics
 import com.lattice.lib.portfolio.MarketPlaceFactory
 import models.Originator
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -22,28 +23,30 @@ import com.lattice.lib.integration.lc.model.Formatters.mapGradeBigDecimalFormat
  */
 class Dashboard extends Controller {
 
+  private val analytics: LendingClubAnalytics = MarketPlaceFactory.analytics(Originator.LendingClub)
+
   def lendingClubAnalyticsNumLoans = Action.async {
-    val numLoans = MarketPlaceFactory.analytics(Originator.LendingClub).numLoans
+    val numLoans = analytics.numLoans
     numLoans.map( nl => Ok( Json.toJson(nl) ) )
   }
 
   def lendingClubAnalyticsLiquidity = Action.async {
-    val liquidity = MarketPlaceFactory.analytics(Originator.LendingClub).liquidity
+    val liquidity = analytics.liquidity
     liquidity.map( l => Ok( Json.toJson(l) ) )
   }
 
   def lendingClubAnalyticsLiquidityByGrade = Action.async {
-    val liquidityByGrade = MarketPlaceFactory.analytics(Originator.LendingClub).liquidityByGrade
+    val liquidityByGrade = analytics.liquidityByGrade
     liquidityByGrade.map( lbg => Ok( Json.toJson(lbg) ) )
   }
 
   def lendingClubAnalyticsDailyChangeInNumLoans = Action.async {
-    val dailyChangeInNumLoans = MarketPlaceFactory.analytics(Originator.LendingClub).dailyChangeInNumLoans
+    val dailyChangeInNumLoans = analytics.dailyChangeInNumLoans
     dailyChangeInNumLoans.map( dcinl => Ok( Json.toJson(dcinl) ) )
   }
 
   def lendingClubAnalyticsDailyChangeInLiquidity = Action.async {
-    val dailyChangeInLiquidity = MarketPlaceFactory.analytics(Originator.LendingClub).dailyChangeInLiquidity
+    val dailyChangeInLiquidity = analytics.dailyChangeInLiquidity
     dailyChangeInLiquidity.map( dcil => Ok( Json.toJson(dcil) ) )
   }
 }
