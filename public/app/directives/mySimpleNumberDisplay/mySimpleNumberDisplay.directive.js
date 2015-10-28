@@ -25,10 +25,10 @@
             restrict: 'E',
             scope: {
                 title: '@boxTitle',
-                value: '@boxValue',
+                value: '=boxValue',
                 legend: '@legend',
                 day: '@day',
-                lastValue: '@lastValue'
+                diff: '=diff'
             },
             templateUrl: 'view/mySimpleNumberDisplay',
             link: link
@@ -36,7 +36,9 @@
     }
 
     function link(scope) {
-        scope.ratioLastValue = (scope.value - scope.lastValue) * 100;
-        scope.ratioLastValueNegative = scope.ratioLastValue < 0;
+        scope.$watch('diff', function(diff) {
+            scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
+            scope.ratioLastValueNegative = scope.ratioLastValue < 0;
+        });
     }
 })();

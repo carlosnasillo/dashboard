@@ -57,23 +57,23 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-                <my-simple-number-display
-                        box-title="Lending Club Liquidity"
-                        box-value="{{vm.analytics.numLoans}}"
-                        legend="Available Loans #"
-                        day="Today"
-                        last-value="{{vm.analytics.dailyChangeInNumLoans}}"
-                        ></my-simple-number-display>
+                <div class="row">
+                    <my-simple-number-display
+                            box-title="Lending Club Liquidity"
+                            box-value="vm.analytics.numLoans"
+                            legend="Available Loans #"
+                            day="Today"
+                            diff="vm.analytics.dailyChangeInNumLoans"
+                            ></my-simple-number-display>
 
-                <my-simple-number-display
-                        box-title="Lending Club Liquidity"
-                        box-value="{{vm.analytics.liquidity}}"
-                        legend="Loans Notional"
-                        day="Today"
-                        last-value="{{vm.analytics.dailyChangeInLiquidity}}"
-                        ></my-simple-number-display>
-
-                <div class="col-lg-3">
+                    <my-simple-number-display
+                            box-title="Lending Club Liquidity"
+                            box-value="vm.analytics.liquidity"
+                            legend="Loans Notional"
+                            day="Today"
+                            diff="vm.analytics.dailyChangeInLiquidity"
+                            ></my-simple-number-display>
+                    <div class="col-lg-3">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <span class="label label-primary pull-right">Today</span>
