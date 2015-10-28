@@ -60,14 +60,17 @@ object Formatters {
       reads[Double, Int](_.toDouble, _.toInt),
       writes[Double, Int])
 
-  implicit val mapGradeBigDecimalWrite = new Writes[Map[Grade, BigDecimal]] {
-    def writes(map: Map[Grade, BigDecimal]): JsValue =
-      Json.obj(map.map {
-        case (s, o) =>
-          val ret: (String, JsValueWrapper) = s.toString -> o
-          ret
-      }.toSeq: _*)
-  }
+  implicit val mapGradeBigDecimalFormat = Format[Map[Grade, BigDecimal]] (
+    reads[Grade, BigDecimal](Grade.withName, BigDecimal(_)),
+    new Writes[Map[Grade, BigDecimal]] {
+      def writes(map: Map[Grade, BigDecimal]): JsValue =
+        Json.obj(map.map {
+          case (s, o) =>
+            val ret: (String, JsValueWrapper) = s.toString -> o
+            ret
+        }.toSeq: _*)
+    }
+  )
 
   /**
    * Defines the formatter for LoanAnalytics

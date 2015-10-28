@@ -15,7 +15,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
 
-import com.lattice.lib.integration.lc.model.Formatters.mapGradeBigDecimalWrite
+import com.lattice.lib.integration.lc.model.Formatters.mapGradeBigDecimalFormat
 
 /**
  * Created by Julien Déray on 26/10/2015.
