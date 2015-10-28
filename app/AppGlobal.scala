@@ -1,8 +1,9 @@
 import com.lattice.lib.integration.lc.LendingClubFactory
-import com.lattice.lib.utils.DbUtil
 import play.api.{GlobalSettings, Logger}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.libs.Akka
+import com.lattice.lib.utils.DbUtil
+import scala.language.postfixOps
 
 import scala.concurrent.duration.DurationInt
 
