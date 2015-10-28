@@ -18,10 +18,9 @@ test:
   override:
     - "./activator test":
         timeout: 900
-    # Uncomment when we have tests. No XML are created when there is no test so an error occures
-#  post:
-#    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-#    - cp target/test-reports/*.xml $CIRCLE_TEST_REPORTS/junit/
+  post:
+    - "mkdir -p $CIRCLE_TEST_REPORTS/junit/"
+    - "cp target/test-reports/*.xml $CIRCLE_TEST_REPORTS/junit/ 2>/dev/null || :"
 
 ##deployment:
 ##  staging:
