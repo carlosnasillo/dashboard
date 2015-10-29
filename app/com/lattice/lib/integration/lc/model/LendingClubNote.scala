@@ -7,10 +7,11 @@
  */
 package com.lattice.lib.integration.lc.model
 
-import models.Term
 import java.time.ZonedDateTime
+
 import models.Grade
 import models.Note
+import models.Term
 
 /**
  * @author ze97286
@@ -42,6 +43,8 @@ case class LendingClubNote(
 
   val gradeEnum = Grade.withName("" + grade.head)
 
+  val loanStatusEnum = LoanStatus.withName(loanStatus)
+  
   val loanLengthEnum = loanLength match {
     case 24 => Term._24
     case 36 => Term._36

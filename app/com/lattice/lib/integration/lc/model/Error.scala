@@ -10,4 +10,8 @@ package com.lattice.lib.integration.lc.model
 /**
  * @author ze97286
  */
-case class Error(field:String, code:String, message:String)
+case class Error(
+  field: Option[String],
+  code: String,
+  message: String,
+  recoverability: Option[String])
