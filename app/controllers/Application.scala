@@ -30,6 +30,7 @@ class Application extends Controller {
       // directive templates
     case "mySimpleNumberDisplay" => "/public/app/directives/mySimpleNumberDisplay/my-simple-number-display.html"
     case "myDoughnutChart" => "/public/app/directives/myDoughnutChart/my-doughnut-chart.html"
+    case "myIboxTools" => "/public/app/directives/myIboxTools/my-ibox-tools.html"
 
     case _ => "error"
   }
