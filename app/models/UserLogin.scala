@@ -12,13 +12,13 @@ package models
  * Created by Julien Déray on 23/10/2015.
  */
 import com.lattice.lib.utils.DbUtil
+import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import play.Logger
 
 case class UserLogin (
                        email: String,
