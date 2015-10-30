@@ -7,11 +7,11 @@
  */
 package com.lattice.lib.utils
 
-import scala.concurrent.Await
+import reactivemongo.api.MongoDriver
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
-
-import reactivemongo.api.MongoDriver
+import scala.language.postfixOps
 
 /**
  * Mongo DB util for accessing lattice mongo database

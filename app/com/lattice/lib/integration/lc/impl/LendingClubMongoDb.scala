@@ -69,7 +69,7 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
   override def loadOrders: Future[Seq[OrderPlaced]] = {
     Logger.info(s"loading orders from db")
     val collection = db.collection("orders")
-    val futureList = collection.find(Json.obj()).cursor[OrderPlaced].toList(Int.MaxValue)
+    val futureList = collection.find(Json.obj()).cursor[OrderPlaced]().collect[List](Int.MaxValue)
     futureList
   }
 
@@ -77,13 +77,13 @@ class LendingClubMongoDb(db: DefaultDB) extends LendingClubDb {
     Logger.info(s"loading analytics for date $date from db")
     val loansAnalytics = db.collection("loanAnalytics")
     val query = Json.obj("created_on" -> Json.obj("$gte" -> date, "$lt" -> date.plusDays(1)))
-    loansAnalytics.find(query).sort(Json.obj("created_on" -> -1)).cursor[LoanAnalytics].toList(Int.MaxValue).map(_.head)
+    loansAnalytics.find(query).sort(Json.obj("created_on" -> -1)).cursor[LoanAnalytics]().collect[List](Int.MaxValue).map(_.head)
   }
 
   override def loadTransactions: Future[Seq[Transaction]] = {
     Logger.info(s"loading transactions from db")
     val collection = db.collection("transactions")
-    collection.find(Json.obj()).cursor[Transaction].toList(Int.MaxValue)
+    collection.find(Json.obj()).cursor[Transaction]().collect[List](Int.MaxValue)
   }
 
   override def persistTransaction(transaction: Transaction): Future[Unit] = {
