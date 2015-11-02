@@ -26,6 +26,7 @@ class Application extends Controller {
       // views
     case "mainDashboard" => "/public/app/mainDashboard/mainDashboard.html"
     case "login" => "/public/app/login/login.html"
+    case "portfolio" => "/public/app/portfolio/portfolio.html"
 
       // directive templates
     case "mySimpleNumberDisplay" => "/public/app/directives/mySimpleNumberDisplay/my-simple-number-display.html"

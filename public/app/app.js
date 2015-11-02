@@ -28,6 +28,11 @@
                 controller: "MainDashboardController",
                 controllerAs: 'vm'
             })
+            .when('/portfolio', {
+                templateUrl: "view/portfolio",
+                controller: "PortfolioController",
+                controllerAs: 'vm'
+            })
             .otherwise({ redirectTo: '/' });
     }
 
