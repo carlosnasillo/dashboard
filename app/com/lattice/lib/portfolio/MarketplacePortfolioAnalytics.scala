@@ -27,9 +27,12 @@ trait MarketplacePortfolioAnalytics {
   // how much is invested in loans not yet originated
   def pendingInvestment: BigDecimal
 
-  // how much cash has been received from loan repaid
-  def cashReceived: BigDecimal
+  // how much cash has been received from loans repaid
+  def paymentsReceived: BigDecimal
 
+   // how much principal has been received on the investor account
+  def principalReceived: BigDecimal
+  
   // how much interest has been received on the investor account
   def interestReceived: BigDecimal
 

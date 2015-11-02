@@ -245,7 +245,7 @@ class PortfolioManagerImpl(lc: LendingClubConnection, db: LendingClubDb) extends
     try {
       PortfolioManagerImpl.portfolioAnalyticsWithLock(portfolioName, portfolioNameToPortfolio.toMap)
     } finally {
-      globalLock.unlock
+      globalLock.unlock  
     }
   }
 
