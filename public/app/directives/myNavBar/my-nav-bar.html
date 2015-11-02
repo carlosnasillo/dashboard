@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2015 Lattice Markets, All rights reserved.
+  ~
+  ~ Unpublished copyright. All rights reserved. This material contains
+  ~ proprietary information that shall be used or copied only with
+  ~ Lattice Markets, except with written permission of Lattice Markets.
+  ~
+  -->
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle">
+                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Account</strong>
+                                </span> <span class="text-muted text-xs block">{{username}} <b class="caret"></b></span> </span> </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a data-ng-click="logout()">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    <img alt="logo" class="img-circle" src="assets/images/logo-mini.png">
+                </div>
+            </li>
+            <li ng-class="{active: active == 'dashboard'}">
+                <a href="#/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Main</span></a>
+            </li>
+            <li ng-class="{active: active == 'portfolio'}">
+                <a href="#/portfolio"><i class="fa fa-th-large"></i> <span class="nav-label">Portfolio</span></a>
+            </li>
+            <li ng-class="{active: active == 'loans'}">
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Loans</span> </a>
+            </li>
+            <li ng-class="{active: active == 'analytics'}">
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Analytics</span>
+                </a>
+            </li>
+            <li ng-class="{active: active == 'reporting'}">
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Reporting</span>
+                </a>
+            </li>
+            <li ng-class="{active: active == 'config'}">
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Config</span> </a>
+            </li>
+        </ul>
+    </div>
+</nav>

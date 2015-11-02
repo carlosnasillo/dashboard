@@ -19,17 +19,10 @@
         .module('app')
         .controller('MainDashboardController', MainDashboardController);
 
-    MainDashboardController.$inject = ['$location', 'AuthenticationService', 'lendingClubAnalytics'];
+    MainDashboardController.$inject = ['lendingClubAnalytics'];
 
-    function MainDashboardController($location, AuthenticationService, lendingClubAnalytics) {
+    function MainDashboardController(lendingClubAnalytics) {
         var vm = this;
-        vm.logout = function() {
-            AuthenticationService.ClearCredentials();
-            $location.path('/');
-
-        };
-
-        vm.username = AuthenticationService.GetCurrentUsername();
 
         vm.analytics = {};
         lendingClubAnalytics.numLoans.success(function(numLoans) {
