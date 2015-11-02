@@ -33,6 +33,7 @@ class Application extends Controller {
     case "myDoughnutChart" => "/public/app/directives/myDoughnutChart/my-doughnut-chart.html"
     case "myIboxTools" => "/public/app/directives/myIboxTools/my-ibox-tools.html"
     case "myNavBar" => "/public/app/directives/myNavBar/my-nav-bar.html"
+    case "myNavBarTop" => "/public/app/directives/myNavBarTop/my-nav-bar-top.html"
 
     case _ => "error"
   }
