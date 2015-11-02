@@ -47,3 +47,4 @@ userdata
 logs/
 /.classpath
 /.project
+RUNNING_PID
