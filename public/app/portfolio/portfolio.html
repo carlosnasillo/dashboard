@@ -17,19 +17,19 @@
                                     <ul class="list-group clear-list m-t">
                                         <li class="list-group-item fist-item">
                                        <span class="pull-right">
-                                       $6,501,243
+                                       {{vm.lendingClubPortfolioAnalytics.principalOutstanding}}
                                        </span>
                                             <span class="label label-success">1</span> Principal oustanding
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       $185,275
+                                       {{vm.lendingClubPortfolioAnalytics.pendingInvestment}}
                                        </span>
                                             <span class="label label-info">2</span> Pending investments
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       $53,490.23
+                                       {{vm.lendingClubPortfolioAnalytics.currentNotes}}
                                        </span>
                                             <span class="label label-primary">3</span> Cash balance
                                         </li>
@@ -55,14 +55,14 @@
                                         <div class="ibox-content">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h1 class="no-margins">406,420</h1>
+                                                    <h1 class="no-margins">{{vm.lendingClubPortfolioAnalytics.principalReceived}}</h1>
 
                                                     <div>
                                                         <small>Principal received</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h1 class="no-margins">56,420</h1>
+                                                    <h1 class="no-margins">{{vm.lendingClubPortfolioAnalytics.interestReceived}}</h1>
 
                                                     <div>
                                                         <small>Interest received</small>
@@ -103,11 +103,21 @@
 
                                         <div class="row text-center">
                                             <div class="col-lg-6">
-                                                <canvas id="lcByScoreChart" width="170" height="170"></canvas>
+                                                <my-doughnut-chart
+                                                        height="340"
+                                                        width="340"
+                                                        identifier="lcByScoreChart"
+                                                        data="vm.lendingClubPortfolioAnalytics.notesByGrade"
+                                                        ></my-doughnut-chart>
                                                 <h5>Breakdown by grade</h5>
                                             </div>
                                             <div class="col-lg-6">
-                                                <canvas id="lcByMaturityChart" width="170" height="170"></canvas>
+                                                <my-doughnut-chart
+                                                        height="340"
+                                                        width="340"
+                                                        identifier="lcByMaturityChart"
+                                                        data="vm.lendingClubPortfolioAnalytics.notesByState"
+                                                        ></my-doughnut-chart>
                                                 <h5>Breakdown by maturity</h5>
                                             </div>
                                         </div>

@@ -52,11 +52,22 @@
                 </div>
             </div>
             <div class="row">
-                <my-doughnut-chart
-                        title="Lending Club Liquidity Breakdown By Credit Score"
-                        identifier="lendingClubDoughnutChart"
-                        data="vm.analytics.liquidityByGrade"
-                        ></my-doughnut-chart>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Lending Club Liquidity Breakdown By Credit Score</h5>
+                            <div my-ibox-tools></div>
+                        </div>
+                        <div class="ibox-content">
+                            <div>
+                                <my-doughnut-chart
+                                        identifier="lendingClubDoughnutChart"
+                                        data="vm.analytics.liquidityByGrade"
+                                        ></my-doughnut-chart>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">

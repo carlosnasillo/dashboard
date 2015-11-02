@@ -18,10 +18,26 @@
         .module('app')
         .controller('PortfolioController', PortfolioController);
 
-    PortfolioController.$inject = ['$location'];
+    PortfolioController.$inject = ['PortfolioAnalyticsService'];
 
-    function PortfolioController($location) {
+    function PortfolioController(PortfolioAnalyticsService) {
         var vm = this;
 
+        vm.lendingClubPortfolioAnalytics = {};
+        PortfolioAnalyticsService.LCPortfolioAnalytics.success(function(analytics) {
+            vm.lendingClubPortfolioAnalytics = analytics;
+
+            vm.lendingClubPortfolioAnalytics.notesByGrade = {
+                C: 300,
+                B: 50,
+                A: 100
+            };
+
+            vm.lendingClubPortfolioAnalytics.notesByState = {
+                C: 500,
+                B: 1000,
+                A: 104
+            };
+        });
     }
 })();

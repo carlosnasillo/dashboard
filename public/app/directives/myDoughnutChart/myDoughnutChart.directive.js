@@ -22,13 +22,15 @@
 
     function myDoughnutChart() {
         return {
+            replace: true,
             restrict: 'E',
             scope: {
-                title: '@',
+                height: '@',
+                width: '@',
                 identifier: '@',
                 data: '='
             },
-            templateUrl: 'view/myDoughnutChart',
+            template: '<canvas data-ng-attr-height="height" data-ng-attr-width="width" id="{{identifier}}"></canvas>',
             link: link
         };
     }
