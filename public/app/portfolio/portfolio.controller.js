@@ -38,6 +38,14 @@
                 B: 1000,
                 A: 104
             };
+
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByGrade = {
+                A: 21,
+                B: 3,
+                C: 15,
+                D: 52,
+                E: 52
+            }
         });
     }
 })();

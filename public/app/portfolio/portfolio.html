@@ -112,6 +112,7 @@
                                                 <h5>Breakdown by grade</h5>
                                             </div>
                                             <div class="col-lg-6">
+                                                <!-- TODO: adapt color table to non grade keys -->
                                                 <my-doughnut-chart
                                                         height="340"
                                                         width="340"
@@ -131,9 +132,10 @@
                                             <h5>Principal outstanding by grade</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div class="flot-chart">
-                                                <div class="flot-chart-pie-content" id="lc_op_by_grade"></div>
-                                            </div>
+                                            <my-pie-chart
+                                                    identifier="lc_op_by_grade"
+                                                    data="vm.lendingClubPortfolioAnalytics.principalOutstandingByGrade"
+                                                    ></my-pie-chart>
                                         </div>
                                     </div>
                                 </div>
