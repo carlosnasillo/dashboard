@@ -30,7 +30,7 @@
                 identifier: '@',
                 data: '='
             },
-            template: '<canvas id="{{identifier}}"></canvas>',
+            template: '<div class="flot-chart"><div class="flot-chart-pie-content" id="{{identifier}}"></div><div class="flot-chart">',
             link: link
         };
     }
@@ -44,27 +44,31 @@
                 var colorId = 0;
                 var convertedData = $.map(data, function(v, i) {
                     return {
-                        value: v,
+                        data: v,
                         label: i,
-                        highlight: "#1ab394",
                         color: colors[colorId++]
                     };
                 });
 
-                var chartOptions = {
-                    segmentShowStroke: true,
-                    segmentStrokeColor: "#fff",
-                    segmentStrokeWidth: 2,
-                    percentageInnerCutout: 0,
-                    animationSteps: 100,
-                    animationEasing: "easeOutBounce",
-                    animateRotate: true,
-                    animateScale: false,
-                    responsive: true
-                };
-
-                var ctx = $( '#' + scope.identifier ).get(0).getContext("2d");
-                var myPieChart = new Chart(ctx).Pie(convertedData, chartOptions);
+                var plotObj = $.plot($("#" + scope.identifier), convertedData, {
+                    series: {
+                        pie: {
+                            show: true
+                        }
+                    },
+                    grid: {
+                        hoverable: true
+                    },
+                    tooltip: true,
+                    tooltipOpts: {
+                        content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+                        shifts: {
+                            x: 20,
+                            y: 0
+                        },
+                        defaultTheme: false
+                    }
+                });
             }
         });
     }
