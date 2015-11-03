@@ -172,7 +172,10 @@
                                             <h5>Porfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="lc-stacked-status-amount" class="ct-chart ct-perfect-fourth"></div>
+                                            <my-bar-graph
+                                                identifier="lc-stacked-status-amount"
+                                                data="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade"
+                                                ></my-bar-graph>
                                         </div>
                                     </div>
                                 </div>
@@ -182,7 +185,10 @@
                                             <h5>Porfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="lc-stacked-status-number" class="ct-chart ct-perfect-fourth"></div>
+                                            <my-bar-graph
+                                                    identifier="lc-stacked-status-number"
+                                                    data="vm.lendingClubPortfolioAnalytics.notesByStateByGrade"
+                                                    ></my-bar-graph>
                                         </div>
                                     </div>
                                 </div>
