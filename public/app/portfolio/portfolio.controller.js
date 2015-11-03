@@ -32,6 +32,19 @@
          */
         vm.lendingClubPortfolioAnalytics = {};
         PortfolioAnalyticsService.LCPortfolioAnalytics.success(function(analytics) {
+            vm.chartOptions = {
+                segmentShowStroke: true,
+                segmentStrokeColor: "#fff",
+                segmentStrokeWidth: 2,
+                percentageInnerCutout: 45,
+                animationSteps: 100,
+                animationEasing: "easeOutBounce",
+                animateRotate: true,
+                animateScale: false,
+                responsive: true,
+                maintainAspectRatio: true
+            };
+
             vm.lendingClubPortfolioAnalytics = analytics;
 
             // Mock data, current data are 0 or empty
@@ -48,12 +61,21 @@
                 A: 100
             };
 
+            vm.lendingClubPortfolioAnalytics.notesByGradeLabels = Object.keys(vm.lendingClubPortfolioAnalytics.notesByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByGradeConverted = [];
+            $.map(vm.lendingClubPortfolioAnalytics.notesByGrade, function(v, i) {
+                vm.lendingClubPortfolioAnalytics.notesByGradeConverted.push(v);
+            });
             vm.lendingClubPortfolioAnalytics.notesByState = {
                 C: 500,
                 B: 1000,
                 A: 104
             };
-
+            vm.lendingClubPortfolioAnalytics.notesByStateLabels = Object.keys(vm.lendingClubPortfolioAnalytics.notesByState);
+            vm.lendingClubPortfolioAnalytics.notesByStateConverted = [];
+            $.map(vm.lendingClubPortfolioAnalytics.notesByState, function(v, i) {
+                vm.lendingClubPortfolioAnalytics.notesByStateConverted.push(v);
+            });
             vm.lendingClubPortfolioAnalytics.principalOutstandingByGrade = {
                 A: 21,
                 B: 3,
@@ -112,12 +134,23 @@
             B: 10,
             A: 300
         };
+        vm.prosperPortfolioAnalytics.notesByGradeLabels = Object.keys(vm.prosperPortfolioAnalytics.notesByGrade);
+        vm.prosperPortfolioAnalytics.notesByGradeConverted = [];
+        $.map(vm.prosperPortfolioAnalytics.notesByGrade, function(v, i) {
+            vm.prosperPortfolioAnalytics.notesByGradeConverted.push(v);
+        });
+
 
         vm.prosperPortfolioAnalytics.notesByState = {
             C: 50,
             B: 2000,
             A: 154
         };
+        vm.prosperPortfolioAnalytics.notesByStateLabels = Object.keys(vm.prosperPortfolioAnalytics.notesByState);
+        vm.prosperPortfolioAnalytics.notesByStateConverted = [];
+        $.map(vm.prosperPortfolioAnalytics.notesByState, function(v, i) {
+            vm.prosperPortfolioAnalytics.notesByStateConverted.push(v);
+        });
 
         vm.prosperPortfolioAnalytics.principalOutstandingByGrade = {
             A: 51,

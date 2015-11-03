@@ -103,21 +103,27 @@
 
                                         <div class="row text-center">
                                             <div class="col-lg-6">
-                                                <my-doughnut-chart
-                                                        height="340"
-                                                        width="340"
-                                                        identifier="lcByScoreChart"
-                                                        data="vm.lendingClubPortfolioAnalytics.notesByGrade"
-                                                        ></my-doughnut-chart>
+                                                <canvas
+                                                        height="300"
+                                                        width="300"
+                                                        id="lcByScoreChart"
+                                                        class="chart chart-doughnut"
+                                                        chart-data="vm.lendingClubPortfolioAnalytics.notesByGradeConverted"
+                                                        chart-labels="vm.lendingClubPortfolioAnalytics.notesByGradeLabels"
+                                                        chart-option="vm.chartOptions"
+                                                ></canvas>
                                                 <h5>Breakdown by grade</h5>
                                             </div>
                                             <div class="col-lg-6">
-                                                <my-doughnut-chart
-                                                        height="340"
-                                                        width="340"
-                                                        identifier="lcByMaturityChart"
-                                                        data="vm.lendingClubPortfolioAnalytics.notesByState"
-                                                        ></my-doughnut-chart>
+                                                <canvas
+                                                        height="300"
+                                                        width="300"
+                                                        id="lcByMaturityChart"
+                                                        class="chart chart-doughnut"
+                                                        chart-data="vm.lendingClubPortfolioAnalytics.notesByStateConverted"
+                                                        chart-labels="vm.lendingClubPortfolioAnalytics.notesByStateLabels"
+                                                        chart-option="vm.chartOptions"
+                                                ></canvas>
                                                 <h5>Breakdown by maturity</h5>
                                             </div>
                                         </div>
@@ -287,21 +293,27 @@
 
                                         <div class="row text-center">
                                             <div class="col-lg-6">
-                                                <my-doughnut-chart
-                                                        height="340"
-                                                        width="340"
-                                                        identifier="pByScoreChart"
-                                                        data="vm.prosperPortfolioAnalytics.notesByGrade"
-                                                        ></my-doughnut-chart>
+                                                <canvas
+                                                        height="300"
+                                                        width="300"
+                                                        id="pByScoreChart"
+                                                        class="chart chart-doughnut"
+                                                        chart-data="vm.prosperPortfolioAnalytics.notesByGradeConverted"
+                                                        chart-labels="vm.prosperPortfolioAnalytics.notesByGradeLabels"
+                                                        chart-option="vm.chartOptions"
+                                                ></canvas>
                                                 <h5>Breakdown by grade</h5>
                                             </div>
                                             <div class="col-lg-6">
-                                                <my-doughnut-chart
-                                                        height="340"
-                                                        width="340"
-                                                        identifier="pByMaturityChart"
-                                                        data="vm.prosperPortfolioAnalytics.notesByState"
-                                                        ></my-doughnut-chart>
+                                                <canvas
+                                                        height="300"
+                                                        width="300"
+                                                        id="pByMaturityChart"
+                                                        class="chart chart-doughnut"
+                                                        chart-data="vm.prosperPortfolioAnalytics.notesByStateConverted"
+                                                        chart-labels="vm.prosperPortfolioAnalytics.notesByStateLabels"
+                                                        chart-option="vm.chartOptions"
+                                                ></canvas>
                                                 <h5>Breakdown by maturity</h5>
                                             </div>
                                         </div>
