@@ -45,7 +45,22 @@
                 C: 15,
                 D: 52,
                 E: 52
+            };
+
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = {
+                "10;12.9": 21,
+                "16;18.9": 3,
+                "19;21.9": 15,
+                "22;24.9": 52
+            };
+
+            var withAdaptedKeys = {};
+            for ( var k in vm.lendingClubPortfolioAnalytics.principalOutstandingByYield ) {
+                if ( vm.lendingClubPortfolioAnalytics.principalOutstandingByYield.hasOwnProperty(k) ) {
+                    withAdaptedKeys[k.replace(';','-') + "%"] = vm.lendingClubPortfolioAnalytics.principalOutstandingByYield[k];
+                }
             }
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = withAdaptedKeys;
         });
     }
 })();

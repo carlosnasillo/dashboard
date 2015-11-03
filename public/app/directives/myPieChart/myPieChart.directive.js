@@ -39,26 +39,17 @@
         scope.$watch('data', function(data) {
             if (data !== undefined ) {
 
-                var colors = {
-                    "A": "#d3d3d3",
-                    "B": "#bababa",
-                    "C": "#79d2c0",
-                    "D": "#1ab394",
-                    "E": "#e67e22",
-                    "F": "#FFE3C7",
-                    "G": "#f1c40f"
-                };
+                var colors = ["#d3d3d3", "#bababa", "#79d2c0", "#1ab394", "#e67e22", "#FFE3C7", "#f1c40f"];
 
-                var convertedData = $.map(data, function(v, i){
+                var colorId = 0;
+                var convertedData = $.map(data, function(v, i) {
                     return {
                         value: v,
                         label: i,
                         highlight: "#1ab394",
-                        color: colors[i]
+                        color: colors[colorId++]
                     };
                 });
-
-                console.log(convertedData);
 
                 var chartOptions = {
                     segmentShowStroke: true,
