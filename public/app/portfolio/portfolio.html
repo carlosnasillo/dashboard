@@ -17,19 +17,19 @@
                                     <ul class="list-group clear-list m-t">
                                         <li class="list-group-item fist-item">
                                        <span class="pull-right">
-                                       {{vm.lendingClubPortfolioAnalytics.principalOutstanding}}
+                                       {{vm.lendingClubPortfolioAnalytics.principalOutstanding | currency}}
                                        </span>
                                             <span class="label label-success">1</span> Principal oustanding
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       {{vm.lendingClubPortfolioAnalytics.pendingInvestment}}
+                                       {{vm.lendingClubPortfolioAnalytics.pendingInvestment | currency}}
                                        </span>
                                             <span class="label label-info">2</span> Pending investments
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       {{vm.lendingClubPortfolioAnalytics.currentNotes}}
+                                       {{vm.lendingClubPortfolioAnalytics.currentNotes | currency}}
                                        </span>
                                             <span class="label label-primary">3</span> Cash balance
                                         </li>
@@ -55,14 +55,14 @@
                                         <div class="ibox-content">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h1 class="no-margins">{{vm.lendingClubPortfolioAnalytics.principalReceived}}</h1>
+                                                    <h1 class="no-margins">{{vm.lendingClubPortfolioAnalytics.principalReceived | currency}}</h1>
 
                                                     <div>
                                                         <small>Principal received</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h1 class="no-margins">{{vm.lendingClubPortfolioAnalytics.interestReceived}}</h1>
+                                                    <h1 class="no-margins">{{vm.lendingClubPortfolioAnalytics.interestReceived | currency}}</h1>
 
                                                     <div>
                                                         <small>Interest received</small>
@@ -201,19 +201,19 @@
                                     <ul class="list-group clear-list m-t">
                                         <li class="list-group-item fist-item">
                                        <span class="pull-right">
-                                       $6,501,243
+                                       {{vm.prosperPortfolioAnalytics.principalOutstanding | currency}}
                                        </span>
                                             <span class="label label-success">1</span> Principal oustanding
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       $185,275
+                                       {{vm.prosperPortfolioAnalytics.pendingInvestment | currency}}
                                        </span>
                                             <span class="label label-info">2</span> Pending investments
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       $53,490.23
+                                       {{vm.prosperPortfolioAnalytics.currentNotes | currency}}
                                        </span>
                                             <span class="label label-primary">3</span> Cash balance
                                         </li>
@@ -225,7 +225,7 @@
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       ProsperConservative
+                                       LendingClubAggressive
                                        </span>
                                             <span class="label label-default">5</span> Strategy
                                         </li>
@@ -239,14 +239,14 @@
                                         <div class="ibox-content">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h1 class="no-margins">406,420</h1>
+                                                    <h1 class="no-margins">{{vm.prosperPortfolioAnalytics.principalReceived | currency}}</h1>
 
                                                     <div>
                                                         <small>Principal received</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h1 class="no-margins">56,420</h1>
+                                                    <h1 class="no-margins">{{vm.prosperPortfolioAnalytics.interestReceived | currency}}</h1>
 
                                                     <div>
                                                         <small>Interest received</small>
@@ -287,11 +287,21 @@
 
                                         <div class="row text-center">
                                             <div class="col-lg-6">
-                                                <canvas id="prosperByScoreChart" width="170" height="170"></canvas>
+                                                <my-doughnut-chart
+                                                        height="340"
+                                                        width="340"
+                                                        identifier="pByScoreChart"
+                                                        data="vm.prosperPortfolioAnalytics.notesByGrade"
+                                                        ></my-doughnut-chart>
                                                 <h5>Breakdown by grade</h5>
                                             </div>
                                             <div class="col-lg-6">
-                                                <canvas id="prosperByMaturityChart" width="170" height="170"></canvas>
+                                                <my-doughnut-chart
+                                                        height="340"
+                                                        width="340"
+                                                        identifier="pByMaturityChart"
+                                                        data="vm.prosperPortfolioAnalytics.notesByState"
+                                                        ></my-doughnut-chart>
                                                 <h5>Breakdown by maturity</h5>
                                             </div>
                                         </div>
@@ -305,9 +315,10 @@
                                             <h5>Principal outstanding by grade</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div class="flot-chart">
-                                                <div class="flot-chart-pie-content" id="pp_op_by_grade"></div>
-                                            </div>
+                                            <my-pie-chart
+                                                    identifier="p_op_by_grade"
+                                                    data="vm.prosperPortfolioAnalytics.principalOutstandingByGrade"
+                                                    ></my-pie-chart>
                                         </div>
                                     </div>
                                 </div>
@@ -317,9 +328,10 @@
                                             <h5>Principal outstanding by yield</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div class="flot-chart">
-                                                <div class="flot-chart-pie-content" id="pp_op_by_yield"></div>
-                                            </div>
+                                            <my-pie-chart
+                                                    identifier="p_op_by_yield"
+                                                    data="vm.prosperPortfolioAnalytics.principalOutstandingByYield"
+                                                    ></my-pie-chart>
                                         </div>
                                     </div>
                                 </div>
@@ -329,9 +341,10 @@
                                             <h5>Principal outstanding by term</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div class="flot-chart">
-                                                <div class="flot-chart-pie-content" id="pp_op_by_term"></div>
-                                            </div>
+                                            <my-pie-chart
+                                                    identifier="p_op_by_term"
+                                                    data="vm.prosperPortfolioAnalytics.principalOutstandingByTerm"
+                                                    ></my-pie-chart>
                                         </div>
                                     </div>
                                 </div>
@@ -343,21 +356,26 @@
                                             <h5>Porfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="pp-stacked-status-amount" class="ct-chart ct-perfect-fourth"></div>
+                                            <my-bar-graph
+                                                    identifier="p-stacked-status-amount"
+                                                    data="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade"
+                                                    ></my-bar-graph>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
-                                            <h5>Porfolio status - $ Number</h5>
+                                            <h5>Porfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <div id="pp-stacked-status-number" class="ct-chart ct-perfect-fourth"></div>
+                                            <my-bar-graph
+                                                    identifier="p-stacked-status-number"
+                                                    data="vm.prosperPortfolioAnalytics.notesByStateByGrade"
+                                                    ></my-bar-graph>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
