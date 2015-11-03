@@ -23,6 +23,11 @@
     function PortfolioController(PortfolioAnalyticsService) {
         var vm = this;
 
+        vm.changeTab = function(tabId) {
+            vm.tab = tabId;
+            console.log(tabId);
+        };
+
         vm.lendingClubPortfolioAnalytics = {};
         PortfolioAnalyticsService.LCPortfolioAnalytics.success(function(analytics) {
             vm.lendingClubPortfolioAnalytics = analytics;

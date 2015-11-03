@@ -6,11 +6,11 @@
             <div class="col-md-12">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs ">
-                        <li class="active"><a data-toggle="tab" href="#tab-1"> Lending Club</a></li>
-                        <li><a data-toggle="tab" href="#tab-2">Prosper</a></li>
+                        <li data-ng-class="{'active': vm.tab == 1}"><a data-toggle="tab" data-ng-click="vm.changeTab(1)">Lending Club</a></li>
+                        <li data-ng-class="{'active': vm.tab == 2}"><a data-toggle="tab" data-ng-click="vm.changeTab(2)">Prosper</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div id="tab-1" class="tab-pane active">
+                        <div id="tab-1" class="tab-pane" data-ng-init="vm.tab = 1" data-ng-show="vm.tab == 1" data-ng-class="{'active': vm.tab == 1}">
                             <div class="row  border-bottom white-bg dashboard-header">
                                 <div class="col-sm-3">
                                     <h2>Lending Club</h2>
@@ -194,7 +194,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="tab-2" class="tab-pane">
+                        <div id="tab-2" class="tab-pane" data-ng-show="vm.tab == 2" data-ng-class="{'active': vm.tab == 2}">
                             <div class="row  border-bottom white-bg dashboard-header">
                                 <div class="col-sm-3">
                                     <h2>Prosper</h2>
