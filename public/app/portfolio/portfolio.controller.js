@@ -61,6 +61,11 @@
                 }
             }
             vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = withAdaptedKeys;
+
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByTerm = {
+                "36 months": 21,
+                "60 months": 3
+            };
         });
     }
 })();
