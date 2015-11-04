@@ -87,7 +87,11 @@
                             </h5>
                         </div>
                         <div class="ibox-content">
-                            <div id="ct-monthly-return" class="ct-perfect-fourth"></div>
+                            <my-line-graph
+                                identifier="ct_monthly_return"
+                                labels="vm.analytics.ordersByMonthlyReturn.labels"
+                                series="vm.analytics.ordersByMonthlyReturn.series"
+                                ></my-line-graph>
                         </div>
                     </div>
                 </div>
