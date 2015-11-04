@@ -16,6 +16,7 @@ import play.api.mvc._
 import play.api.libs.json.Json
 
 import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
+import utils.Constants
 
 /**
  * @author : julienderay
@@ -26,6 +27,6 @@ class Portfolio extends Controller {
   private val portfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
 
   def portfolioAnalytics = Action.async {
-    portfolio.portfolioAnalytics("BlackRock").map( portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
   }
 }
