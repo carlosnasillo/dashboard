@@ -9,6 +9,8 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import com.lattice.lib.portfolio.MarketPlaceFactory
 import models.Originator
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -18,6 +20,8 @@ import play.api.libs.json.Json
 import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapGradeIntFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
+import com.lattice.lib.integration.lc.model.Formatters.mapIntMapGradeValueIntFormat
+
 import utils.Constants
 
 /**
@@ -42,5 +46,16 @@ class Portfolio extends Controller {
 
   def notesAcquiredTodayByPurpose = Action.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByPurpose) ) )
+  }
+
+  def notesAcquiredThisYearByMonthByGrade = Action.async {
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
+      Ok( Json.toJson(
+        portfolioAnalytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now())
+          .groupBy(_._1.getMonthValue)
+          .mapValues(_.values)
+          .map { case(i, m) => (i, m reduce (_ ++ _)) }
+      ))
+    })
   }
 }

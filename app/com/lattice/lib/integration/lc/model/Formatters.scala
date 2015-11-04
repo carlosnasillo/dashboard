@@ -64,7 +64,7 @@ object Formatters {
   implicit val mapDoubleDoubleInt: Format[Map[(Double, Double), Int]] = mapFormatFactory[(Double, Double), Int](_.split(";") match { case Array(x: String, y: String, _*) => (x.toDouble, y.toDouble) }, _.toInt)({ case (x: Double, y: Double) => s"$x;$y"}, _.toInt)
   implicit val mapTermBigDecimal: Format[Map[Term.Value, BigDecimal]] = mapFormatFactory[Term.Value, BigDecimal](Term.withName, BigDecimal(_))(_.toString, _.toString())
   implicit val mapLocalDateSeqLendingClubNote: Format[Map[LocalDate, Seq[LendingClubNote]]] = mapFormatFactory[LocalDate, Seq[LendingClubNote]](LocalDate.parse, _.asInstanceOf[Seq[LendingClubNote]])(_.toString, _.toString())
-
+  implicit val mapIntMapGradeValueIntFormat: Format[Map[Int,Map[models.Grade.Value,Int]]] = mapFormatFactory[Int,Map[Grade.Value,Int]](_.toInt, _.asInstanceOf[Map[models.Grade.Value,Int]])(_.toString, _.toString())
   /**
    * Defines the formatter for LoanAnalytics
    * (better to be defined after the formatters needed)

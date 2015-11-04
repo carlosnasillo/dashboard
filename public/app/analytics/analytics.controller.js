@@ -50,6 +50,38 @@
             vm.analytics.ordersByPurpose = ordersByPurpose;
         });
 
+        PortfolioAnalyticsService.notesAcquiredThisYearByMonthByGrade.success(function(ordersByMonthByGrade) {
+            ordersByMonthByGrade = {
+                "1": { A: 13077, B: 9611, C: 8141, D: 11511, E: 7716, F: 12804, G: 17433 },
+                "2": { A: 12511, B: 15871, C: 555, D: 11077, E: 15828, F: 840, G: 15733 },
+                "3": { A: 1300, B: 13205, C: 9209, D: 5115, E: 4899, F: 19135, G: 16770 },
+                "4": { A: 3215, B: 9539, C: 1378, D: 14592, E: 2774, F: 3591, G: 10048 },
+                "5": { A: 19350, B: 11820, C: 4649, D: 83, E: 1404, F: 14185, G: 8189 },
+                "6": { A: 2135, B: 10977, C: 8010, D: 5889, E: 9456, F: 14478, G: 12631 },
+                "7": { A: 8474, B: 15372, C: 3152, D: 1179, E: 5323, F: 15272, G: 17524 },
+                "8": { A: 12880, B: 4707, C: 14810, D: 3350, E: 17532, F: 12661, G: 8541 },
+                "9": { A: 11393, B: 18429, C: 687, D: 10791, E: 16699, F: 13376, G: 5749 },
+                "10": { A: 19865, B: 18552, C: 5955, D: 11862, E: 14782, F: 13603, G: 13445 },
+                "11": { A: 17416, B: 10059, C: 15735, D: 11348, E: 17069, F: 7843, G: 17796 },
+                "12": { A: 18905, B: 17072, C: 4945, D: 13275, E: 1247, F: 627, G: 16605 }
+            };
+
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
+            $.map(ordersByMonthByGrade, function(v, i) {
+                invertedData.A[months[i-1]] = v.A;
+                invertedData.B[months[i-1]] = v.B;
+                invertedData.C[months[i-1]] = v.C;
+                invertedData.D[months[i-1]] = v.D;
+                invertedData.E[months[i-1]] = v.E;
+                invertedData.F[months[i-1]] = v.F;
+                invertedData.G[months[i-1]] = v.G;
+            });
+
+            vm.analytics.ordersByMonthByGrade = invertedData;
+        });
+
         /**
          * Mocked data and NOT linked to backend
          */

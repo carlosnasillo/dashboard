@@ -39,14 +39,18 @@
 
                 var convertedData = function(brutData) {
                     var res = [];
-                    $.map(brutData, function(v, i) {
-                        res.push([v.A, v.B, v.C, v.D, v.E, v.F, v.G]);
-                    });
+                    for (var grade in brutData) {
+                        var tmpArray = [];
+                        for (var key in brutData[grade]) {
+                            tmpArray.push(brutData[grade][key]);
+                        }
+                        res.push(tmpArray);
+                    }
                     return res;
                 };
 
                 var barChart = new Chartist.Bar('#' + scope.identifier, {
-                    labels: Object.keys(data),
+                    labels: Object.keys(data[Object.keys(data)[0]]),
                     series: convertedData(data)
                 }, {
                     stackBars: true,

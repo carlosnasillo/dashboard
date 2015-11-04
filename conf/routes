@@ -3,20 +3,21 @@
 # ~~~~
 
 # Home page
-GET     /                                                       controllers.Application.index
+GET     /                                                               controllers.Application.index
 
-POST    /api/authenticate                                       controllers.Login.authentification
+POST    /api/authenticate                                               controllers.Login.authentification
 
-GET     /api/analytics/lendingClub/numLoans                     controllers.Analytics.lendingClubAnalyticsNumLoans
-GET     /api/analytics/lendingClub/liquidity                    controllers.Analytics.lendingClubAnalyticsLiquidity
-GET     /api/analytics/lendingClub/liquidityByGrade             controllers.Analytics.lendingClubAnalyticsLiquidityByGrade
-GET     /api/analytics/lendingClub/dailyChangeInNumLoans        controllers.Analytics.lendingClubAnalyticsDailyChangeInNumLoans
-GET     /api/analytics/lendingClub/dailyChangeInLiquidity       controllers.Analytics.lendingClubAnalyticsDailyChangeInLiquidity
+GET     /api/analytics/lendingClub/numLoans                             controllers.Analytics.lendingClubAnalyticsNumLoans
+GET     /api/analytics/lendingClub/liquidity                            controllers.Analytics.lendingClubAnalyticsLiquidity
+GET     /api/analytics/lendingClub/liquidityByGrade                     controllers.Analytics.lendingClubAnalyticsLiquidityByGrade
+GET     /api/analytics/lendingClub/dailyChangeInNumLoans                controllers.Analytics.lendingClubAnalyticsDailyChangeInNumLoans
+GET     /api/analytics/lendingClub/dailyChangeInLiquidity               controllers.Analytics.lendingClubAnalyticsDailyChangeInLiquidity
 
-GET     /api/portfolio/analytics/lendingClub                    controllers.Portfolio.LCportfolioAnalytics
-GET     /api/portfolio/analytics/notesAcquiredTodayByGrade      controllers.Portfolio.notesAcquiredTodayByGrade
-GET     /api/portfolio/analytics/notesAcquiredTodayByYield      controllers.Portfolio.notesAcquiredTodayByYield
-GET     /api/portfolio/analytics/notesAcquiredTodayByPurpose    controllers.Portfolio.notesAcquiredTodayByPurpose
+GET     /api/portfolio/analytics/lendingClub                            controllers.Portfolio.LCportfolioAnalytics
+GET     /api/portfolio/analytics/notesAcquiredTodayByGrade              controllers.Portfolio.notesAcquiredTodayByGrade
+GET     /api/portfolio/analytics/notesAcquiredTodayByYield              controllers.Portfolio.notesAcquiredTodayByYield
+GET     /api/portfolio/analytics/notesAcquiredTodayByPurpose            controllers.Portfolio.notesAcquiredTodayByPurpose
+GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByGrade    controllers.Portfolio.notesAcquiredThisYearByMonthByGrade
 
 # Play routes serving HTML to AngularJS start with /views
 GET     /view/*any                                              controllers.Application.loadPublicHTML(any)

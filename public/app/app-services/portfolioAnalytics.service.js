@@ -21,6 +21,7 @@
             var notesAcquiredTodayByGradePromise = null;
             var notesAcquiredTodayByYieldPromise = null;
             var notesAcquiredTodayByPurposePromise = null;
+            var notesAcquiredThisYearByMonthByGradePromise = null;
 
             var LCPortfolioAnalytics = function() {
                 if (LCPortfolioAnalyticsPromise) {
@@ -58,11 +59,21 @@
                 }
             };
 
+            var notesAcquiredThisYearByMonthByGrade = function() {
+                if (notesAcquiredThisYearByMonthByGradePromise) {
+                    return notesAcquiredThisYearByMonthByGradePromise;
+                } else {
+                    notesAcquiredThisYearByMonthByGradePromise = $http.get("/api/portfolio/analytics/notesAcquiredThisYearByMonthByGrade");
+                    return notesAcquiredThisYearByMonthByGradePromise;
+                }
+            };
+
             return {
                 LCPortfolioAnalytics: LCPortfolioAnalytics(),
                 notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),
                 notesAcquiredTodayByYield: notesAcquiredTodayByYield(),
-                notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose()
+                notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose(),
+                notesAcquiredThisYearByMonthByGrade: notesAcquiredThisYearByMonthByGrade()
             }
         });
 })();

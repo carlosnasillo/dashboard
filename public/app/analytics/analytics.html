@@ -113,7 +113,10 @@
                                     <h5>Order placed by Grade</h5>
                                 </div>
                                 <div class="ibox-content">
-                                    <div id="annually-stacked-by-grade" class="ct-perfect-fourth"></div>
+                                    <my-bar-graph
+                                            identifier="annually-stacked-by-grade"
+                                            data="vm.analytics.ordersByMonthByGrade"
+                                    ></my-bar-graph>
                                 </div>
                             </div>
                         </div>
