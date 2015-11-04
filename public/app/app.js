@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js'])
         .config(config)
         .run(run);
 
