@@ -18,9 +18,9 @@
         .module('app')
         .directive('mySimpleNumberDisplay', mySimpleNumberDisplay);
 
-    mySimpleNumberDisplay.$inject = [];
+    mySimpleNumberDisplay.$inject = ['$filter'];
 
-    function mySimpleNumberDisplay() {
+    function mySimpleNumberDisplay($filter) {
         return {
             restrict: 'E',
             scope: {
@@ -28,17 +28,20 @@
                 value: '=boxValue',
                 legend: '@legend',
                 day: '@day',
-                diff: '=diff'
+                diff: '=diff',
+                filter: '@'
             },
             templateUrl: 'view/mySimpleNumberDisplay',
-            link: link
-        };
-    }
+            link: function(scope) {
+                scope.$watch('diff', function(diff) {
+                scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
+                if (scope.filter == "currency") {
+                    scope.value = $filter('currency')(scope.value)
+                }
 
-    function link(scope) {
-        scope.$watch('diff', function(diff) {
-            scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
-            scope.ratioLastValueNegative = scope.ratioLastValue < 0;
-        });
+                scope.ratioLastValueNegative = scope.ratioLastValue < 0;
+            });
+        }
+        };
     }
 })();
