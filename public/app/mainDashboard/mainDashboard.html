@@ -12,13 +12,13 @@
                             day="Today"
                             diff="vm.analytics.lendingClub.dailyChangeInNumLoans"
                             ></my-simple-number-display>
-
                     <my-simple-number-display
                             box-title="Lending Club Liquidity"
                             box-value="vm.analytics.lendingClub.liquidity"
                             legend="Loans Notional"
                             day="Today"
                             diff="vm.analytics.lendingClub.dailyChangeInLiquidity"
+                            filter="currency"
                             ></my-simple-number-display>
                     <my-simple-number-display
                             box-title="Prosper"
@@ -33,6 +33,7 @@
                             legend="Loans Notional"
                             day="Today"
                             diff="vm.analytics.prosper.dailyChangeInNumLoans"
+                            filter="currency"
                     ></my-simple-number-display>
                 </div>
             </div>
