@@ -33,6 +33,11 @@
                 controller: "PortfolioController",
                 controllerAs: 'vm'
             })
+            .when('/analytics', {
+                templateUrl: "view/analytics",
+                controller: "AnalyticsController",
+                controllerAs: 'vm'
+            })
             .otherwise({ redirectTo: '/' });
     }
 

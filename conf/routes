@@ -13,7 +13,10 @@ GET     /api/analytics/lendingClub/liquidityByGrade             controllers.Anal
 GET     /api/analytics/lendingClub/dailyChangeInNumLoans        controllers.Analytics.lendingClubAnalyticsDailyChangeInNumLoans
 GET     /api/analytics/lendingClub/dailyChangeInLiquidity       controllers.Analytics.lendingClubAnalyticsDailyChangeInLiquidity
 
-GET     /api/portfolio/analytics                                controllers.Portfolio.portfolioAnalytics
+GET     /api/portfolio/analytics/lendingClub                    controllers.Portfolio.LCportfolioAnalytics
+GET     /api/portfolio/analytics/notesAcquiredTodayByGrade      controllers.Portfolio.notesAcquiredTodayByGrade
+GET     /api/portfolio/analytics/notesAcquiredTodayByYield      controllers.Portfolio.notesAcquiredTodayByYield
+GET     /api/portfolio/analytics/notesAcquiredTodayByPurpose    controllers.Portfolio.notesAcquiredTodayByPurpose
 
 # Play routes serving HTML to AngularJS start with /views
 GET     /view/*any                                              controllers.Application.loadPublicHTML(any)

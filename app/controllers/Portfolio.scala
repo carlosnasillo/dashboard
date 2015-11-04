@@ -16,6 +16,8 @@ import play.api.mvc._
 import play.api.libs.json.Json
 
 import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
+import com.lattice.lib.integration.lc.model.Formatters.mapGradeIntFormat
+import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
 import utils.Constants
 
 /**
@@ -26,7 +28,19 @@ class Portfolio extends Controller {
 
   private val portfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
 
-  def portfolioAnalytics = Action.async {
+  def LCportfolioAnalytics = Action.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
+  }
+
+  def notesAcquiredTodayByGrade = Action.async {
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
+  }
+
+  def notesAcquiredTodayByYield = Action.async {
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByYield) ) )
+  }
+
+  def notesAcquiredTodayByPurpose = Action.async {
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByPurpose) ) )
   }
 }
