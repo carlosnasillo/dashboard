@@ -26,11 +26,14 @@ class Application extends Controller {
       // views
     case "mainDashboard" => "/public/app/mainDashboard/mainDashboard.html"
     case "login" => "/public/app/login/login.html"
+    case "portfolio" => "/public/app/portfolio/portfolio.html"
 
       // directive templates
     case "mySimpleNumberDisplay" => "/public/app/directives/mySimpleNumberDisplay/my-simple-number-display.html"
     case "myDoughnutChart" => "/public/app/directives/myDoughnutChart/my-doughnut-chart.html"
     case "myIboxTools" => "/public/app/directives/myIboxTools/my-ibox-tools.html"
+    case "myNavBar" => "/public/app/directives/myNavBar/my-nav-bar.html"
+    case "myNavBarTop" => "/public/app/directives/myNavBarTop/my-nav-bar-top.html"
 
     case _ => "error"
   }

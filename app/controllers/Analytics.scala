@@ -21,7 +21,8 @@ import com.lattice.lib.integration.lc.model.Formatters.mapGradeBigDecimalFormat
 /**
  * Created by Julien Déray on 26/10/2015.
  */
-class Dashboard extends Controller {
+
+class Analytics extends Controller {
 
   private val analytics: LendingClubAnalytics = MarketPlaceFactory.analytics(Originator.LendingClub)
 
