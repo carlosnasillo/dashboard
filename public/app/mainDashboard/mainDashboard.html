@@ -7,48 +7,33 @@
                 <div class="row">
                     <my-simple-number-display
                             box-title="Lending Club Liquidity"
-                            box-value="vm.analytics.numLoans"
+                            box-value="vm.analytics.lendingClub.numLoans"
                             legend="Available Loans #"
                             day="Today"
-                            diff="vm.analytics.dailyChangeInNumLoans"
+                            diff="vm.analytics.lendingClub.dailyChangeInNumLoans"
                             ></my-simple-number-display>
 
                     <my-simple-number-display
                             box-title="Lending Club Liquidity"
-                            box-value="vm.analytics.liquidity"
+                            box-value="vm.analytics.lendingClub.liquidity"
                             legend="Loans Notional"
                             day="Today"
-                            diff="vm.analytics.dailyChangeInLiquidity"
+                            diff="vm.analytics.lendingClub.dailyChangeInLiquidity"
                             ></my-simple-number-display>
-                    <div class="col-lg-3">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <div my-ibox-tools class="pull-right"></div>
-                            <span class="label label-primary pull-right">Today</span>
-                            <h5>Prosper</h5>
-                        </div>
-                        <div class="ibox-content">
-                            <h1 class="no-margins">872</h1>
-
-                            <div class="stat-percent font-bold text-danger">-12% <i class="fa fa-level-down"></i></div>
-                            <small>Available Loans #</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <div my-ibox-tools class="pull-right"></div>
-                            <span class="label label-primary pull-right">Today</span>
-                            <h5>Prosper</h5>
-                        </div>
-                        <div class="ibox-content">
-                            <h1 class="no-margins">12,267,921</h1>
-
-                            <div class="stat-percent font-bold text-navy">5% <i class="fa fa-level-up"></i></div>
-                            <small>Loans Notional</small>
-                        </div>
-                    </div>
+                    <my-simple-number-display
+                            box-title="Prosper"
+                            box-value="vm.analytics.prosper.numLoans"
+                            legend="Available Loans #"
+                            day="Today"
+                            diff="vm.analytics.prosper.dailyChangeInNumLoans"
+                    ></my-simple-number-display>
+                    <my-simple-number-display
+                            box-title="Prosper"
+                            box-value="vm.analytics.prosper.liquidity"
+                            legend="Loans Notional"
+                            day="Today"
+                            diff="vm.analytics.prosper.dailyChangeInNumLoans"
+                    ></my-simple-number-display>
                 </div>
             </div>
             <div class="row">
@@ -60,10 +45,13 @@
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <my-doughnut-chart
-                                        identifier="lendingClubDoughnutChart"
-                                        data="vm.analytics.liquidityByGrade"
-                                        ></my-doughnut-chart>
+                                <canvas
+                                        id="lendingClubDoughnutChart"
+                                        class="chart chart-doughnut"
+                                        chart-data="vm.analytics.lendingClub.liquidityByGradeConverted"
+                                        chart-labels="vm.analytics.lendingClub.liquidityByGradeLabels"
+                                        chart-option="vm.chartOptions"
+                                ></canvas>
                             </div>
                         </div>
                     </div>
@@ -76,7 +64,13 @@
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas id="prosperDoughnutChart" height="140"></canvas>
+                                <canvas
+                                        id="prosperDoughnutChart"
+                                        class="chart chart-doughnut"
+                                        chart-data="vm.analytics.prosper.liquidityByGradeConverted"
+                                        chart-labels="vm.analytics.prosper.liquidityByGradeLabels"
+                                        chart-option="vm.chartOptions"
+                                ></canvas>
                             </div>
                         </div>
                     </div>

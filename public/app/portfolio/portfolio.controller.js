@@ -61,12 +61,12 @@
                 B: 50,
                 A: 100
             };
-
             vm.lendingClubPortfolioAnalytics.notesByGradeLabels = Object.keys(vm.lendingClubPortfolioAnalytics.notesByGrade);
             vm.lendingClubPortfolioAnalytics.notesByGradeConverted = [];
             $.map(vm.lendingClubPortfolioAnalytics.notesByGrade, function(v, i) {
                 vm.lendingClubPortfolioAnalytics.notesByGradeConverted.push(v);
             });
+
             vm.lendingClubPortfolioAnalytics.notesByState = {
                 C: 500,
                 B: 1000,
