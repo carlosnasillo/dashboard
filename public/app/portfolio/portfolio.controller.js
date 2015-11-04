@@ -23,6 +23,7 @@
     function PortfolioController(PortfolioAnalyticsService) {
         var vm = this;
 
+        vm.tab = 1;
         vm.changeTab = function(tabId) {
             vm.tab = tabId;
         };
