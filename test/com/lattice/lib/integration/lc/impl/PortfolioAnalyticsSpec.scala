@@ -298,59 +298,310 @@ class PortfolioAnalyticsSpec extends FlatSpec {
     assert(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)) === Map(today -> Seq(note1, note2), yesterday -> Seq(note3)))
   }
 
-  behavior of "behavior of notes by notes for range"
-
   val today = ZonedDateTime.now
   val yesterday = today.minusDays(1)
-  val note1 = LendingClubNote(1, 1, 1, Some("zohar"), 10d, 24, LoanStatus.Issued.toString, "A", 1000, 500, None, 110, 10, 400, 50, 100, 10, None, Some(ZonedDateTime.now), ZonedDateTime.now, "medical", ZonedDateTime.now)
-  val note2 = LendingClubNote(2, 2, 2, Some("zohar"), 10d, 24, LoanStatus.Issued.toString, "B", 1000, 500, None, 110, 10, 400, 50, 100, 10, None, Some(ZonedDateTime.now), ZonedDateTime.now, "home_improvement", ZonedDateTime.now)
-  val note3 = LendingClubNote(3, 3, 3, Some("zohar"), 10d, 24, LoanStatus.Issued.toString, "B", 1000, 500, None, 110, 10, 400, 50, 100, 10, None, Some(ZonedDateTime.now), ZonedDateTime.now.minusDays(1), "home_improvement", ZonedDateTime.now)
+  val lastYear = today.minusYears(1)
+  val lastWeek = today.minusWeeks(1)
+  val nextYear = today.plusYears(1)
+
+  val note1 = LendingClubNote(1, 1, 1, Some("zohar"), 10d, 24, LoanStatus.Issued.toString, "A", 1000, 100, None, 110, 10, 400, 100, 100, 10, None, Some(ZonedDateTime.now), today, "medical", ZonedDateTime.now)
+  val note2 = LendingClubNote(2, 2, 2, Some("zohar"), 20d, 24, LoanStatus.Issued.toString, "B", 1000, 1000, None, 110, 10, 400, 1000, 100, 10, None, Some(ZonedDateTime.now), today, "home_improvement", ZonedDateTime.now)
+  val note3 = LendingClubNote(3, 3, 3, Some("zohar"), 25d, 24, LoanStatus.Issued.toString, "C", 100000, 10000, None, 110, 10, 400, 10000, 100, 10, None, Some(ZonedDateTime.now), yesterday, "credit_card", ZonedDateTime.now)
+
+  behavior of "behavior of notes for range"
   it should "return only today's notes mapped to today's local date given a sequence of notes with various dates only 2 of which are today's and a date range from today to today" in {
-    assert(PortfolioAnalytics.notesForRange(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate,  today.toLocalDate) == Map(today.toLocalDate->Seq(note1,note2)))
+    assert(PortfolioAnalytics.notesForRange(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, today.toLocalDate) == Map(today.toLocalDate -> Seq(note1, note2)))
   }
 
   it should "return no notes given notes and a date range for which none of the notes are in" in {
-    assert(PortfolioAnalytics.notesForRange(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.minusYears(2).toLocalDate,  today.minusYears(1).toLocalDate) == Map())
+    assert(PortfolioAnalytics.notesForRange(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.minusYears(2).toLocalDate, today.minusYears(1).toLocalDate) == Map())
   }
 
   it should "return all notes given notes and a date range for which all of the notes are in" in {
-    assert(PortfolioAnalytics.notesForRange(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), yesterday.toLocalDate,  today.toLocalDate) == Map(today.toLocalDate->Seq(note1,note2),yesterday.toLocalDate->Seq(note3)))
+    assert(PortfolioAnalytics.notesForRange(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), yesterday.toLocalDate, today.toLocalDate) == Map(today.toLocalDate -> Seq(note1, note2), yesterday.toLocalDate -> Seq(note3)))
   }
-  
+
   behavior of "notes acquired today"
-  
+
   it should "return 0 given an empty map of notes per date" in {
-    assert(PortfolioAnalytics.notesAcquiredToday(Map())==0)
+    assert(PortfolioAnalytics.notesAcquiredToday(Map()) == 0)
   }
-  
+
   it should "return 0 given a map of date to note such that no notes are mapped to today" in {
-    assert(PortfolioAnalytics.notesAcquiredToday(PortfolioAnalytics.notesByDate(Seq(note3)))==0)
+    assert(PortfolioAnalytics.notesAcquiredToday(PortfolioAnalytics.notesByDate(Seq(note3))) == 0)
   }
-  
+
   it should "return the number size of the sequence of notes mapped to today in the given input map of date to sequence of notes" in {
-    assert(PortfolioAnalytics.notesAcquiredToday(PortfolioAnalytics.notesByDate(Seq(note1,note2,note3)))==2)
+    assert(PortfolioAnalytics.notesAcquiredToday(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == 2)
   }
-  
-  //TODO
-//  behavior of "notes acquired today by grade"
-//
-//  behavior of "notes acquired today by yield"
-//  
-//  behavior of "notes acquired today by purpose"
-//  
-//  behavior of "notes acquired within date range"
-//  
-//  behavior of "notes acquired within date range"
-//
-//  behavior of "notes acquired within date range by yield"
-//  
-//  behavior of "notes acquired within date range by purpose"
 
-  
-  
-  //notesAcquired
-  //notesAcquiredByGrade
-  //notesAcquiredByYield
-  //notesAcquiredByPurpose
+  behavior of "notes acquired today by grade"
 
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByGrade(Map()) == Map())
+  }
+
+  it should "return an empty map given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByGrade(PortfolioAnalytics.notesByDate(Seq(note3))) == Map())
+  }
+
+  it should "return a map with grade to the number of notes with this grade in the given seq of notes " in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == Map(Grade.A -> 1, Grade.B -> 1))
+  }
+
+  behavior of "notes acquired today by yield"
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByYield(Map()) == Map())
+  }
+
+  it should "return an empty map given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByYield(PortfolioAnalytics.notesByDate(Seq(note3))) == Map())
+  }
+
+  it should "return a map with grade to the number of notes with this grade in the given seq of notes " in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == Map((9d, 11.99d) -> 1, (18d, 22.99d) -> 1))
+  }
+
+  behavior of "notes acquired today by purpose"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByPurpose(Map()) == Map())
+  }
+
+  it should "return an empty map given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByPurpose(PortfolioAnalytics.notesByDate(Seq(note3))) == Map())
+  }
+
+  it should "return a map with grade to the number of notes with this grade in the given seq of notes " in {
+    assert(PortfolioAnalytics.notesAcquiredTodayByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == Map("medical" -> 1, "home_improvement" -> 1))
+  }
+
+  behavior of "notes acquired within date range"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquired(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.notesAcquired(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.notesAcquired(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> 1))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.notesAcquired(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> 2))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.notesAcquired(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> 1, today.toLocalDate -> 2))
+  }
+
+  behavior of "notes acquired within date range by grade"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquiredByGrade(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.notesAcquiredByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.notesAcquiredByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> Map(Grade.C -> 1)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.notesAcquiredByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> Map(Grade.A -> 1, Grade.B -> 1)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.notesAcquiredByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> Map(Grade.C -> 1), today.toLocalDate -> Map(Grade.A -> 1, Grade.B -> 1)))
+  }
+
+  behavior of "notes acquired within date range by yield"
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquiredByYield(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.notesAcquiredByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.notesAcquiredByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> Map((23d, 99d) -> 1)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.notesAcquiredByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> Map((9d, 11.99d) -> 1, (18d, 22.99d) -> 1)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.notesAcquiredByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> Map((23d, 99d) -> 1), today.toLocalDate -> Map((9d, 11.99d) -> 1, (18d, 22.99d) -> 1)))
+  }
+
+  behavior of "notes acquired within date range by purpose"
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.notesAcquiredByPurpose(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.notesAcquiredByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.notesAcquiredByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> Map("credit_card" -> 1)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.notesAcquiredByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> Map("medical" -> 1, "home_improvement" -> 1)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.notesAcquiredByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> Map("credit_card" -> 1), today.toLocalDate -> Map("medical" -> 1, "home_improvement" -> 1)))
+  }
+
+  ///////////////
+
+  behavior of "amount invested in notes today"
+
+  it should "return 0 given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedToday(Map()) == 0)
+  }
+
+  it should "return 0 given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.amountInvestedToday(PortfolioAnalytics.notesByDate(Seq(note3))) == 0)
+  }
+
+  it should "return the sum of principal pending in the sequence of notes mapped to today in the given input map of date to sequence of notes" in {
+    assert(PortfolioAnalytics.amountInvestedToday(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == (100 + 1000))
+  }
+
+  behavior of "amount invested today by grade"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedTodayByGrade(Map()) == Map())
+  }
+
+  it should "return an empty map given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.amountInvestedTodayByGrade(PortfolioAnalytics.notesByDate(Seq(note3))) == Map())
+  }
+
+  it should "return a map with grade to the number of notes with this grade in the given seq of notes " in {
+    assert(PortfolioAnalytics.amountInvestedTodayByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == Map(Grade.A -> 100, Grade.B -> 1000))
+  }
+
+  behavior of "amount invested today by yield"
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedTodayByYield(Map()) == Map())
+  }
+
+  it should "return an empty map given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.amountInvestedTodayByYield(PortfolioAnalytics.notesByDate(Seq(note3))) == Map())
+  }
+
+  it should "return a map with yield to the sum of pending notional of notes with this yield in the given seq of notes " in {
+    assert(PortfolioAnalytics.amountInvestedTodayByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == Map((9d, 11.99d) -> 100, (18d, 22.99d) -> 1000))
+  }
+
+  behavior of "amount invested today by purpose"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedTodayByPurpose(Map()) == Map())
+  }
+
+  it should "return an empty map given a map of date to note such that no notes are mapped to today" in {
+    assert(PortfolioAnalytics.amountInvestedTodayByPurpose(PortfolioAnalytics.notesByDate(Seq(note3))) == Map())
+  }
+
+  it should "return a map with grade to the number of notes with this grade in the given seq of notes " in {
+    assert(PortfolioAnalytics.amountInvestedTodayByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3))) == Map("medical" -> 100, "home_improvement" -> 1000))
+  }
+
+  behavior of "amount invested within date range"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvested(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the total invested amount of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.amountInvested(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.amountInvested(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> 10000))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.amountInvested(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> 1100))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.amountInvested(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> 10000, today.toLocalDate -> 1100))
+  }
+
+  behavior of "amount invested within date range by grade"
+
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedByGrade(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.amountInvestedByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.amountInvestedByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> Map(Grade.C -> 10000)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.amountInvestedByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> Map(Grade.A -> 100, Grade.B -> 1000)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.amountInvestedByGrade(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> Map(Grade.C -> 10000), today.toLocalDate -> Map(Grade.A -> 100, Grade.B -> 1000)))
+  }
+
+  behavior of "amount invested within date range by yield"
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedByYield(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.amountInvestedByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.amountInvestedByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> Map((23d, 99d) -> 10000)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.amountInvestedByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> Map((9d, 11.99d) -> 100, (18d, 22.99d) -> 1000)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.amountInvestedByYield(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> Map((23d, 99d) -> 10000), today.toLocalDate -> Map((9d, 11.99d) -> 100, (18d, 22.99d) -> 1000)))
+  }
+
+  behavior of "amount invested within date range by purpose"
+  it should "return an empty map given an empty map of notes per date" in {
+    assert(PortfolioAnalytics.amountInvestedByPurpose(Map(), lastYear.toLocalDate, nextYear.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - if no note is within the range it should return an empty map" in {
+    assert(PortfolioAnalytics.amountInvestedByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, lastWeek.toLocalDate) == Map())
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only yesterday's note should be included " in {
+    assert(PortfolioAnalytics.amountInvestedByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, yesterday.toLocalDate) == Map(yesterday.toLocalDate -> Map("credit_card" -> 10000)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - only today's notes should be included" in {
+    assert(PortfolioAnalytics.amountInvestedByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), today.toLocalDate, nextYear.toLocalDate) == Map(today.toLocalDate -> Map("medical" -> 100, "home_improvement" -> 1000)))
+  }
+
+  it should "return a map of date to the number of notes ordered on this date - given a date range and a map of date to sequence of notes per this date - partial coverage - all notes should included" in {
+    assert(PortfolioAnalytics.amountInvestedByPurpose(PortfolioAnalytics.notesByDate(Seq(note1, note2, note3)), lastYear.toLocalDate, nextYear.toLocalDate) == Map(yesterday.toLocalDate -> Map("credit_card" -> 10000), today.toLocalDate -> Map("medical" -> 100, "home_improvement" -> 1000)))
+  }
 }
