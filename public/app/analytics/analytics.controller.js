@@ -24,6 +24,11 @@
     function AnalyticsController(PortfolioAnalyticsService) {
         var vm = this;
 
+        vm.tab = 1;
+        vm.changeTab = function(tabId) {
+            vm.tab = tabId;
+        };
+
         vm.analytics = {};
 
         /**
@@ -50,6 +55,8 @@
             vm.analytics.ordersByPurpose = ordersByPurpose;
         });
 
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
         PortfolioAnalyticsService.notesAcquiredThisYearByMonthByGrade.success(function(ordersByMonthByGrade) {
             ordersByMonthByGrade = {
                 "1": { A: 13077, B: 9611, C: 8141, D: 11511, E: 7716, F: 12804, G: 17433 },
@@ -66,8 +73,6 @@
                 "12": { A: 18905, B: 17072, C: 4945, D: 13275, E: 1247, F: 627, G: 16605 }
             };
 
-            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
             var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
             $.map(ordersByMonthByGrade, function(v, i) {
                 invertedData.A[months[i-1]] = v.A;
@@ -80,6 +85,8 @@
             });
 
             vm.analytics.ordersByMonthByGrade = invertedData;
+            vm.analytics.ordersByMonthByYield = invertedData;
+            vm.analytics.ordersByMonthByPurpose = invertedData;
         });
 
         /**

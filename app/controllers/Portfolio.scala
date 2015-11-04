@@ -21,6 +21,8 @@ import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnaly
 import com.lattice.lib.integration.lc.model.Formatters.mapGradeIntFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
 import com.lattice.lib.integration.lc.model.Formatters.mapIntMapGradeValueIntFormat
+import com.lattice.lib.integration.lc.model.Formatters.mapIntMapDoubleDoubleIntFormat
+import com.lattice.lib.integration.lc.model.Formatters.mapIntMapStringIntFormat
 
 import utils.Constants
 
@@ -52,6 +54,28 @@ class Portfolio extends Controller {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now())
+          .groupBy(_._1.getMonthValue)
+          .mapValues(_.values)
+          .map { case(i, m) => (i, m reduce (_ ++ _)) }
+      ))
+    })
+  }
+
+  def notesAcquiredThisYearByMonthByYield = Action.async {
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
+      Ok( Json.toJson(
+        portfolioAnalytics.notesAcquiredByYield(LocalDate.now().minusYears(1), LocalDate.now())
+          .groupBy(_._1.getMonthValue)
+          .mapValues(_.values)
+          .map { case(i, m) => (i, m reduce (_ ++ _)) }
+      ))
+    })
+  }
+
+  def notesAcquiredThisYearByMonthByPurpose = Action.async {
+    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
+      Ok( Json.toJson(
+        portfolioAnalytics.notesAcquiredByPurpose(LocalDate.now().minusYears(1), LocalDate.now())
           .groupBy(_._1.getMonthValue)
           .mapValues(_.values)
           .map { case(i, m) => (i, m reduce (_ ++ _)) }

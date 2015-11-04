@@ -22,6 +22,8 @@
             var notesAcquiredTodayByYieldPromise = null;
             var notesAcquiredTodayByPurposePromise = null;
             var notesAcquiredThisYearByMonthByGradePromise = null;
+            var notesAcquiredThisYearByMonthByYieldPromise = null;
+            var notesAcquiredThisYearByMonthByPurposePromise = null;
 
             var LCPortfolioAnalytics = function() {
                 if (LCPortfolioAnalyticsPromise) {
@@ -68,12 +70,33 @@
                 }
             };
 
+            var notesAcquiredThisYearByMonthByYield = function() {
+                if (notesAcquiredThisYearByMonthByYieldPromise) {
+                    return notesAcquiredThisYearByMonthByYieldPromise;
+                } else {
+                    notesAcquiredThisYearByMonthByYieldPromise = $http.get("/api/portfolio/analytics/notesAcquiredThisYearByMonthByYield");
+                    return notesAcquiredThisYearByMonthByYieldPromise;
+                }
+            };
+
+            var notesAcquiredThisYearByMonthByPurpose = function() {
+                if (notesAcquiredThisYearByMonthByPurposePromise) {
+                    return notesAcquiredThisYearByMonthByPurposePromise;
+                } else {
+                    notesAcquiredThisYearByMonthByPurposePromise = $http.get("/api/portfolio/analytics/notesAcquiredThisYearByMonthByPurpose");
+                    return notesAcquiredThisYearByMonthByPurposePromise;
+                }
+            };
+
+
             return {
                 LCPortfolioAnalytics: LCPortfolioAnalytics(),
                 notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),
                 notesAcquiredTodayByYield: notesAcquiredTodayByYield(),
                 notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose(),
-                notesAcquiredThisYearByMonthByGrade: notesAcquiredThisYearByMonthByGrade()
+                notesAcquiredThisYearByMonthByGrade: notesAcquiredThisYearByMonthByGrade(),
+                notesAcquiredThisYearByMonthByYield: notesAcquiredThisYearByMonthByYield(),
+                notesAcquiredThisYearByMonthByPurpose: notesAcquiredThisYearByMonthByPurpose()
             }
         });
 })();

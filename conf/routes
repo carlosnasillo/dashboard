@@ -18,6 +18,8 @@ GET     /api/portfolio/analytics/notesAcquiredTodayByGrade              controll
 GET     /api/portfolio/analytics/notesAcquiredTodayByYield              controllers.Portfolio.notesAcquiredTodayByYield
 GET     /api/portfolio/analytics/notesAcquiredTodayByPurpose            controllers.Portfolio.notesAcquiredTodayByPurpose
 GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByGrade    controllers.Portfolio.notesAcquiredThisYearByMonthByGrade
+GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByYield    controllers.Portfolio.notesAcquiredThisYearByMonthByYield
+GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByPurpose  controllers.Portfolio.notesAcquiredThisYearByMonthByPurpose
 
 # Play routes serving HTML to AngularJS start with /views
 GET     /view/*any                                              controllers.Application.loadPublicHTML(any)
