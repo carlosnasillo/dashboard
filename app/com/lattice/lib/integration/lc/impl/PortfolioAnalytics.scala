@@ -37,7 +37,7 @@ object PortfolioAnalytics {
   private[impl] def principalOutstandingByYield(notes: Seq[LendingClubNote]) = if (notes.isEmpty) Map[(Double, Double), BigDecimal]() else (InterestRateBuckets map {
     case (lower, upper) =>
       (lower, upper) -> (notes.collect { case x if x.interestRate >= lower && x.interestRate <= upper => x.principalPending }.sum)
-  }).toMap
+  }).toMap.filter{case (k,v)=> v>0}
   private[impl] def principalOutstandingByTerm(notes: Seq[LendingClubNote]) = notes.groupBy(_.loanLengthEnum) map { case (key, value) => (key, (value.map(_.principalPending).sum)) }
   private[impl] def principalOutstandingByState(notes: Seq[LendingClubNote]) = notes.groupBy(_.loanStatus) map { case (key, value) => (key, (value.map(_.principalPending).sum)) }
   private[impl] def principalOutstandingByStateByGrade(notes: Seq[LendingClubNote]) = notes.groupBy(_.loanStatus) map { case (key, value) => (key, (value groupBy (_.gradeEnum) map { case (k, v) => (k -> (v.map(_.principalPending).sum)) })) }
@@ -52,19 +52,19 @@ object PortfolioAnalytics {
   private[impl] def notesAcquired(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Int] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> v.size }
   private[impl] def notesAcquiredByGrade(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, Int]] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v groupBy (_.gradeEnum) map { case (k1, v1) => k1 -> v1.size }) }
   private[impl] def notesAcquiredByYield(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), Int]] = {
-    notesForRange(notesByDate, from, to) map { case (k, v) => k -> (InterestRateBuckets map { case (lower, upper) => (lower, upper) -> (v.collect { case x if x.interestRate >= lower && x.interestRate <= upper => x }).size }).toMap }
+    notesForRange(notesByDate, from, to) map { case (k, v) => k -> (InterestRateBuckets map { case (lower, upper) => (lower, upper) -> (v.collect { case x if x.interestRate >= lower && x.interestRate <= upper => x }).size }).toMap.filter{case (k,v)=> v>0} }
   }
   private[impl] def notesAcquiredByPurpose(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, Int]] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v groupBy (_.purpose) map { case (k1, v1) => k1 -> v1.size }) }
-  private[impl] def amountInvestedToday(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvested(notesByDate, LocalDate.now, LocalDate.now)(LocalDate.now)
-  private[impl] def amountInvestedTodayByGrade(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvestedByGrade(notesByDate, LocalDate.now, LocalDate.now)(LocalDate.now)
-  private[impl] def amountInvestedTodayByYield(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvestedByYield(notesByDate, LocalDate.now, LocalDate.now)(LocalDate.now)
-  private[impl] def amountInvestedTodayByPurpose(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvestedByPurpose(notesByDate, LocalDate.now, LocalDate.now)(LocalDate.now)
-  private[impl] def amountInvested(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, BigDecimal] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v map (_.principalPending) sum) }
-  private[impl] def amountInvestedByGrade(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, BigDecimal]] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v groupBy (_.gradeEnum) map { case (k1, v1) => k1 -> (v1 map (_.principalPending)).sum }) }
+  private[impl] def amountInvestedToday(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvested(notesByDate, LocalDate.now, LocalDate.now).getOrElse(LocalDate.now,BigDecimal(0))
+  private[impl] def amountInvestedTodayByGrade(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvestedByGrade(notesByDate, LocalDate.now, LocalDate.now).getOrElse(LocalDate.now,Map())
+  private[impl] def amountInvestedTodayByYield(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvestedByYield(notesByDate, LocalDate.now, LocalDate.now).getOrElse(LocalDate.now,Map())
+  private[impl] def amountInvestedTodayByPurpose(notesByDate: Map[LocalDate, Seq[LendingClubNote]]) = amountInvestedByPurpose(notesByDate, LocalDate.now, LocalDate.now).getOrElse(LocalDate.now,Map())
+  private[impl] def amountInvested(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, BigDecimal] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v map (_.noteAmount) sum) }
+  private[impl] def amountInvestedByGrade(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, BigDecimal]] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v groupBy (_.gradeEnum) map { case (k1, v1) => k1 -> (v1 map (_.noteAmount)).sum }) }
   private[impl] def amountInvestedByYield(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), BigDecimal]] = {
-    notesForRange(notesByDate, from, to) map { case (k, v) => k -> (InterestRateBuckets map { case (lower, upper) => (lower, upper) -> (v.collect { case x if x.interestRate >= lower && x.interestRate <= upper => x.principalPending }).sum }).toMap }
+    notesForRange(notesByDate, from, to) map { case (k, v) => k -> (InterestRateBuckets map { case (lower, upper) => (lower, upper) -> (v.collect { case x if x.interestRate >= lower && x.interestRate <= upper => x.noteAmount }).sum }).toMap.filter{case (k,v)=>(v>0)} }
   }
-  private[impl] def amountInvestedByPurpose(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, BigDecimal]] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v groupBy (_.purpose) map { case (k1, v1) => k1 -> (v1 map (_.principalPending)).sum }) }
+  private[impl] def amountInvestedByPurpose(notesByDate: Map[LocalDate, Seq[LendingClubNote]], from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, BigDecimal]] = notesForRange(notesByDate, from, to) map { case (k, v) => k -> (v groupBy (_.purpose) map { case (k1, v1) => k1 -> (v1 map (_.noteAmount)).sum }) }
 
   def analyse(notes: Seq[LendingClubNote]): PortfolioAnalytics = {
     PortfolioAnalytics(principalOutstanding(notes),
@@ -114,7 +114,7 @@ case class PortfolioAnalytics(
   override def notesAcquiredByGrade(from: LocalDate, to: LocalDate): Map[LocalDate, Map[Grade.Value, Int]] = PortfolioAnalytics.notesAcquiredByGrade(notesByDate, from, to)
   override def notesAcquiredByYield(from: LocalDate, to: LocalDate): Map[LocalDate, Map[(Double, Double), Int]] = PortfolioAnalytics.notesAcquiredByYield(notesByDate, from, to)
   override def notesAcquiredByPurpose(from: LocalDate, to: LocalDate): Map[LocalDate, Map[String, Int]] = PortfolioAnalytics.notesAcquiredByPurpose(notesByDate, from, to)
-  override def amountInvestedToday = PortfolioAnalytics.amountInvestedToday(notesByDate)
+  override def amountInvestedToday = {val v=PortfolioAnalytics.amountInvestedToday(notesByDate);v}
   override def amountInvestedTodayByGrade = PortfolioAnalytics.amountInvestedTodayByGrade(notesByDate)
   override def amountInvestedTodayByYield = PortfolioAnalytics.amountInvestedTodayByYield(notesByDate)
   override def amountInvestedTodayByPurpose = PortfolioAnalytics.amountInvestedTodayByPurpose(notesByDate)

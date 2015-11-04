@@ -36,18 +36,28 @@ import play.api.Logger
  */
 
 object Portfolio {
+  
+  private[impl] def totalTransactions(transfers: Seq[Transaction])=(transfers map (_.amount)).sum // sigma(transferred - withdrawn)
+  private[impl] def totalPaymentReceived(notes: Seq[LendingClubNote])=(notes map (_.paymentsReceived)).sum // payment received from notes
+  private[impl] def totalInvested(notes: Seq[LendingClubNote])=notes.collect { case x if LoanStatus.isIssued(x.loanStatusEnum) => x.noteAmount }.sum // invested in notes
+  private[impl] def totalPending(notes:Seq[LendingClubNote])= notes.collect { case x if LoanStatus.isPending(x.loanStatusEnum) => x.noteAmount }.sum // invested in loans not yet issued
+  private[impl] def totalPrincipalOutstanding(notes:Seq[LendingClubNote])= (notes map (_.principalPending)).sum
+  private[impl] def totalPrincipalReceived(notes:Seq[LendingClubNote])= (notes map (_.principalReceived)).sum
+  private[impl] def totalInterestReceived(notes:Seq[LendingClubNote])= (notes map (_.interestReceived)).sum
+  private[impl] def totalAvailableCash(transactions:BigDecimal, cashReceived:BigDecimal, pendingInvestment:BigDecimal, invested:BigDecimal)=transactions + cashReceived - pendingInvestment - invested
+  
   private[impl] def calculateAccountBalance(portfolioDetails: PortfolioDetails, transfers: Seq[Transaction], notes: Seq[LendingClubNote]): AccountBalance = {
-    val totalTransaction = (transfers map (_.amount)).sum // sigma(transferred - withdrawn)
-    val totalPaymentReceived = (notes map (_.paymentsReceived)).sum // payment received from notes
-    val totalInvested = notes.collect { case x if LoanStatus.isIssued(x.loanStatusEnum) => x.noteAmount }.sum // invested in notes
-    val totalPendingInvestment = notes.collect { case x if LoanStatus.isPending(x.loanStatusEnum) => x.noteAmount }.sum // invested in loans not yet issued
-    val totalPrincipalOutstanding = (notes map (_.principalPending)).sum
-    val totalPrincipalReceived = (notes map (_.principalReceived)).sum
-    val totalInterestReceived = (notes map (_.interestReceived)).sum
+    val transactions = totalTransactions(transfers)
+    val received = totalPaymentReceived(notes)
+    val invested = totalInvested(notes)
+    val pendingInvestment = totalPending(notes)
+    val principalOutstanding = totalPrincipalOutstanding(notes)
+    val principalReceived =totalPrincipalReceived(notes)
+    val interestReceived = totalInterestReceived(notes)
 
-    val availableCash = totalTransaction + totalPaymentReceived - totalPendingInvestment - totalInvested
+    val availableCash = totalAvailableCash(transactions,received,pendingInvestment,invested)
 
-    AccountBalance(portfolioDetails.portfolioName, availableCash, totalInvested, totalPendingInvestment, totalPrincipalOutstanding, totalPrincipalReceived, totalInterestReceived, totalPaymentReceived, 0)
+    AccountBalance(portfolioDetails.portfolioName, availableCash, invested, pendingInvestment, principalOutstanding, principalReceived, interestReceived, received, 0)
   }
 
   private[impl] def processNotesWithMissingOrders(portfolioDetails: PortfolioDetails, notes: Seq[LendingClubNote], orders: Seq[OrderPlaced]): Seq[OrderPlaced] = {
@@ -58,7 +68,7 @@ object Portfolio {
           Some(createLoanContract)
         } else None
 
-      OrderPlaced(portfolioDetails.portfolioName, x.orderId, x.loanId, None, x.noteAmount, x.orderDate, contract, x.paymentsReceived, x.loanStatus)
+      OrderPlaced(portfolioDetails.portfolioName, x.orderId, x.loanId, Some(x.noteId), x.noteAmount, x.orderDate, contract, x.paymentsReceived, x.loanStatus)
     })
   }
 
@@ -88,7 +98,7 @@ object Portfolio {
           db.persistOrder(order.copy(loanStatus = note.loanStatus, noteId = Some(note.noteId), contractAddress = Some(address)))
         case Some(address) if (order.paymentsReceived != note.paymentsReceived) =>
           val paid = note.paymentsReceived - order.paymentsReceived
-          db.persistOrder(order.copy(paymentsReceived = note.paymentsReceived))
+          db.persistOrder(order.copy(paymentsReceived = note.paymentsReceived, loanStatus=note.loanStatus))
           sendPayment(address, paid)
       }
     })
