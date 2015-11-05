@@ -39,6 +39,7 @@
         };
     }
 
+    //  Legend should be added but only exists as plugin for Chartist.js : https://github.com/CodeYellowBV/chartist-plugin-legend
     function link(scope) {
         scope.$watch('series', function(series) {
             if (series !== undefined ) {
