@@ -74,15 +74,22 @@
             };
 
             var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
-            $.map(ordersByMonthByGrade, function(v, i) {
-                invertedData.A[months[i-1]] = v.A;
-                invertedData.B[months[i-1]] = v.B;
-                invertedData.C[months[i-1]] = v.C;
-                invertedData.D[months[i-1]] = v.D;
-                invertedData.E[months[i-1]] = v.E;
-                invertedData.F[months[i-1]] = v.F;
-                invertedData.G[months[i-1]] = v.G;
-            });
+            var firstMonth = (new Date().getMonth() + 2) % 12;
+            firstMonth = (firstMonth == 0) ? 12 : firstMonth;
+
+            var i = firstMonth;
+            do {
+                invertedData.A[months[i-1]] = ordersByMonthByGrade[i].A;
+                invertedData.B[months[i-1]] = ordersByMonthByGrade[i].B;
+                invertedData.C[months[i-1]] = ordersByMonthByGrade[i].C;
+                invertedData.D[months[i-1]] = ordersByMonthByGrade[i].D;
+                invertedData.E[months[i-1]] = ordersByMonthByGrade[i].E;
+                invertedData.F[months[i-1]] = ordersByMonthByGrade[i].F;
+                invertedData.G[months[i-1]] = ordersByMonthByGrade[i].G;
+
+                i = i % 12 + 1
+            }
+            while (i !== firstMonth);
 
             vm.analytics.ordersByMonthByGrade = invertedData;
             vm.analytics.ordersByMonthByYield = invertedData;
