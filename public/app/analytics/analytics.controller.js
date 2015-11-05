@@ -77,17 +77,20 @@
             var firstMonth = (new Date().getMonth() + 2) % 12;
             firstMonth = (firstMonth == 0) ? 12 : firstMonth;
 
+            var currentYear = new Date().getFullYear();
+
             var i = firstMonth;
             do {
-                invertedData.A[months[i-1]] = ordersByMonthByGrade[i].A;
-                invertedData.B[months[i-1]] = ordersByMonthByGrade[i].B;
-                invertedData.C[months[i-1]] = ordersByMonthByGrade[i].C;
-                invertedData.D[months[i-1]] = ordersByMonthByGrade[i].D;
-                invertedData.E[months[i-1]] = ordersByMonthByGrade[i].E;
-                invertedData.F[months[i-1]] = ordersByMonthByGrade[i].F;
-                invertedData.G[months[i-1]] = ordersByMonthByGrade[i].G;
+                var year = (firstMonth - 1 < i) ? currentYear - 1 : currentYear;
+                invertedData.A[months[i-1] + '-' + year] = ordersByMonthByGrade[i].A;
+                invertedData.B[months[i-1] + '-' + year] = ordersByMonthByGrade[i].B;
+                invertedData.C[months[i-1] + '-' + year] = ordersByMonthByGrade[i].C;
+                invertedData.D[months[i-1] + '-' + year] = ordersByMonthByGrade[i].D;
+                invertedData.E[months[i-1] + '-' + year] = ordersByMonthByGrade[i].E;
+                invertedData.F[months[i-1] + '-' + year] = ordersByMonthByGrade[i].F;
+                invertedData.G[months[i-1] + '-' + year] = ordersByMonthByGrade[i].G;
 
-                i = i % 12 + 1
+                i = i % 12 + 1;
             }
             while (i !== firstMonth);
 
