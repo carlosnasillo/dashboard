@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js', 'ui.grid'])
         .config(config)
         .run(run);
 
@@ -36,6 +36,11 @@
             .when('/analytics', {
                 templateUrl: "view/analytics",
                 controller: "AnalyticsController",
+                controllerAs: 'vm'
+            })
+            .when('/loans', {
+                templateUrl: "view/loans",
+                controller: "LoansController",
                 controllerAs: 'vm'
             })
             .otherwise({ redirectTo: '/' });

@@ -9,21 +9,21 @@
 
 package controllers
 
-import com.lattice.lib.integration.lc.impl.LendingClubConnectionImpl
-import com.lattice.lib.integration.lc.model.LoanListing
-import play.api.mvc._
-import play.api.libs.json.Json
+import com.lattice.lib.integration.lc.impl.LendingClubMongoDb
 import com.lattice.lib.integration.lc.model.Formatters.loanListingFormat
-
-import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import com.lattice.lib.utils.DbUtil
+import play.api.libs.json.Json
+import play.api.mvc._
 
 /**
   * Created by julienderay on 09/11/2015.
   */
 class Loans extends Controller {
 
+  val lendingClubMongoDb: LendingClubMongoDb = new LendingClubMongoDb(DbUtil.db)
+
   def availableLoans = Action.async {
-    val loanListing: LoanListing = LendingClubConnectionImpl.availableLoans
-    Future.successful( Ok( Json.toJson( loanListing ) ) )
+    lendingClubMongoDb.availableLoans.map( loanListing => Ok( Json.toJson( loanListing ) ) )
   }
 }
