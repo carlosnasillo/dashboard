@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js', 'ui.grid', 'angular-peity'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js', 'ui.grid', 'angular-peity', 'ui.bootstrap'])
         .config(config)
         .run(run);
 

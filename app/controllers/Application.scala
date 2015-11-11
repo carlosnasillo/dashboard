@@ -30,6 +30,9 @@ class Application extends Controller {
     case "analytics" => "/public/app/analytics/analytics.html"
     case "loans" => "/public/app/loans/loans.html"
 
+      // modals
+    case "modal-order" => "/public/app/modals/my-order-modal.html"
+
       // directive templates
     case "mySimpleNumberDisplay" => "/public/app/directives/mySimpleNumberDisplay/my-simple-number-display.html"
     case "myIboxTools" => "/public/app/directives/myIboxTools/my-ibox-tools.html"

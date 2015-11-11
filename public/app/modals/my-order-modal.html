@@ -1,0 +1,27 @@
+<!--
+  ~ Copyright (c) 2015 Lattice Markets, All rights reserved.
+  ~
+  ~ Unpublished copyright. All rights reserved. This material contains
+  ~ proprietary information that shall be used or copied only with
+  ~ Lattice Markets, except with written permission of Lattice Markets.
+  -->
+
+<div class="inmodal">
+    <div class="modal-header">
+        <h4 class="modal-title">Order</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="orderValue">How much do you want to invest ?</label>
+            <div class="input-group m-b">
+                <span class="input-group-addon">$</span>
+                <input id="orderValue" type="text" class="form-control" data-ng-model="slider.value">
+            </div>
+        </div>
+        <my-slider ng-model="slider.value" min="slider.min" step="slider.step" max="slider.max"></my-slider>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="disabled()">Save order</button>
+    </div>
+</div>

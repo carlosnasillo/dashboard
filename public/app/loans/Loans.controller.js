@@ -18,9 +18,9 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService', 'uiGridConstants'];
+    LoansController.$inject = ['LoansService', 'uiGridConstants', '$modal'];
 
-    function LoansController(LoansService, uiGridConstants) {
+    function LoansController(LoansService, uiGridConstants, $modal) {
         var vm = this;
 
         vm.loansTable = { options: {} };
@@ -127,8 +127,51 @@
                     field: 'purpose',
                     headerCellClass: vm.highlightFilteredHeader,
                     type: 'text'
+                },
+                {
+                    field: 'id',
+                    displayName: 'Order',
+                    cellTemplate: "<div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.loanAmount, row.entity.fundedAmount)'>Add to Order</span></div>",
+                    enableFiltering: false
                 }
             ]
         };
+
+        vm.order = function(loanId, loanAmount, fundedAmount) {
+            var modalInstance = $modal.open({
+                templateUrl: 'view/modal-order',
+                controller: OrderModalInstanceCtrl,
+                resolve: {
+                    loanId: function() { return loanId; },
+                    loanAmount: function() { return loanAmount; },
+                    fundedAmount: function() { return fundedAmount; }
+                }
+            });
+        };
+
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount) {
+            $scope.loanId = loanId;
+            $scope.loanAmount = loanAmount;
+            $scope.fundedAmount = fundedAmount;
+
+            $scope.slider = {
+                min: 0,
+                max: loanAmount - fundedAmount,
+                step: 0.01,
+                value: 0
+            };
+
+            $scope.disabled = function() {
+                return $scope.slider.value > $scope.slider.max;
+            };
+
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }
     }
 })();
