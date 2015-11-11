@@ -18,20 +18,15 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService', '$filter', 'uiGridConstants'];
+    LoansController.$inject = ['LoansService', 'uiGridConstants'];
 
-    function LoansController(LoansService, $filter, uiGridConstants) {
+    function LoansController(LoansService, uiGridConstants) {
         var vm = this;
 
         vm.loansTable = { options: {} };
 
         LoansService.loansAvailable().success(function(data) {
             vm.loansTable.options.data = data.loans;
-            vm.loansTable.options.data.map(function(loan) {
-                var tmpLoan = loan;
-                tmpLoan.listD = $filter('date')(loan.listD, 'dd/MM/yyyy');
-                return tmpLoan;
-            })
         });
 
         vm.highlightFilteredHeader = function( row, rowRenderIndex, col ) {
@@ -66,7 +61,8 @@
                 {
                     field: 'listD',
                     displayName: 'Listed',
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    cellFilter: 'date:"dd/MM/yyyy"'
                 },
                 {
                     field: 'loanAmount',
