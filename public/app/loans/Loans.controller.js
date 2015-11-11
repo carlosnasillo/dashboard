@@ -26,8 +26,17 @@
         vm.loansTable = { options: {} };
 
         LoansService.loansAvailable().success(function(data) {
-            vm.loansTable.options.data = data.loans;
+            vm.loansTable.options.data = data.loans.map(function(data) {
+                data.foundedPie = [data.fundedAmount, data.loanAmount];
+                data.fundedAmountPerCenter = (data.fundedAmount / data.loanAmount) * 100;
+                return data;
+            });
         });
+
+        vm.loansTable.pieChartOptions = {
+            fill: ["#00b494", "#d7d7d7"],
+            width: 50
+        };
 
         vm.highlightFilteredHeader = function( row, rowRenderIndex, col ) {
             if ( col.filters[0].term ) {
@@ -36,17 +45,6 @@
                 return '';
             }
         };
-
-        var minMaxFilters = [
-            {
-                condition: uiGridConstants.filter.GREATER_THAN,
-                placeholder: 'greater than'
-            },
-            {
-                condition: uiGridConstants.filter.LESS_THAN,
-                placeholder: 'less than'
-            }
-        ];
 
         vm.loansTable.options = {
             enableColumnMenus: false,
@@ -69,16 +67,35 @@
                 {
                     field: 'loanAmount',
                     displayName: 'Requested',
-                    filters: minMaxFilters,
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
                     headerCellClass: vm.highlightFilteredHeader,
                     type: 'number'
                 },
                 {
-                    field: 'fundedAmount',
+                    field: 'fundedAmountPerCenter',
                     displayName: 'Founded',
-                    filters: minMaxFilters,
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than (%)'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than (%)'
+                        }
+                    ],
                     headerCellClass: vm.highlightFilteredHeader,
-                    type: 'number'
+                    type: 'number',
+                    cellTemplate: "<pie-chart data='row.entity.foundedPie' options='row.grid.appScope.vm.loansTable.pieChartOptions'></pie-chart>"
                 },
                 {
                     field: 'grade',
@@ -93,7 +110,16 @@
                 },
                 {
                     field: 'term',
-                    filters: minMaxFilters,
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
                     headerCellClass: vm.highlightFilteredHeader,
                     type: 'number'
                 },
@@ -103,6 +129,6 @@
                     type: 'text'
                 }
             ]
-        }
+        };
     }
 })();
