@@ -56,25 +56,29 @@
                 {
                     field: 'id',
                     displayName: 'Listing Id',
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
                 },
                 {
                     field: 'listD',
                     displayName: 'Listed',
                     headerCellClass: vm.highlightFilteredHeader,
-                    cellFilter: 'date:"dd/MM/yyyy"'
+                    cellFilter: 'date:"dd/MM/yyyy"',
+                    type: 'date'
                 },
                 {
                     field: 'loanAmount',
                     displayName: 'Requested',
                     filters: minMaxFilters,
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
                 },
                 {
                     field: 'fundedAmount',
                     displayName: 'Founded',
                     filters: minMaxFilters,
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
                 },
                 {
                     field: 'grade',
@@ -84,16 +88,19 @@
                             return searchTerm.split(',').map(function(search) { return search.trim(); }).indexOf(cellValue) >= 0;
                         },
                         placeholder: 'ex: "C" or "D, A"'
-                    }
+                    },
+                    type: 'text'
                 },
                 {
                     field: 'term',
                     filters: minMaxFilters,
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
                 },
                 {
                     field: 'purpose',
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'text'
                 }
             ]
         }
