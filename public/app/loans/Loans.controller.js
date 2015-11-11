@@ -18,21 +18,33 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService'];
+    LoansController.$inject = ['LoansService', '$filter'];
 
-    function LoansController(LoansService) {
+    function LoansController(LoansService, $filter) {
         var vm = this;
 
         vm.loansTable = {};
 
         LoansService.loansAvailable().success(function(data) {
             vm.loansTable.options.data = data.loans;
+            vm.loansTable.options.data.map(function(loan) {
+                var tmpLoan = loan;
+                tmpLoan.listD = $filter('date')(loan.listD, 'dd/MM/yyyy');
+                return tmpLoan;
+            })
         });
 
         vm.loansTable.options = {
             enableColumnMenus: false,
             enableSorting: true,
-            columnDefs: [{ field: 'id', name: 'Listing Id' }, { field: 'listD', name: 'Listed'}, { field: 'loanAmount', name: 'Requested' }, { field: 'fundedAmount', name: 'Founded' }, { field: 'grade' }, { field: 'term' }, { field: 'purpose' }]
+            columnDefs: [
+                { field: 'id', displayName: 'Listing Id' },
+                { field: 'listD', displayName: 'Listed'},
+                { field: 'loanAmount', displayName: 'Requested' },
+                { field: 'fundedAmount', displayName: 'Founded' },
+                { field: 'grade' },
+                { field: 'term' },
+                { field: 'purpose' }]
         }
     }
 })();
