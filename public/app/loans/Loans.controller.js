@@ -78,7 +78,13 @@
                 },
                 {
                     field: 'grade',
-                    headerCellClass: vm.highlightFilteredHeader
+                    headerCellClass: vm.highlightFilteredHeader,
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            return searchTerm.split(',').map(function(search) { return search.trim(); }).indexOf(cellValue) >= 0;
+                        },
+                        placeholder: 'ex: "C" or "D, A"'
+                    }
                 },
                 {
                     field: 'term',
