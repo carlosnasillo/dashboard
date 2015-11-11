@@ -105,7 +105,7 @@
                 "60 months": 3
             };
 
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = {
+            var mockedPrincipalOutstandingByStateByGrade = {
                 'FullyPaid': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
                 'Current': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 },
                 'InGracePeriod': { 'A': 100000, 'B': 200000, 'C': 400000, 'D': 600000, 'E': 50000, 'F': 80000, 'G': 3000 },
@@ -114,6 +114,19 @@
                 'Defaulted': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
                 'Charged Off': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 }
             };
+
+            var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
+            $.map(mockedPrincipalOutstandingByStateByGrade, function(v, i) {
+                invertedData.A[i] = v.A;
+                invertedData.B[i] = v.B;
+                invertedData.C[i] = v.C;
+                invertedData.D[i] = v.D;
+                invertedData.E[i] = v.E;
+                invertedData.F[i] = v.F;
+                invertedData.G[i] = v.G;
+            });
+
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = invertedData;
 
             vm.lendingClubPortfolioAnalytics.notesByStateByGrade = vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade;
         });

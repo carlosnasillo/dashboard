@@ -1,0 +1,163 @@
+<div id="wrapper">
+    <my-nav-bar active="analytics"></my-nav-bar>
+    <div id="page-wrapper" class="gray-bg">
+        <my-nav-bar-top></my-nav-bar-top>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by grade</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <my-pie-chart
+                                identifier="orders_by_grade"
+                                data="vm.analytics.ordersByGrade"
+                        ></my-pie-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by marketplace</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <my-pie-chart
+                                identifier="orders_by_marketplace"
+                                data="vm.analytics.ordersByMarketplace"
+                        ></my-pie-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by yield</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <my-pie-chart
+                                identifier="orders_by_yield"
+                                data="vm.analytics.ordersByYield"
+                        ></my-pie-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Orders placed today by notional</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <my-pie-chart
+                                identifier="orders_by_notional"
+                                data="vm.analytics.ordersByPurpose"
+                        ></my-pie-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Orders placed today auto vs manual</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <my-pie-chart
+                                    identifier="orders_by_mechanism"
+                                    data="vm.analytics.ordersByMechanism"
+                            ></my-pie-chart>
+                        </div>
+                    </div>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Orders placed today fractional vs full</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <my-pie-chart
+                                    identifier="orders_by_portion"
+                                    data="vm.analytics.ordersByPortion"
+                            ></my-pie-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Monthly return - Lending Club A vs Prosper A vs Lending Club B
+                            </h5>
+                        </div>
+                        <div class="ibox-content">
+                            <my-line-graph
+                                identifier="ct_monthly_return"
+                                labels="vm.analytics.ordersByMonthlyReturn.labels"
+                                series="vm.analytics.ordersByMonthlyReturn.series"
+                                ></my-line-graph>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs ">
+                    <li data-ng-class="{'active': vm.tab == 1}"><a data-toggle="tab" data-ng-click="vm.changeTab(1)">Yearly Grade</a></li>
+                    <li data-ng-class="{'active': vm.tab == 2}"><a data-toggle="tab" data-ng-click="vm.changeTab(2)">Yearly Yield</a></li>
+                    <li data-ng-class="{'active': vm.tab == 3}"><a data-toggle="tab" data-ng-click="vm.changeTab(3)">Yearly Notional</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane" data-ng-if="vm.tab == 1" data-ng-class="{'active': vm.tab == 1}">
+                        <div class="panel-body">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>Order placed by Grade</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <my-bar-graph
+                                            identifier="annually-stacked-by-grade"
+                                            data="vm.analytics.ordersByMonthByGrade"
+                                    ></my-bar-graph>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane" data-ng-if="vm.tab == 2" data-ng-class="{'active': vm.tab == 2}">
+                        <div class="panel-body">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>Order placed by Yield</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <my-bar-graph
+                                            identifier="annually-stacked-by-yield"
+                                            data="vm.analytics.ordersByMonthByYield"
+                                    ></my-bar-graph>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane" data-ng-if="vm.tab == 3" data-ng-class="{'active': vm.tab == 3}">
+                        <div class="panel-body">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>Order placed by Notional</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <my-bar-graph
+                                            identifier="annually-stacked-by-purpose"
+                                            data="vm.analytics.ordersByMonthByPurpose"
+                                    ></my-bar-graph>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div>
+                    <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -61,8 +61,12 @@ object Formatters {
   implicit val mapGradeIntFormat: Format[Map[Grade.Value, Int]] = mapFormatFactory[Grade.Value, Int](Grade.withName, _.toInt)(_.toString, _.toInt)
   implicit val mapIntLendingClubNote: Format[Map[Int, LendingClubNote]] = mapFormatFactory[Int, LendingClubNote](_.toInt, _.asInstanceOf[LendingClubNote])(_.toString, _.toString)
   implicit val mapDoubleDoubleBigDecimal: Format[Map[(Double, Double), BigDecimal]] = mapFormatFactory[(Double, Double), BigDecimal](_.split(";") match { case Array(x: String, y: String, _*) => (x.toDouble, y.toDouble) }, BigDecimal(_))({ case (x: Double, y: Double) => s"$x;$y"}, _.toString())
+  implicit val mapDoubleDoubleInt: Format[Map[(Double, Double), Int]] = mapFormatFactory[(Double, Double), Int](_.split(";") match { case Array(x: String, y: String, _*) => (x.toDouble, y.toDouble) }, _.toInt)({ case (x: Double, y: Double) => s"$x;$y"}, _.toInt)
   implicit val mapTermBigDecimal: Format[Map[Term.Value, BigDecimal]] = mapFormatFactory[Term.Value, BigDecimal](Term.withName, BigDecimal(_))(_.toString, _.toString())
   implicit val mapLocalDateSeqLendingClubNote: Format[Map[LocalDate, Seq[LendingClubNote]]] = mapFormatFactory[LocalDate, Seq[LendingClubNote]](LocalDate.parse, _.asInstanceOf[Seq[LendingClubNote]])(_.toString, _.toString())
+  implicit val mapIntMapGradeValueIntFormat: Format[Map[Int,Map[models.Grade.Value,Int]]] = mapFormatFactory[Int,Map[Grade.Value,Int]](_.toInt, _.asInstanceOf[Map[models.Grade.Value,Int]])(_.toString, _.toString())
+  implicit val mapIntMapDoubleDoubleIntFormat: Format[Map[Int,Map[(Double, Double),Int]]] = mapFormatFactory[Int,Map[(Double, Double),Int]](_.toInt, _.asInstanceOf[Map[(Double,Double),Int]])(_.toString, _.toString())
+  implicit val mapIntMapStringIntFormat: Format[Map[Int,Map[String,Int]]] = mapFormatFactory[Int,Map[String,Int]](_.toInt, _.asInstanceOf[Map[String,Int]])(_.toString, _.toString())
 
   /**
    * Defines the formatter for LoanAnalytics
