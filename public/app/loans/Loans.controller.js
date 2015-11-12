@@ -151,7 +151,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, SweetAlert) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, SweetAlert, LoansService) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
@@ -171,9 +171,7 @@
 
             $scope.ok = function () {
                 $scope.loading = true;
-                setTimeout(function() {
-                    orderSuccess();
-                }, 1000);
+                LoansService.submitOrder('BlackRock', loanId, $scope.slider.value).then( orderSuccess, orderError );
             };
 
             $scope.cancel = function () {

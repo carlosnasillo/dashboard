@@ -27,8 +27,13 @@
                 }
             };
 
+            var submitOrder = function(investorId, loanId, amount) {
+                return $http.post('/api/placeOrder', { investorId: investorId, loanId: loanId, amount: amount })
+            };
+
             return {
-                loansAvailable: loansAvailable
+                loansAvailable: loansAvailable,
+                submitOrder: submitOrder
             }
         });
 })();
