@@ -133,6 +133,7 @@
                     field: 'id',
                     displayName: 'Order',
                     cellTemplate: "<div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.loanAmount, row.entity.fundedAmount)'>Add to Order</span></div>",
+                    // TODO : disable the button when the loan is 100% funded
                     enableFiltering: false
                 }
             ]
@@ -150,7 +151,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, SweetAlert) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
@@ -162,17 +163,47 @@
                 value: 0
             };
 
+            $scope.loading = false;
+
             $scope.disabled = function() {
                 return $scope.slider.value > $scope.slider.max;
             };
 
             $scope.ok = function () {
-                $modalInstance.close();
+                $scope.loading = true;
+                setTimeout(function() {
+                    orderSuccess();
+                }, 1000);
             };
 
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
+
+            function closeModal() {
+                $scope.loading = false;
+                $modalInstance.close();
+            }
+
+            function orderSuccess() {
+                SweetAlert.swal(
+                    "Done !",
+                    "Your order has been placed !",
+                    "success"
+                );
+
+                closeModal();
+            }
+
+            function orderError() {
+                SweetAlert.swal(
+                    "Oops...",
+                    "Something went wrong !",
+                    "error"
+                );
+
+                closeModal();
+            }
         }
     }
 })();
