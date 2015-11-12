@@ -126,7 +126,8 @@
                 {
                     field: 'purpose',
                     headerCellClass: vm.highlightFilteredHeader,
-                    type: 'text'
+                    type: 'text',
+                    enableFiltering: false
                 },
                 {
                     field: 'id',
