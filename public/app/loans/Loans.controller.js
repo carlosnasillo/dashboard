@@ -116,8 +116,7 @@
                             return searchTerm.split(',').map(function(search) { return search.trim(); }).indexOf(cellValue) >= 0;
                         },
                         placeholder: 'ex: "C" or "D, A"'
-                    },
-                    type: 'text'
+                    }
                 },
                 {
                     field: 'term',
@@ -137,7 +136,6 @@
                 {
                     field: 'purpose',
                     headerCellClass: vm.highlightFilteredHeader,
-                    type: 'text',
                     enableFiltering: false
                 },
                 {
