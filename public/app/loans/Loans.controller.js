@@ -30,8 +30,8 @@
             var listPurpose = {};
 
             vm.loansTable.options.data = data.loans.map(function(data) {
-                data.foundedPie = [data.fundedAmount, data.loanAmount];
                 data.fundedAmountPerCenter = (data.fundedAmount / data.loanAmount) * 100;
+                data.foundedPie = [data.fundedAmountPerCenter, 100 - data.fundedAmountPerCenter];
 
                 listPurpose[data.purpose] = data.purpose;
                 return data;
