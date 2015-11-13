@@ -24,13 +24,27 @@
         var vm = this;
 
         vm.loansTable = { options: {} };
+        vm.loansTable.purposeOptions = [];
 
         LoansService.loansAvailable().success(function(data) {
+            var listPurpose = {};
+
             vm.loansTable.options.data = data.loans.map(function(data) {
                 data.foundedPie = [data.fundedAmount, data.loanAmount];
                 data.fundedAmountPerCenter = (data.fundedAmount / data.loanAmount) * 100;
+
+                listPurpose[data.purpose] = data.purpose;
                 return data;
             });
+
+            vm.loansTable.purposeOptions =
+                Object
+                    .keys(listPurpose)
+                    .map(function(purpose) {
+                        return { purpose: purpose, ticked: true };
+                    });
+
+            vm.originalData = vm.loansTable.options.data;
         });
 
         vm.loansTable.pieChartOptions = {
@@ -136,7 +150,7 @@
                 {
                     field: 'purpose',
                     headerCellClass: vm.highlightFilteredHeader,
-                    enableFiltering: false
+                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><select class="form-control" ng-model="colFilter.term" ng-options="option.purpose as option.purpose for option in col.grid.appScope.vm.loansTable.purposeOptions"><option value=""></option></select></div>'
                 },
                 {
                     field: 'id',
