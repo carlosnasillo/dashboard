@@ -62,7 +62,18 @@
                     displayName: 'Listed',
                     headerCellClass: vm.highlightFilteredHeader,
                     cellFilter: 'date:"dd/MM/yyyy"',
-                    type: 'date'
+                    filterCellFiltered: true,
+                    type: 'date',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ]
                 },
                 {
                     field: 'loanAmount',
