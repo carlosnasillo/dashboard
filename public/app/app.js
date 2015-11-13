@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js', 'ui.grid', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'chart.js', 'ui.grid', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'multi-select'])
         .config(config)
         .run(run);
 

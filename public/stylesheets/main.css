@@ -10,3 +10,7 @@ body {
 .header-filtered {
     color: #00b494;
 }
+
+.bigHeader {
+    height: 150px;
+}

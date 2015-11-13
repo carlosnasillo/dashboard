@@ -47,6 +47,20 @@
             vm.originalData = vm.loansTable.options.data;
         });
 
+        vm.loansTable.purposeFilterClick = function(data) {
+            var selectedPurposes = vm.loansTable.purposeOptions
+                .filter(function(purposeObj) {
+                    return purposeObj.ticked;
+                })
+                .map(function(purposeObj) {
+                    return purposeObj.purpose;
+                });
+
+            vm.loansTable.options.data = vm.originalData.filter(function(loanObj) {
+               return selectedPurposes.indexOf( loanObj.purpose ) > -1;
+            });
+        };
+
         vm.loansTable.pieChartOptions = {
             fill: ["#00b494", "#d7d7d7"],
             width: 50
@@ -149,8 +163,8 @@
                 },
                 {
                     field: 'purpose',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><select class="form-control" ng-model="colFilter.term" ng-options="option.purpose as option.purpose for option in col.grid.appScope.vm.loansTable.purposeOptions"><option value=""></option></select></div>'
+                    headerCellClass: vm.highlightFilteredHeader + " bigHeader",
+                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><multi-select input-model="col.grid.appScope.vm.loansTable.purposeOptions" button-label="purpose" item-label="purpose" tick-property="ticked" max-labels="1" helper-elements="" on-item-click="col.grid.appScope.vm.loansTable.purposeFilterClick(data)" default-label="None" max-height="70px" class="level-multi-select"></multi-select></div>'
                 },
                 {
                     field: 'id',
