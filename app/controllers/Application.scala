@@ -28,6 +28,10 @@ class Application extends Controller {
     case "login" => "/public/app/login/login.html"
     case "portfolio" => "/public/app/portfolio/portfolio.html"
     case "analytics" => "/public/app/analytics/analytics.html"
+    case "loans" => "/public/app/loans/loans.html"
+
+      // modals
+    case "modal-order" => "/public/app/modals/my-order-modal.html"
 
       // directive templates
     case "mySimpleNumberDisplay" => "/public/app/directives/mySimpleNumberDisplay/my-simple-number-display.html"

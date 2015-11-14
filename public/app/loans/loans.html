@@ -1,0 +1,25 @@
+<div id="wrapper">
+    <my-nav-bar active="loans"></my-nav-bar>
+    <div id="page-wrapper" class="gray-bg">
+        <my-nav-bar-top></my-nav-bar-top>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Available Loans</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div ui-grid="vm.loansTable.options" class="myGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div>
+                <strong>Copyright</strong> Lattice Markets &copy; 2014-2015
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,6 +11,7 @@
  * Created by julienderay on 26/10/2015.
  */
 
+// TODO: rename authentification in authentication
 (function () {
     'use strict';
 
