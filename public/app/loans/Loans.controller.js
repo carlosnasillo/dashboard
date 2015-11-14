@@ -202,7 +202,7 @@
             $scope.loading = false;
 
             $scope.disabled = function() {
-                return $scope.slider.value > $scope.slider.max;
+                return $scope.slider.value > $scope.slider.max || $scope.slider.value <= 0 || !isNumeric($scope.slider.value);
             };
 
             $scope.ok = function () {
@@ -237,6 +237,10 @@
                 );
 
                 closeModal();
+            }
+
+            function isNumeric(n) {
+                return !isNaN(parseFloat(n)) && isFinite(n);
             }
         }
     }
