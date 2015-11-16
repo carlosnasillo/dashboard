@@ -162,6 +162,23 @@
                     type: 'number'
                 },
                 {
+                    field: 'intRate',
+                    displayName: 'Yield',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
+                    headerCellClass: vm.highlightFilteredHeader,
+                    cellTemplate: '<div class="ui-grid-cell-contents">{{ COL_FIELD }} %</div>',
+                    type: 'number'
+                },
+                {
                     field: 'purpose',
                     headerCellClass: vm.highlightFilteredHeader + " bigHeader",
                     filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><isteven-multi-select input-model="col.grid.appScope.vm.loansTable.purposeOptions" button-label="purpose" item-label="purpose" tick-property="ticked" max-labels="1" helper-elements="" on-item-click="col.grid.appScope.vm.loansTable.purposeFilterClick(data)" default-label="None" max-height="70px" class="level-multi-select"></isteven-multi-select></div>'
