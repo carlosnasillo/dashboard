@@ -10,41 +10,42 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/bootstrap/bootstrap.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/bootstrap/font-awesome/css/font-awesome.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/bootstrap/dist/css/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/font-awesome/css/font-awesome.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("third/inspinia/animate.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/inspinia/plugins/chartist/chartist.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/angularjs/angular-chart.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/ui-grid/ui-grid.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/inspinia/plugins/bootstrapSlider/bootstrap.slider.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/inspinia/plugins/sweetalert/sweetalert.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("third/inspinia/plugins/angularMultiSelect/angularMultiSelect.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/chartist/dist/chartist.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/angular-chart.js/dist/angular-chart.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/angular-ui-grid/ui-grid.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/sweetalert/dist/sweetalert.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/isteven-angular-multiselect/isteven-multi-select.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/style.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/main.css")">
     </head>
     <body>
-
 
         <div data-ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" data-ng-if="flash" data-ng-bind="flash.message"></div>
         <div data-ng-view></div>
 
 
         <!-- Third scripts -->
-        <script src="@routes.Assets.versioned("third/jquery/jquery-2.1.1.js")"></script>
-        <script src="@routes.Assets.versioned("third/bootstrap/bootstrap.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/jquery/dist/jquery.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/bootstrap/dist/js/bootstrap.min.js")"></script>
         <script src="@routes.Assets.versioned("third/inspinia/inspinia.js")"></script>
 
-        <!-- ChartJS-->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/chartJs/Chart.min.js")"></script>
-
         <!-- Core Angular -->
-        <script src="@routes.Assets.versioned("third/angularjs/angular.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("third/angularjs/angular-resource.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("third/angularjs/angular-route.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("third/angularjs/angular-cookies.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("third/angularjs/angular-chart.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular/angular.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-resource/angular-resource.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-route/angular-route.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-cookies/angular-cookies.min.js")" type="text/javascript"></script>
 
-        <script src="@routes.Assets.versioned("third/bootstrap/ui-bootstrap-tpls-0.12.0.min.js")"></script>
+        <!-- UI-Bootstrap -->
+        <script src="@routes.Assets.versioned("bower_components/angular-bootstrap/ui-bootstrap.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js")"></script>
+
+        <!-- ChartJS-->
+        <script src="@routes.Assets.versioned("bower_components/Chart.js/Chart.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-chart.js/dist/angular-chart.min.js")" type="text/javascript"></script>
 
         <!-- AngularJS app -->
         <script src="@routes.Assets.versioned("app/app.js")" type="text/javascript"></script>
@@ -75,33 +76,38 @@
         <script src="@routes.Assets.versioned("app/directives/mySlider/mySlider.directive.js")" type="text/javascript"></script>
 
         <!-- Charts scripts -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/metisMenu/jquery.metisMenu.js")"></script>
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/slimscroll/jquery.slimscroll.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/metisMenu/dist/metisMenu.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/slimscroll/jquery.slimscroll.min.js")"></script>
+
         <!-- Flot -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/flot/jquery.flot.js")"></script>
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/flot/jquery.flot.tooltip.min.js")"></script>
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/flot/jquery.flot.resize.js")"></script>
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/flot/jquery.flot.pie.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/Flot/jquery.flot.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/Flot/jquery.flot.resize.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/Flot/jquery.flot.pie.js")"></script>
+
+        <!-- flot.tooltip -->
+        <script src="@routes.Assets.versioned("bower_components/flot.tooltip/js/jquery.flot.tooltip.min.js")"></script>
+
         <!-- Chartist -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/chartist/chartist.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/chartist/dist/chartist.min.js")"></script>
+
         <!-- Ui grid -->
-        <script src="@routes.Assets.versioned("third/ui-grid/ui-grid.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-ui-grid/ui-grid.min.js")"></script>
 
         <!-- Custom and plugin javascript -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/pace/pace.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/PACE/pace.min.js")"></script>
 
         <!-- Peity -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/peity/jquery.peity.min.js")"></script>
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/peity/angular-peity.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/peity/jquery.peity.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-peity/angular-peity.js")"></script>
 
         <!-- ion.rangeSlider -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/bootstrapSlider/bootstrap.slider.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js")"></script>
 
         <!-- sweetalrt -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/sweetalert/angular-sweetalert.min.js")"></script>
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/sweetalert/sweetalert.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/ngSweetAlert/SweetAlert.min.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/sweetalert/dist/sweetalert.min.js")"></script>
 
         <!-- angularMultiSelect -->
-        <script src="@routes.Assets.versioned("third/inspinia/plugins/angularMultiSelect/angularMultiSelect.js")"></script>
+        <script src="@routes.Assets.versioned("bower_components/isteven-angular-multiselect/isteven-multi-select.js")"></script>
     </body>
 </html>

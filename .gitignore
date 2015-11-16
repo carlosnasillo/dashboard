@@ -48,3 +48,6 @@ logs/
 /.classpath
 /.project
 RUNNING_PID
+
+# Web dep
+public/bower_components
