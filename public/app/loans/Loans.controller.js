@@ -34,6 +34,8 @@
                 data.foundedPie = [data.fundedAmountPerCenter, 100 - data.fundedAmountPerCenter];
 
                 listPurpose[data.purpose] = data.purpose;
+                data.originator = "Lending Club";
+
                 return data;
             });
 
@@ -79,6 +81,21 @@
             enableSorting: true,
             enableFiltering: true,
             columnDefs: [
+                {
+                    field: 'originator',
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
+                            for (var i in searchTerms) {
+                                if ( searchTerms.hasOwnProperty(i) ) {
+                                    if (cellValue.startsWith(searchTerms[i])) return true;
+                                }
+                            }
+                            return false;
+                        },
+                        placeholder: 'ex: "Prosper" or "Lending Club, Prosper"'
+                    }
+                },
                 {
                     field: 'id',
                     displayName: 'Listing Id',
@@ -186,28 +203,30 @@
                 {
                     field: 'id',
                     displayName: 'Order',
-                    cellTemplate: "<div class='text-center'><span data-ng-if='row.entity.loanAmount > row.entity.fundedAmount' class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.loanAmount, row.entity.fundedAmount)'>Add to Order</span><span data-ng-if='row.entity.loanAmount === row.entity.fundedAmount' class='label label-warning' disabled='disabled'>Not available</span></div>",
+                    cellTemplate: "<div class='text-center'><span data-ng-if='row.entity.loanAmount > row.entity.fundedAmount' class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.loanAmount, row.entity.fundedAmount, row.entity.originator)'>Add to Order</span><span data-ng-if='row.entity.loanAmount === row.entity.fundedAmount' class='label label-warning' disabled='disabled'>Not available</span></div>",
                     enableFiltering: false
                 }
             ]
         };
 
-        vm.order = function(loanId, loanAmount, fundedAmount) {
+        vm.order = function(loanId, loanAmount, fundedAmount, originator) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'view/modal-order',
                 controller: OrderModalInstanceCtrl,
                 resolve: {
                     loanId: function() { return loanId; },
                     loanAmount: function() { return loanAmount; },
-                    fundedAmount: function() { return fundedAmount; }
+                    fundedAmount: function() { return fundedAmount; },
+                    originator: function() { return originator; }
                 }
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, SweetAlert, LoansService) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
+            $scope.originator = originator;
 
             $scope.slider = {
                 min: 0,
