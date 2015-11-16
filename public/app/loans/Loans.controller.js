@@ -138,7 +138,7 @@
                 },
                 {
                     field: 'fundedAmountPerCenter',
-                    displayName: 'Founded',
+                    displayName: 'Funded',
                     filters: [
                         {
                             condition: uiGridConstants.filter.GREATER_THAN,
