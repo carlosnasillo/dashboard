@@ -75,7 +75,7 @@
 
             var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
             var firstMonth = (new Date().getMonth() + 2) % 12;
-            firstMonth = (firstMonth == 0) ? 12 : firstMonth;
+            firstMonth = (firstMonth === 0) ? 12 : firstMonth;
 
             var currentYear = new Date().getFullYear();
 

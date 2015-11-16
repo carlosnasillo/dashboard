@@ -182,7 +182,7 @@
 
                                 var callback = function () {
                                     fn($scope.$parent, { $event: ev, value: ev });
-                                }
+                                };
 
                                 if ($rootScope.$$phase) {
                                     $scope.$evalAsync(callback);
@@ -228,5 +228,5 @@
                 });
             }
         };
-    }])
+    }]);
 })();

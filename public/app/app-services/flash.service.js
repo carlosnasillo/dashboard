@@ -22,8 +22,8 @@
     function FlashService($rootScope) {
         var service = {};
 
-        service.Success = Success;
-        service.Error = Error;
+        service.Success = flashSuccess;
+        service.Error = flashError;
 
         initService();
 
@@ -47,7 +47,7 @@
             }
         }
 
-        function Success(message, keepAfterLocationChange) {
+        function flashSuccess(message, keepAfterLocationChange) {
             $rootScope.flash = {
                 message: message.data,
                 type: 'success',
@@ -55,7 +55,7 @@
             };
         }
 
-        function Error(message, keepAfterLocationChange) {
+        function flashError(message, keepAfterLocationChange) {
             $rootScope.flash = {
                 message: message.data,
                 type: 'error',
