@@ -51,3 +51,4 @@ RUNNING_PID
 
 # Web dep
 public/bower_components
+public/dist
