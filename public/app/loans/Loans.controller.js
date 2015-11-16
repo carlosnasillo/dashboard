@@ -197,8 +197,19 @@
                 },
                 {
                     field: 'purpose',
-                    headerCellClass: vm.highlightFilteredHeader + " bigHeader",
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><isteven-multi-select input-model="col.grid.appScope.vm.loansTable.purposeOptions" button-label="purpose" item-label="purpose" tick-property="ticked" max-labels="1" helper-elements="" on-item-click="col.grid.appScope.vm.loansTable.purposeFilterClick(data)" default-label="None" max-height="70px" class="level-multi-select"></isteven-multi-select></div>'
+                    headerCellClass: vm.highlightFilteredHeader,
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
+                            for (var i in searchTerms) {
+                                if ( searchTerms.hasOwnProperty(i) ) {
+                                    if (cellValue.startsWith(searchTerms[i])) return true;
+                                }
+                            }
+                            return false;
+                        },
+                        placeholder: 'ex: "car" or "house, car"'
+                    }
                 },
                 {
                     field: 'id',
