@@ -18,49 +18,44 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal'];
+    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal', '$filter'];
 
-    function LoansController(LoansService, uiGridConstants, $uibModal) {
+    function LoansController(LoansService, uiGridConstants, $uibModal, $filter) {
         var vm = this;
 
         vm.loansTable = { options: {} };
-        vm.loansTable.purposeOptions = [];
 
         LoansService.loansAvailable().success(function(data) {
-            var listPurpose = {};
 
             vm.loansTable.options.data = data.loans.map(function(data) {
                 data.fundedAmountPerCenter = (data.fundedAmount / data.loanAmount) * 100;
                 data.foundedPie = [data.fundedAmountPerCenter, 100 - data.fundedAmountPerCenter];
 
-                listPurpose[data.purpose] = data.purpose;
                 data.originator = "Lending Club";
+
+                data.listDToFormatedDate = $filter('date')(data.listD, "dd/MM/yyyy");
 
                 return data;
             });
 
-            vm.loansTable.purposeOptions =
-                Object
-                    .keys(listPurpose)
-                    .map(function(purpose) {
-                        return { purpose: purpose, ticked: true };
-                    });
-
             vm.originalData = vm.loansTable.options.data;
         });
 
-        vm.loansTable.purposeFilterClick = function(data) {
-            var selectedPurposes = vm.loansTable.purposeOptions
-                .filter(function(purposeObj) {
-                    return purposeObj.ticked;
-                })
-                .map(function(purposeObj) {
-                    return purposeObj.purpose;
+        vm.globalFilter = {
+            value: "",
+            onChange: function() {
+                vm.loansTable.options.data = vm.originalData.filter(function(loanObj) {
+                    var filter = vm.globalFilter.value;
+                    return String( loanObj.id ).startsWith( filter ) ||
+                        String( loanObj.originator ).startsWith( filter ) ||
+                        String( loanObj.listDToFormatedDate ).startsWith( filter ) ||
+                        String( loanObj.loanAmount ).startsWith( filter ) ||
+                        String( loanObj.fundedAmount ).startsWith( filter ) ||
+                        String( loanObj.term ).startsWith( filter ) ||
+                        String( loanObj.intRate ).startsWith( filter ) ||
+                        String( loanObj.purpose ).startsWith( filter );
                 });
-
-            vm.loansTable.options.data = vm.originalData.filter(function(loanObj) {
-               return selectedPurposes.indexOf( loanObj.purpose ) > -1;
-            });
+            }
         };
 
         vm.loansTable.pieChartOptions = {
