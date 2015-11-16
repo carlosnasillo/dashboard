@@ -55,6 +55,22 @@ module.exports = function(grunt) {
     },
     jshint: {
         all: [ 'Gruntfile.js', 'app/*.js', 'app/**/*.js' ]
+    },
+    watch: {
+        dev: {
+            files: [ 'Gruntfile.js', 'app/**/*.js', '*.html' ],
+            tasks: [ 'jshint', 'concat' ],
+            options: {
+                atBegin: true
+            }
+        },
+        min: {
+            files: [ 'Gruntfile.js', 'app/*.js', 'app/**/*.js', '*.html' ],
+            tasks: [ 'jshint', 'concat', 'uglify:dist' ],
+            options: {
+                atBegin: true
+            }
+        }
     }
   });
 
@@ -63,7 +79,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-bower-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', ['bower', 'jshint', 'concat', 'uglify:dist', 'bower_concat', 'uglify:bower']);
-    grunt.registerTask('dev', ['bower', 'jshint', 'concat', 'bower_concat']);
+    grunt.registerTask('default', ['bower', 'bower_concat', 'uglify:bower', 'watch:min']);
+    grunt.registerTask('dev', ['bower', 'bower_concat', 'watch:dev']);
 };
