@@ -234,13 +234,27 @@
                 min: originatorMinInvest,
                 max: loanAmount - fundedAmount,
                 step: 0.01,
-                value: originatorMinInvest
+                value: parseInt(originatorMinInvest) + 1
             };
 
             $scope.loading = false;
 
+            $scope.conditions = {
+                valueGtRemaining: function() {
+                    return $scope.slider.value > $scope.slider.max;
+                },
+                valueLtMin: function() {
+                    return $scope.slider.value <= originatorMinInvest;
+                },
+                notNumeric: function() {
+                    return !isNumeric($scope.slider.value);
+                }
+            };
+
             $scope.disabled = function() {
-                return $scope.slider.value > $scope.slider.max || $scope.slider.value <= originatorMinInvest || !isNumeric($scope.slider.value);
+                return $scope.conditions.valueGtRemaining() ||
+                    $scope.conditions.valueLtMin() ||
+                    $scope.conditions.notNumeric();
             };
 
             $scope.ok = function () {

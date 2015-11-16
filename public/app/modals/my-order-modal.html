@@ -25,6 +25,10 @@
         </div>
     </div>
     <div class="modal-footer">
+        <span class="text-danger" data-ng-show="conditions.valueGtRemaining()">Value greater than remaining to fund.</span>
+        <span class="text-danger" data-ng-show="conditions.valueLtMin()">The minimum to invest with {{originator}} is {{slider.min}}.</span>
+        <span class="text-danger" data-ng-show="conditions.notNumeric()">This value is not a number.</span>
+
         <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
         <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="disabled()">Save order</button>
     </div>
