@@ -222,23 +222,25 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService, minInvestByOriginator) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
             $scope.originator = originator;
 
+            var originatorMinInvest = minInvestByOriginator[toCamelCase(originator)];
+
             $scope.slider = {
-                min: 0,
+                min: originatorMinInvest,
                 max: loanAmount - fundedAmount,
                 step: 0.01,
-                value: 0
+                value: originatorMinInvest
             };
 
             $scope.loading = false;
 
             $scope.disabled = function() {
-                return $scope.slider.value > $scope.slider.max || $scope.slider.value <= 0 || !isNumeric($scope.slider.value);
+                return $scope.slider.value > $scope.slider.max || $scope.slider.value <= originatorMinInvest || !isNumeric($scope.slider.value);
             };
 
             $scope.ok = function () {
@@ -277,6 +279,13 @@
 
             function isNumeric(n) {
                 return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+
+            function toCamelCase(str) {
+                return str
+                .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+                .replace(/\s/g, '')
+                .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
             }
         }
     }
