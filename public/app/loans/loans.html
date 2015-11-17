@@ -10,6 +10,7 @@
                             <h5>Available Loans</h5>
                         </div>
                         <div class="ibox-content">
+                            <input data-ng-model="vm.globalFilter.value" ng-change="vm.globalFilter.onChange()" class="form-control margin-bottom-20" placeholder="Global search">
                             <div ui-grid="vm.loansTable.options" class="myGrid"></div>
                         </div>
                     </div>

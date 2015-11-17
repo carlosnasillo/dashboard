@@ -18,47 +18,44 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal'];
+    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal', '$filter'];
 
-    function LoansController(LoansService, uiGridConstants, $uibModal) {
+    function LoansController(LoansService, uiGridConstants, $uibModal, $filter) {
         var vm = this;
 
         vm.loansTable = { options: {} };
-        vm.loansTable.purposeOptions = [];
 
         LoansService.loansAvailable().success(function(data) {
-            var listPurpose = {};
 
             vm.loansTable.options.data = data.loans.map(function(data) {
                 data.fundedAmountPerCenter = (data.fundedAmount / data.loanAmount) * 100;
                 data.foundedPie = [data.fundedAmountPerCenter, 100 - data.fundedAmountPerCenter];
 
-                listPurpose[data.purpose] = data.purpose;
+                data.originator = "Lending Club";
+
+                data.listDToFormatedDate = $filter('date')(data.listD, "dd/MM/yyyy");
+
                 return data;
             });
-
-            vm.loansTable.purposeOptions =
-                Object
-                    .keys(listPurpose)
-                    .map(function(purpose) {
-                        return { purpose: purpose, ticked: true };
-                    });
 
             vm.originalData = vm.loansTable.options.data;
         });
 
-        vm.loansTable.purposeFilterClick = function(data) {
-            var selectedPurposes = vm.loansTable.purposeOptions
-                .filter(function(purposeObj) {
-                    return purposeObj.ticked;
-                })
-                .map(function(purposeObj) {
-                    return purposeObj.purpose;
+        vm.globalFilter = {
+            value: "",
+            onChange: function() {
+                vm.loansTable.options.data = vm.originalData.filter(function(loanObj) {
+                    var filter = vm.globalFilter.value;
+                    return String( loanObj.id ).startsWith( filter ) ||
+                        String( loanObj.originator ).startsWith( filter ) ||
+                        String( loanObj.listDToFormatedDate ).startsWith( filter ) ||
+                        String( loanObj.loanAmount ).startsWith( filter ) ||
+                        String( loanObj.fundedAmount ).startsWith( filter ) ||
+                        String( loanObj.term ).startsWith( filter ) ||
+                        String( loanObj.intRate ).startsWith( filter ) ||
+                        String( loanObj.purpose ).startsWith( filter );
                 });
-
-            vm.loansTable.options.data = vm.originalData.filter(function(loanObj) {
-               return selectedPurposes.indexOf( loanObj.purpose ) > -1;
-            });
+            }
         };
 
         vm.loansTable.pieChartOptions = {
@@ -79,6 +76,21 @@
             enableSorting: true,
             enableFiltering: true,
             columnDefs: [
+                {
+                    field: 'originator',
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
+                            for (var i in searchTerms) {
+                                if ( searchTerms.hasOwnProperty(i) ) {
+                                    if (cellValue.startsWith(searchTerms[i])) return true;
+                                }
+                            }
+                            return false;
+                        },
+                        placeholder: 'ex: "Prosper" or "Lending Club, Prosper"'
+                    }
+                },
                 {
                     field: 'id',
                     displayName: 'Listing Id',
@@ -121,7 +133,7 @@
                 },
                 {
                     field: 'fundedAmountPerCenter',
-                    displayName: 'Founded',
+                    displayName: 'Funded',
                     filters: [
                         {
                             condition: uiGridConstants.filter.GREATER_THAN,
@@ -162,47 +174,93 @@
                     type: 'number'
                 },
                 {
+                    field: 'intRate',
+                    displayName: 'Yield',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
+                    headerCellClass: vm.highlightFilteredHeader,
+                    cellTemplate: '<div class="ui-grid-cell-contents">{{ COL_FIELD }} %</div>',
+                    type: 'number'
+                },
+                {
                     field: 'purpose',
-                    headerCellClass: vm.highlightFilteredHeader + " bigHeader",
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><isteven-multi-select input-model="col.grid.appScope.vm.loansTable.purposeOptions" button-label="purpose" item-label="purpose" tick-property="ticked" max-labels="1" helper-elements="" on-item-click="col.grid.appScope.vm.loansTable.purposeFilterClick(data)" default-label="None" max-height="70px" class="level-multi-select"></isteven-multi-select></div>'
+                    headerCellClass: vm.highlightFilteredHeader,
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
+                            for (var i in searchTerms) {
+                                if ( searchTerms.hasOwnProperty(i) ) {
+                                    if (cellValue.startsWith(searchTerms[i])) return true;
+                                }
+                            }
+                            return false;
+                        },
+                        placeholder: 'ex: "car" or "house, car"'
+                    }
                 },
                 {
                     field: 'id',
                     displayName: 'Order',
-                    cellTemplate: "<div class='text-center'><span data-ng-if='row.entity.loanAmount > row.entity.fundedAmount' class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.loanAmount, row.entity.fundedAmount)'>Add to Order</span><span data-ng-if='row.entity.loanAmount === row.entity.fundedAmount' class='label label-warning' disabled='disabled'>Not available</span></div>",
+                    cellTemplate: "<div class='text-center'><span data-ng-if='row.entity.loanAmount > row.entity.fundedAmount' class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.loanAmount, row.entity.fundedAmount, row.entity.originator)'>Add to Order</span><span data-ng-if='row.entity.loanAmount === row.entity.fundedAmount' class='label label-warning' disabled='disabled'>Not available</span></div>",
                     enableFiltering: false
                 }
             ]
         };
 
-        vm.order = function(loanId, loanAmount, fundedAmount) {
+        vm.order = function(loanId, loanAmount, fundedAmount, originator) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'view/modal-order',
                 controller: OrderModalInstanceCtrl,
                 resolve: {
                     loanId: function() { return loanId; },
                     loanAmount: function() { return loanAmount; },
-                    fundedAmount: function() { return fundedAmount; }
+                    fundedAmount: function() { return fundedAmount; },
+                    originator: function() { return originator; }
                 }
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, SweetAlert, LoansService) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService, minInvestByOriginator) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
+            $scope.originator = originator;
+
+            var originatorMinInvest = minInvestByOriginator[toCamelCase(originator)];
 
             $scope.slider = {
-                min: 0,
+                min: originatorMinInvest,
                 max: loanAmount - fundedAmount,
                 step: 0.01,
-                value: 0
+                value: parseInt(originatorMinInvest) + 1
             };
 
             $scope.loading = false;
 
+            $scope.conditions = {
+                valueGtRemaining: function() {
+                    return $scope.slider.value > $scope.slider.max;
+                },
+                valueLtMin: function() {
+                    return $scope.slider.value <= originatorMinInvest;
+                },
+                notNumeric: function() {
+                    return !isNumeric($scope.slider.value);
+                }
+            };
+
             $scope.disabled = function() {
-                return $scope.slider.value > $scope.slider.max || $scope.slider.value <= 0 || !isNumeric($scope.slider.value);
+                return $scope.conditions.valueGtRemaining() ||
+                    $scope.conditions.valueLtMin() ||
+                    $scope.conditions.notNumeric();
             };
 
             $scope.ok = function () {
@@ -241,6 +299,13 @@
 
             function isNumeric(n) {
                 return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+
+            function toCamelCase(str) {
+                return str
+                .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+                .replace(/\s/g, '')
+                .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
             }
         }
     }
