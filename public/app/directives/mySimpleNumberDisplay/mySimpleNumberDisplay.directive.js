@@ -36,7 +36,7 @@
                 scope.$watch('diff', function(diff) {
                 scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
                 if (scope.filter == "currency") {
-                    scope.value = $filter('currency')(scope.value)
+                    scope.value = $filter('currency')(scope.value);
                 }
 
                 scope.ratioLastValueNegative = scope.ratioLastValue < 0;

@@ -50,7 +50,7 @@
                 // Remove all inline style from jquery fadeIn function to reset menu state
                 $('#side-menu').removeAttr('style');
             }
-        }
+        };
     };
 })();
 

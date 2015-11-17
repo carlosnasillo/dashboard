@@ -18,9 +18,9 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService', 'uiGridConstants', '$modal'];
+    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal'];
 
-    function LoansController(LoansService, uiGridConstants, $modal) {
+    function LoansController(LoansService, uiGridConstants, $uibModal) {
         var vm = this;
 
         vm.loansTable = { options: {} };
@@ -164,7 +164,7 @@
                 {
                     field: 'purpose',
                     headerCellClass: vm.highlightFilteredHeader + " bigHeader",
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><multi-select input-model="col.grid.appScope.vm.loansTable.purposeOptions" button-label="purpose" item-label="purpose" tick-property="ticked" max-labels="1" helper-elements="" on-item-click="col.grid.appScope.vm.loansTable.purposeFilterClick(data)" default-label="None" max-height="70px" class="level-multi-select"></multi-select></div>'
+                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><isteven-multi-select input-model="col.grid.appScope.vm.loansTable.purposeOptions" button-label="purpose" item-label="purpose" tick-property="ticked" max-labels="1" helper-elements="" on-item-click="col.grid.appScope.vm.loansTable.purposeFilterClick(data)" default-label="None" max-height="70px" class="level-multi-select"></isteven-multi-select></div>'
                 },
                 {
                     field: 'id',
@@ -176,7 +176,7 @@
         };
 
         vm.order = function(loanId, loanAmount, fundedAmount) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'view/modal-order',
                 controller: OrderModalInstanceCtrl,
                 resolve: {

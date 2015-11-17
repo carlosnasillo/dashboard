@@ -74,6 +74,6 @@
                 liquidityByGrade: liquidityByGrade(),
                 dailyChangeInNumLoans: dailyChangeInNumLoans(),
                 dailyChangeInLiquidity: dailyChangeInLiquidity()
-            }
+            };
         });
 })();

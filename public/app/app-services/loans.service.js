@@ -28,12 +28,12 @@
             };
 
             var submitOrder = function(investorId, loanId, amount) {
-                return $http.post('/api/placeOrder', { investorId: investorId, loanId: loanId, amount: amount })
+                return $http.post('/api/placeOrder', { investorId: investorId, loanId: loanId, amount: amount });
             };
 
             return {
                 loansAvailable: loansAvailable,
                 submitOrder: submitOrder
-            }
+            };
         });
 })();

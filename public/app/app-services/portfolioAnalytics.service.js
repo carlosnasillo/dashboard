@@ -90,13 +90,13 @@
 
 
             return {
-                LCPortfolioAnalytics: LCPortfolioAnalytics(),
+                LCPortfolioAnalytics: new LCPortfolioAnalytics(),
                 notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),
                 notesAcquiredTodayByYield: notesAcquiredTodayByYield(),
                 notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose(),
                 notesAcquiredThisYearByMonthByGrade: notesAcquiredThisYearByMonthByGrade(),
                 notesAcquiredThisYearByMonthByYield: notesAcquiredThisYearByMonthByYield(),
                 notesAcquiredThisYearByMonthByPurpose: notesAcquiredThisYearByMonthByPurpose()
-            }
+            };
         });
 })();
