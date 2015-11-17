@@ -18,9 +18,9 @@
         .module('app')
         .controller('LoansController', LoansController);
 
-    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal', '$filter'];
+    LoansController.$inject = ['LoansService', 'uiGridConstants', '$uibModal', '$filter', '$scope'];
 
-    function LoansController(LoansService, uiGridConstants, $uibModal, $filter) {
+    function LoansController(LoansService, uiGridConstants, $uibModal, $filter, $scope) {
         var vm = this;
 
         vm.loansTable = { options: {} };
@@ -71,6 +71,64 @@
             }
         };
 
+        function applyDateFilter() {
+            var startDateTerm = vm.loansTable.datePicker.date.startDate;
+            var endDateTerm = vm.loansTable.datePicker.date.endDate;
+
+            var data = vm.originalData;
+
+            var gt = function(cellDate, filterDate) { return cellDate >= filterDate; };
+            var lt = function(cellDate, filterDate) { return cellDate <= filterDate; };
+
+            data = dateFilter(gt, startDateTerm, data);
+            data = dateFilter(lt, endDateTerm, data);
+
+            vm.loansTable.options.data = data;
+
+            function dateFilter(filter, newDate, data) {
+                if ( newDate !== null ) {
+                    var searchDate = newDate.toDate();
+                    return data.filter(function(loanObj) {
+                        var cellDate = parseEuDate(loanObj.listDToFormatedDate);
+
+                        return filter(cellDate, searchDate);
+                    });
+                }
+                else {
+                    return data;
+                }
+            }
+
+            function parseEuDate(str) {
+                var parts = str.split("/");
+                return new Date(parseInt(parts[2], 10),
+                    parseInt(parts[1], 10) - 1,
+                    parseInt(parts[0], 10));
+            }
+        }
+
+        vm.loansTable.datePicker = {
+            date: {
+                startDate: null,
+                endDate: null
+            },
+            options: {
+                singleDatePicker: true
+            },
+            reset: {
+                start: function() { vm.loansTable.datePicker.date.startDate = null; },
+                end: function() { vm.loansTable.datePicker.date.endDate = null; }
+            }
+        };
+
+        $scope.$watch('vm.loansTable.datePicker.date.startDate', function() {
+            applyDateFilter();
+        }, false);
+
+        $scope.$watch('vm.loansTable.datePicker.date.endDate', function() {
+            applyDateFilter();
+        }, false);
+
         vm.loansTable.options = {
             enableColumnMenus: false,
             enableSorting: true,
@@ -104,16 +162,7 @@
                     cellFilter: 'date:"dd/MM/yyyy"',
                     filterCellFiltered: true,
                     type: 'date',
-                    filters: [
-                        {
-                            condition: uiGridConstants.filter.GREATER_THAN,
-                            placeholder: 'greater than'
-                        },
-                        {
-                            condition: uiGridConstants.filter.LESS_THAN,
-                            placeholder: 'less than'
-                        }
-                    ]
+                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div class="row"> <input date-range-picker placeholder="greater than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.loansTable.datePicker.date.startDate" max="col.grid.appScope.vm.loansTable.datePicker.date.endDate" options="col.grid.appScope.vm.loansTable.datePicker.options" /><button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.loansTable.datePicker.reset.start()"><i class="ui-grid-icon-cancel"></i></button></div> <div class="row"> <input date-range-picker placeholder="less than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.loansTable.datePicker.date.endDate" min="col.grid.appScope.vm.loansTable.datePicker.date.startDate" options="col.grid.appScope.vm.loansTable.datePicker.options" /><button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.loansTable.datePicker.reset.end()"><i class="ui-grid-icon-cancel"></i></button></div></div>'
                 },
                 {
                     field: 'loanAmount',
