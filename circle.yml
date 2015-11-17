@@ -13,10 +13,15 @@ dependencies:
   override:
     - "./activator compile":
         timeout: 300
+  pre:
+    - "cd public && npm install":
+        timeout: 300
 
 test:
   override:
     - "./activator test":
+        timeout: 900
+    - "cd public && npm test":
         timeout: 900
   post:
     - "mkdir -p $CIRCLE_TEST_REPORTS/junit/"
