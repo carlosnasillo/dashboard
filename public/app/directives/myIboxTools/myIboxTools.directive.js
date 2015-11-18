@@ -24,7 +24,7 @@
         return {
             restrict: 'A',
             scope: true,
-            templateUrl: 'view/myIboxTools',
+            templateUrl: 'assets/app/directives/myIboxTools/my-ibox-tools.html',
             controller: controller
         };
     }

@@ -31,7 +31,7 @@
                 diff: '=diff',
                 filter: '@'
             },
-            templateUrl: 'view/mySimpleNumberDisplay',
+            templateUrl: 'assets/app/directives/mySimpleNumberDisplay/my-simple-number-display.html',
             link: function(scope) {
                 scope.$watch('diff', function(diff) {
                 scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
