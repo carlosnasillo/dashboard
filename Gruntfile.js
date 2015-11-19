@@ -76,6 +76,15 @@ grunt.initConfig({
                 'fontawesome-webfont.woff2': 'font-awesome/fonts/fontawesome-webfont.woff2',
                 'fontawesome-webfont.ttf': 'font-awesome/fonts/fontawesome-webfont.ttf'
             }
+        },
+        uigridfonts: {
+            options: {
+                destPrefix: 'public/dist'
+            },
+            files: {
+                'ui-grid.woff': 'angular-ui-grid/ui-grid.woff',
+                'ui-grid.ttf': 'angular-ui-grid/ui-grid.ttf'
+            }
         }
     },
     jshint: {
