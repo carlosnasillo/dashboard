@@ -23,7 +23,11 @@
     function LoansController(LoansService, uiGridConstants, $uibModal, $filter, $scope) {
         var vm = this;
 
+        // Hardcoded since we don't really manage this for now
+        vm.investorId = 'BlackRock';
+
         vm.loansTable = { options: {} };
+        vm.originalData = {};
 
         LoansService.loansAvailable().success(function(data) {
 
@@ -38,13 +42,13 @@
                 return data;
             });
 
-            vm.originalData = vm.loansTable.options.data;
+            vm.originalData.loans = vm.loansTable.options.data;
         });
 
-        vm.globalFilter = {
+        vm.globalFilterLoans = {
             value: "",
             onChange: function() {
-                vm.loansTable.options.data = vm.originalData.filter(function(loanObj) {
+                vm.loansTable.options.data = vm.originalData.loans.filter(function(loanObj) {
                     var filter = vm.globalFilter.value;
                     return String( loanObj.id ).startsWith( filter ) ||
                         String( loanObj.originator ).startsWith( filter ) ||
@@ -71,11 +75,8 @@
             }
         };
 
-        function applyDateFilter() {
-            var startDateTerm = vm.loansTable.datePicker.date.startDate;
-            var endDateTerm = vm.loansTable.datePicker.date.endDate;
-
-            var data = vm.originalData;
+        function applyDateFilter(startDateTerm, endDateTerm, filterKey, originalData, callback) {
+            var data = originalData;
 
             var gt = function(cellDate, filterDate) { return cellDate >= filterDate; };
             var lt = function(cellDate, filterDate) { return cellDate <= filterDate; };
@@ -83,13 +84,13 @@
             data = dateFilter(gt, startDateTerm, data);
             data = dateFilter(lt, endDateTerm, data);
 
-            vm.loansTable.options.data = data;
+            callback(data);
 
             function dateFilter(filter, newDate, data) {
                 if ( newDate !== null ) {
                     var searchDate = newDate.toDate();
                     return data.filter(function(loanObj) {
-                        var cellDate = parseEuDate(loanObj.listDToFormatedDate);
+                        var cellDate = parseEuDate(loanObj[filterKey]);
 
                         return filter(cellDate, searchDate);
                     });
@@ -122,11 +123,21 @@
         };
 
         $scope.$watch('vm.loansTable.datePicker.date.startDate', function() {
-            applyDateFilter();
+            applyDateFilter(
+                vm.loansTable.datePicker.date.startDate,
+                vm.loansTable.datePicker.date.endDate,
+                'listDToFormatedDate',
+                vm.originalData.loans,
+                function(filteredData) { vm.loansTable.options.data = filteredData; });
         }, false);
 
         $scope.$watch('vm.loansTable.datePicker.date.endDate', function() {
-            applyDateFilter();
+            applyDateFilter(
+                vm.loansTable.datePicker.date.startDate,
+                vm.loansTable.datePicker.date.endDate,
+                'listDToFormatedDate',
+                vm.originalData.loans,
+                function(filteredData) { vm.loansTable.options.data = filteredData; });
         }, false);
 
         vm.loansTable.options = {
@@ -152,8 +163,7 @@
                 {
                     field: 'id',
                     displayName: 'Listing Id',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    type: 'number'
+                    headerCellClass: vm.highlightFilteredHeader
                 },
                 {
                     field: 'listD',
@@ -264,6 +274,229 @@
             ]
         };
 
+        /**
+         * Owned Notes Table
+         */
+
+        vm.notesTable = { options: {} };
+
+        LoansService.ownedNotes(vm.investorId).success(function(data) {
+
+            vm.notesTable.options.data = data.map(function(data) {
+                data.issueDateToFormatedDate = $filter('date')(data.issueDate, "dd/MM/yyyy");
+                data.orderDateToFormatedDate = $filter('date')(data.orderDate, "dd/MM/yyyy");
+
+                return data;
+            });
+
+            vm.originalData.notes = vm.notesTable.options.data;
+        });
+
+        vm.notesTable.datePicker = {
+            issueDate: {
+                startDate: null,
+                endDate: null
+            },
+            orderDate: {
+                startDate: null,
+                endDate: null
+            },
+            options: {
+                singleDatePicker: true
+            },
+            resetIssueDate: {
+                start: function() { vm.notesTable.datePicker.issueDate.startDate = null; },
+                end: function() { vm.notesTable.datePicker.issueDate.endDate = null; }
+            },
+            resetOrderDate: {
+                start: function() { vm.notesTable.datePicker.orderDate.startDate = null; },
+                end: function() { vm.notesTable.datePicker.orderDate.endDate = null; }
+            }
+        };
+
+        $scope.$watch('vm.notesTable.datePicker.issueDate.startDate', function() {
+            applyDateFilter(
+                vm.notesTable.datePicker.issueDate.startDate,
+                vm.notesTable.datePicker.issueDate.endDate,
+                'issueDateToFormatedDate',
+                vm.originalData.notes,
+                function(filteredData) { vm.notesTable.options.data = filteredData; }
+            );
+        }, false);
+
+        $scope.$watch('vm.notesTable.datePicker.issueDate.endDate', function() {
+            applyDateFilter(
+                vm.notesTable.datePicker.issueDate.startDate,
+                vm.notesTable.datePicker.issueDate.endDate,
+                'issueDateToFormatedDate',
+                vm.originalData.notes,
+                function(filteredData) { vm.notesTable.options.data = filteredData; }
+            );
+        }, false);
+
+        $scope.$watch('vm.notesTable.datePicker.orderDate.startDate', function() {
+            applyDateFilter(
+                vm.notesTable.datePicker.orderDate.startDate,
+                vm.notesTable.datePicker.orderDate.endDate,
+                'orderDateToFormatedDate',
+                vm.originalData.notes,
+                function(filteredData) { vm.notesTable.options.data = filteredData; }
+            );
+        }, false);
+
+        $scope.$watch('vm.notesTable.datePicker.orderDate.endDate', function() {
+            applyDateFilter(
+                vm.notesTable.datePicker.orderDate.startDate,
+                vm.notesTable.datePicker.orderDate.endDate,
+                'orderDateToFormatedDate',
+                vm.originalData.notes,
+                function(filteredData) { vm.notesTable.options.data = filteredData; }
+            );
+        }, false);
+
+        vm.globalFilterNotes = {
+            value: "",
+            onChange: function() {
+                vm.notesTable.options.data = vm.originalData.notes.filter(function(noteObj) {
+                    var filter = vm.globalFilterNotes.value;
+                    return String( noteObj.noteId ).startsWith( filter ) ||
+                        String( noteObj.originator ).startsWith( filter ) ||
+                        String( noteObj.orderDateToFormatedDate ).startsWith( filter ) ||
+                        String( noteObj.originalData ).startsWith( filter ) ||
+                        String( noteObj.loanAmount ).startsWith( filter ) ||
+                        String( noteObj.noteAmount ).startsWith( filter ) ||
+                        String( noteObj.term ).startsWith( filter ) ||
+                        String( noteObj.interestRate ).startsWith( filter ) ||
+                        String( noteObj.purpose ).startsWith( filter );
+                });
+            }
+        };
+
+        vm.notesTable.options = {
+            enableColumnMenus: false,
+            enableSorting: true,
+            enableFiltering: true,
+            columnDefs: [
+                                {
+                    field: 'noteId',
+                    displayName: 'Note Id',
+                    headerCellClass: vm.highlightFilteredHeader
+                },
+                {
+                    field: 'issueDate',
+                    displayName: 'Issue Date',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    cellFilter: 'date:"dd/MM/yyyy"',
+                    filterCellFiltered: true,
+                    type: 'date',
+                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div class="row"> <input date-range-picker placeholder="greater than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.datePicker.issueDate.startDate" max="col.grid.appScope.vm.notesTable.datePicker.issueDate.endDate" options="col.grid.appScope.vm.loansTable.datePicker.options" /><button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.datePicker.resetIssueDate.start()"><i class="ui-grid-icon-cancel"></i></button></div> <div class="row"> <input date-range-picker placeholder="less than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.datePicker.issueDate.endDate" min="col.grid.appScope.vm.notesTable.datePicker.issueDate.startDate" options="col.grid.appScope.vm.notesTable.datePicker.options" /><button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.datePicker.resetIssueDate.end()"><i class="ui-grid-icon-cancel"></i></button></div></div>'
+                },
+                {
+                    field: 'orderDate',
+                    displayName: 'Order Date',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    cellFilter: 'date:"dd/MM/yyyy"',
+                    filterCellFiltered: true,
+                    type: 'date',
+                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div class="row"> <input date-range-picker placeholder="greater than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.datePicker.orderDate.startDate" max="col.grid.appScope.vm.notesTable.datePicker.orderDate.endDate" options="col.grid.appScope.vm.notesTable.datePicker.options" /><button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.datePicker.resetOrderDate.start()"><i class="ui-grid-icon-cancel"></i></button></div> <div class="row"> <input date-range-picker placeholder="less than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.datePicker.orderDate.endDate" min="col.grid.appScope.vm.notesTable.datePicker.orderDate.startDate" options="col.grid.appScope.vm.notesTable.datePicker.options" /><button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.datePicker.resetOrderDate.end()"><i class="ui-grid-icon-cancel"></i></button></div></div>'
+                },
+                {
+                    field: 'loanAmount',
+                    displayName: 'Requested',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
+                },
+                {
+                    field: 'noteAmount',
+                    displayName: 'Note Amount',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
+                },
+                {
+                    field: 'grade',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            return searchTerm.split(',').map(function(search) { return search.trim(); }).indexOf(cellValue) >= 0;
+                        },
+                        placeholder: 'ex: "C" or "D, A"'
+                    }
+                },
+                {
+                    field: 'term',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
+                    headerCellClass: vm.highlightFilteredHeader,
+                    type: 'number'
+                },
+                {
+                    field: 'interestRate',
+                    displayName: 'Yield',
+                    filters: [
+                        {
+                            condition: uiGridConstants.filter.GREATER_THAN,
+                            placeholder: 'greater than'
+                        },
+                        {
+                            condition: uiGridConstants.filter.LESS_THAN,
+                            placeholder: 'less than'
+                        }
+                    ],
+                    headerCellClass: vm.highlightFilteredHeader,
+                    cellTemplate: '<div class="ui-grid-cell-contents">{{ COL_FIELD }} %</div>',
+                    type: 'number'
+                },
+                {
+                    field: 'purpose',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    filter: {
+                        condition: function(searchTerm, cellValue) {
+                            var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
+                            for (var i in searchTerms) {
+                                if ( searchTerms.hasOwnProperty(i) ) {
+                                    if (cellValue.startsWith(searchTerms[i])) return true;
+                                }
+                            }
+                            return false;
+                        },
+                        placeholder: 'ex: "car" or "house, car"'
+                    }
+                }
+            ]
+        };
+
+        /**
+         * Order button
+         */
+
         vm.order = function(loanId, loanAmount, fundedAmount, originator) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'view/modal-order',
@@ -314,7 +547,7 @@
 
             $scope.ok = function () {
                 $scope.loading = true;
-                LoansService.submitOrder('BlackRock', loanId, $scope.slider.value).then( orderSuccess, orderError );
+                LoansService.submitOrder(vm.investorId, loanId, $scope.slider.value).then( orderSuccess, orderError );
             };
 
             $scope.cancel = function () {
