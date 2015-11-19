@@ -7,9 +7,9 @@
  */
 package com.lattice.lib.utils
 
-import reactivemongo.api.MongoDriver
+import play.api.Play.current
+import play.modules.reactivemongo.ReactiveMongoApi
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 
@@ -19,16 +19,15 @@ import scala.language.postfixOps
  * @author ze97286
  */
 object DbUtil {
-  private val driver = new MongoDriver
-  private val connection = driver.connection(List("localhost"))
+  lazy val reactiveMongoApi = current.injector.instanceOf[ReactiveMongoApi]
 
   val timeout = 5 seconds
   val timeoutMillis = timeout.toMillis.toInt
 
-  lazy val db = connection("lattice")
+  lazy val db = reactiveMongoApi.db
 
   def closeDriver(): Unit = try {
-    driver.close()
+    reactiveMongoApi.driver.close()
   } catch { case _: Throwable => () }
 
 }

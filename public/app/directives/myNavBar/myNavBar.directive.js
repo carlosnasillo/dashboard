@@ -26,7 +26,7 @@
             scope: {
                 active: "@"
             },
-            templateUrl: 'view/myNavBar',
+            templateUrl: 'assets/app/directives/myNavBar/my-nav-bar.html',
             link: function(scope) {
                 scope.username = AuthenticationService.GetCurrentUsername();
 

@@ -19,27 +19,27 @@
     function config($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: "view/login",
+                templateUrl: "assets/app/login/login.html",
                 controller: "LoginController",
                 controllerAs: 'vm'
             })
             .when('/dashboard', {
-                templateUrl: "view/mainDashboard",
+                templateUrl: "assets/app/mainDashboard/mainDashboard.html",
                 controller: "MainDashboardController",
                 controllerAs: 'vm'
             })
             .when('/portfolio', {
-                templateUrl: "view/portfolio",
+                templateUrl: "assets/app/portfolio/portfolio.html",
                 controller: "PortfolioController",
                 controllerAs: 'vm'
             })
             .when('/analytics', {
-                templateUrl: "view/analytics",
+                templateUrl: "assets/app/analytics/analytics.html",
                 controller: "AnalyticsController",
                 controllerAs: 'vm'
             })
             .when('/loans', {
-                templateUrl: "view/loans",
+                templateUrl: "assets/app/loans/loans.html",
                 controller: "LoansController",
                 controllerAs: 'vm'
             })

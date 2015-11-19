@@ -25,7 +25,7 @@
             restrict: 'E',
             scope: {
             },
-            templateUrl: 'view/myNavBarTop',
+            templateUrl: 'assets/app/directives/myNavBarTop/my-nav-bar-top.html',
             link: function(scope) {
                 scope.logout = function() {
                     AuthenticationService.ClearCredentials();
