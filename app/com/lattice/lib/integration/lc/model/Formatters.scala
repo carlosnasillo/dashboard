@@ -11,10 +11,8 @@ import java.time.LocalDate
 
 import com.lattice.lib.integration.lc.impl.PortfolioAnalytics
 import com.lattice.lib.portfolio.MarketplacePortfolioAnalytics
-import models.Grade.Grade
-import models.{Grade, Term}
-import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json._
+import utils.Formatters._
 
 /**
  * @author ze97286
@@ -37,34 +35,12 @@ object Formatters {
   implicit val withdrawResponseFormat = Json.format[WithdrawFundsResponse]
   implicit val transferReponseFormat = Json.format[TransferFundsResponse]
 
-  def mapFormatFactory[A, B](strToA: String => A, strToB: String => B)(AtoKey: A => String, BtoValue: B => JsValueWrapper):  Format[Map[A, B]] = Format[Map[A, B]](
-    new Reads[Map[A, B]] {
-      def reads(jv: JsValue): JsResult[Map[A, B]] =
-        JsSuccess(jv.as[Map[String, String]].map {
-          case (k, v) =>
-            strToA(k) -> strToB(v)
-        })
-    },
-    new Writes[Map[A, B]] {
-      def writes(map: Map[A, B]): JsValue =
-        Json.obj(map.map {
-          case (s, o) =>
-            val ret: (String, JsValueWrapper) = AtoKey(s) -> BtoValue(o)
-            ret
-        }.toSeq: _*)
-    }
-  )
-
   implicit val mapDoubleBigDecimalFormat: Format[Map[Double, BigDecimal]] = mapFormatFactory[Double, BigDecimal](_.toDouble, BigDecimal(_))(_.toString, _.toString())
   implicit val mapDoubleIntFormat: Format[Map[Double, Int]] = mapFormatFactory[Double, Int](_.toDouble, _.toInt)(_.toString, _.toString)
-  implicit val mapGradeBigDecimalFormat: Format[Map[Grade, BigDecimal]] = mapFormatFactory[Grade, BigDecimal](Grade.withName, BigDecimal(_))(_.toString, _.toInt)
-  implicit val mapGradeIntFormat: Format[Map[Grade.Value, Int]] = mapFormatFactory[Grade.Value, Int](Grade.withName, _.toInt)(_.toString, _.toInt)
   implicit val mapIntLendingClubNote: Format[Map[Int, LendingClubNote]] = mapFormatFactory[Int, LendingClubNote](_.toInt, _.asInstanceOf[LendingClubNote])(_.toString, _.toString)
   implicit val mapDoubleDoubleBigDecimal: Format[Map[(Double, Double), BigDecimal]] = mapFormatFactory[(Double, Double), BigDecimal](_.split(";") match { case Array(x: String, y: String, _*) => (x.toDouble, y.toDouble) }, BigDecimal(_))({ case (x: Double, y: Double) => s"$x;$y"}, _.toString())
   implicit val mapDoubleDoubleInt: Format[Map[(Double, Double), Int]] = mapFormatFactory[(Double, Double), Int](_.split(";") match { case Array(x: String, y: String, _*) => (x.toDouble, y.toDouble) }, _.toInt)({ case (x: Double, y: Double) => s"$x;$y"}, _.toInt)
-  implicit val mapTermBigDecimal: Format[Map[Term.Value, BigDecimal]] = mapFormatFactory[Term.Value, BigDecimal](Term.withName, BigDecimal(_))(_.toString, _.toString())
   implicit val mapLocalDateSeqLendingClubNote: Format[Map[LocalDate, Seq[LendingClubNote]]] = mapFormatFactory[LocalDate, Seq[LendingClubNote]](LocalDate.parse, _.asInstanceOf[Seq[LendingClubNote]])(_.toString, _.toString())
-  implicit val mapIntMapGradeValueIntFormat: Format[Map[Int,Map[models.Grade.Value,Int]]] = mapFormatFactory[Int,Map[Grade.Value,Int]](_.toInt, _.asInstanceOf[Map[models.Grade.Value,Int]])(_.toString, _.toString())
   implicit val mapIntMapDoubleDoubleIntFormat: Format[Map[Int,Map[(Double, Double),Int]]] = mapFormatFactory[Int,Map[(Double, Double),Int]](_.toInt, _.asInstanceOf[Map[(Double,Double),Int]])(_.toString, _.toString())
   implicit val mapIntMapStringIntFormat: Format[Map[Int,Map[String,Int]]] = mapFormatFactory[Int,Map[String,Int]](_.toInt, _.asInstanceOf[Map[String,Int]])(_.toString, _.toString())
 

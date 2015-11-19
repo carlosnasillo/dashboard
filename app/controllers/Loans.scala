@@ -19,6 +19,7 @@ import play.api.data.Forms._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
+import utils.Formatters.noteFormat
 
 import scala.concurrent.Future
 

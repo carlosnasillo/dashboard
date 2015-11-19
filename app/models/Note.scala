@@ -11,11 +11,21 @@ case class Note(
     orderId:String,
     loanAmount:BigDecimal, 
     noteAmount:BigDecimal, 
-    grade:Grade.Value, 
+    grade:String,
     interestRate: Double, 
-    term:Term.Value, 
+    term:Int,
     loanStatus:String,
     paymentsReceived: BigDecimal,
     issueDate: Option[ZonedDateTime],
     orderDate: ZonedDateTime,
-    purpose:String)
+    purpose:String) {
+
+  val termEnum = term match {
+    case 24 => Term._24
+    case 36 => Term._36
+    case 60 => Term._60
+    case _  => throw new IllegalArgumentException("unsupported term")
+  }
+
+  val gradeEnum = Grade.withName(grade)
+}
