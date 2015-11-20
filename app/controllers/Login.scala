@@ -3,6 +3,7 @@ package controllers
 import models.UserLogin
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.Json
 import play.api.mvc._
 import utils.Hash
 
@@ -31,7 +32,9 @@ class Login extends Controller {
         UserLogin.getByEmail( providedLogin.email ).map {
           case Some(user) =>
             if ( Hash.checkPassword(providedLogin.password, user.password) ) {
-              Ok("")
+              val token = Hash.createToken
+              UserLogin.save(UserLogin(user.email, user.password, token))
+              Ok(Json.obj("token" -> token))
             }
             else {
               BadRequest("The password is incorrect.")
