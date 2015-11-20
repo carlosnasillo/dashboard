@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2015 Lattice Markets, All rights reserved.
+ *
+ * Unpublished copyright. All rights reserved. This material contains
+ * proprietary information that shall be used or copied only with
+ * Lattice Markets, except with written permission of Lattice Markets.
+ *
+ */
+
 package controllers
 
 import models.UserLogin
@@ -21,7 +30,7 @@ class Login extends Controller {
     )(LoginFormObj.apply)(LoginFormObj.unapply)
   )
 
-  def authentification = Action.async { implicit request =>
+  def authentication = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(

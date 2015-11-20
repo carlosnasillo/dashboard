@@ -12,6 +12,7 @@ package controllers
 import java.time.LocalDate
 
 import com.lattice.lib.portfolio.MarketPlaceFactory
+import controllers.Security.HasToken
 import models.Originator
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
@@ -34,23 +35,23 @@ class Portfolio extends Controller {
 
   private val portfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
 
-  def LCportfolioAnalytics = Action.async {
+  def LCportfolioAnalytics = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
   }
 
-  def notesAcquiredTodayByGrade = Action.async {
+  def notesAcquiredTodayByGrade = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
   }
 
-  def notesAcquiredTodayByYield = Action.async {
+  def notesAcquiredTodayByYield = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByYield) ) )
   }
 
-  def notesAcquiredTodayByPurpose = Action.async {
+  def notesAcquiredTodayByPurpose = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByPurpose) ) )
   }
 
-  def notesAcquiredThisYearByMonthByGrade = Action.async {
+  def notesAcquiredThisYearByMonthByGrade = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now())
@@ -61,7 +62,7 @@ class Portfolio extends Controller {
     })
   }
 
-  def notesAcquiredThisYearByMonthByYield = Action.async {
+  def notesAcquiredThisYearByMonthByYield = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByYield(LocalDate.now().minusYears(1), LocalDate.now())
@@ -72,7 +73,7 @@ class Portfolio extends Controller {
     })
   }
 
-  def notesAcquiredThisYearByMonthByPurpose = Action.async {
+  def notesAcquiredThisYearByMonthByPurpose = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByPurpose(LocalDate.now().minusYears(1), LocalDate.now())

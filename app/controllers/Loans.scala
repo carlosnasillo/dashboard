@@ -13,6 +13,7 @@ import com.lattice.lib.integration.lc.impl.LendingClubMongoDb
 import com.lattice.lib.integration.lc.model.Formatters.loanListingFormat
 import com.lattice.lib.portfolio.MarketPlaceFactory
 import com.lattice.lib.utils.DbUtil
+import controllers.Security.HasToken
 import models.Originator
 import play.api.data.Form
 import play.api.data.Forms._
@@ -54,11 +55,11 @@ class Loans extends Controller {
     )(OwnedNotesForm.apply)(OwnedNotesForm.unapply)
   )
 
-  def availableLoans = Action.async {
+  def availableLoans = HasToken.async {
     lendingClubMongoDb.availableLoans.map( loanListing => Ok( Json.toJson( loanListing ) ) )
   }
 
-  def submitOrder = Action.async { implicit request =>
+  def submitOrder = HasToken.async { implicit request =>
     submitOrderForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(
@@ -74,7 +75,7 @@ class Loans extends Controller {
     )
   }
 
-  def ownedNotes(investorId: String) = Action.async {
+  def ownedNotes(investorId: String) = HasToken.async {
     Future.successful(
       Ok(Json.toJson( MarketPlaceFactory.portfolio(Originator.LendingClub).notes(investorId) ))
     )

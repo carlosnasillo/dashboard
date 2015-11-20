@@ -43,7 +43,7 @@
                 }
             };
 
-            $http.defaults.headers.common.Authorization = 'Basic' + token; // jshint ignore:line
+            $http.defaults.headers.common.Authorization = token; // jshint ignore:line
             $cookieStore.put('globals', $rootScope.globals);
         }
 

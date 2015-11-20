@@ -56,4 +56,9 @@ object UserLogin {
 
     userLoginTable.update(selector, modifier)
   }
+
+  def getByToken(token: String): Future[Option[UserLogin]] = {
+    val query = Json.obj("token" -> token)
+    userLoginTable.find(query).one[UserLogin]
+  }
 }

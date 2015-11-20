@@ -5,7 +5,7 @@
 # Home page
 GET     /                                                               controllers.Application.index
 
-POST    /api/authenticate                                               controllers.Login.authentification
+POST    /api/authenticate                                               controllers.Login.authentication
 
 GET     /api/analytics/lendingClub/numLoans                             controllers.Analytics.lendingClubAnalyticsNumLoans
 GET     /api/analytics/lendingClub/liquidity                            controllers.Analytics.lendingClubAnalyticsLiquidity
