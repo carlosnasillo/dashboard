@@ -9,15 +9,17 @@
 
 package controllers
 
-import com.lattice.lib.integration.lc.LendingClubFactory
 import com.lattice.lib.integration.lc.impl.LendingClubMongoDb
 import com.lattice.lib.integration.lc.model.Formatters.loanListingFormat
+import com.lattice.lib.portfolio.MarketPlaceFactory
 import com.lattice.lib.utils.DbUtil
+import models.Originator
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
+import utils.Formatters.noteFormat
 
 import scala.concurrent.Future
 
@@ -30,6 +32,10 @@ case class SubmitFormOrder(
                           amount: BigDecimal
                           )
 
+case class OwnedNotesForm(
+                         investorId: String
+                         )
+
 class Loans extends Controller {
 
   val lendingClubMongoDb: LendingClubMongoDb = new LendingClubMongoDb(DbUtil.db)
@@ -40,6 +46,12 @@ class Loans extends Controller {
       "investorId" -> nonEmptyText,
       "amount" -> bigDecimal
     )(SubmitFormOrder.apply)(SubmitFormOrder.unapply)
+  )
+
+  val ownedNotesForm = Form(
+    mapping (
+      "investorId" -> nonEmptyText
+    )(OwnedNotesForm.apply)(OwnedNotesForm.unapply)
   )
 
   def availableLoans = Action.async {
@@ -54,11 +66,17 @@ class Loans extends Controller {
         )
       },
       infos => {
-        LendingClubFactory.portfolio.submitOrder(infos.investorId, infos.loanId, infos.amount)
+        MarketPlaceFactory.portfolio(Originator.LendingClub).submitOrder(infos.investorId, infos.loanId, infos.amount)
         Future.successful(
           Ok("")
         )
       }
+    )
+  }
+
+  def ownedNotes(investorId: String) = Action.async {
+    Future.successful(
+      Ok(Json.toJson( MarketPlaceFactory.portfolio(Originator.LendingClub).notes(investorId) ))
     )
   }
 }

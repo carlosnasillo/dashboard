@@ -18,9 +18,9 @@ import play.api.mvc._
 import play.api.libs.json.Json
 
 import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
-import com.lattice.lib.integration.lc.model.Formatters.mapGradeIntFormat
+import utils.Formatters.mapGradeIntFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
-import com.lattice.lib.integration.lc.model.Formatters.mapIntMapGradeValueIntFormat
+import utils.Formatters.mapIntMapGradeValueIntFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapIntMapDoubleDoubleIntFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapIntMapStringIntFormat
 

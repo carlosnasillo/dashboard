@@ -17,6 +17,7 @@
         .module('app')
         .factory('LoansService', function ($http) {
             var loansAvailablePromise = null;
+            var ownedNotesPromise = null;
 
             var loansAvailable = function() {
                 if (loansAvailablePromise) {
@@ -31,9 +32,19 @@
                 return $http.post('/api/placeOrder', { investorId: investorId, loanId: loanId, amount: amount });
             };
 
+            var ownedNotes = function(investorId) {
+                if (ownedNotesPromise) {
+                    return ownedNotesPromise;
+                } else {
+                    ownedNotesPromise = $http.get("/api/ownedNotes/" + investorId);
+                    return ownedNotesPromise;
+                }
+            };
+
             return {
                 loansAvailable: loansAvailable,
-                submitOrder: submitOrder
+                submitOrder: submitOrder,
+                ownedNotes: ownedNotes
             };
         });
 })();

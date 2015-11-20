@@ -10,8 +10,13 @@
                             <h5>Available Loans</h5>
                         </div>
                         <div class="ibox-content">
-                            <input data-ng-model="vm.globalFilter.value" ng-change="vm.globalFilter.onChange()" class="form-control margin-bottom-20" placeholder="Global search">
+                            <h1>Loans available</h1>
+                            <input data-ng-model="vm.globalFilterLoans.value" ng-change="vm.globalFilterLoans.onChange()" class="form-control margin-bottom-20" placeholder="Global search">
                             <div ui-grid="vm.loansTable.options" class="myGrid"></div>
+
+                            <h1 class="with-space-before">Owned notes</h1>
+                            <input data-ng-model="vm.globalFilterNotes.value" ng-change="vm.globalFilterNotes.onChange()" class="form-control margin-bottom-20" placeholder="Global search">
+                            <div ui-grid="vm.notesTable.options" class="myGrid"></div>
                         </div>
                     </div>
                 </div>
