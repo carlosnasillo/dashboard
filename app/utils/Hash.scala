@@ -9,6 +9,8 @@
 
 package utils
 
+import java.util.UUID
+
 import org.mindrot.jbcrypt.BCrypt
 
 /**
@@ -18,4 +20,5 @@ import org.mindrot.jbcrypt.BCrypt
 object Hash {
   def createPassword(clearString: String): String = BCrypt.hashpw(clearString, BCrypt.gensalt())
   def checkPassword(candidate: String, encryptedPassword: String): Boolean = BCrypt.checkpw(candidate, encryptedPassword)
+  def createToken: String = UUID.randomUUID().toString
 }

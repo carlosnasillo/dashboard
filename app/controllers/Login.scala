@@ -1,8 +1,18 @@
+/*
+ * Copyright (c) 2015 Lattice Markets, All rights reserved.
+ *
+ * Unpublished copyright. All rights reserved. This material contains
+ * proprietary information that shall be used or copied only with
+ * Lattice Markets, except with written permission of Lattice Markets.
+ *
+ */
+
 package controllers
 
 import models.UserLogin
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.Json
 import play.api.mvc._
 import utils.Hash
 
@@ -20,7 +30,7 @@ class Login extends Controller {
     )(LoginFormObj.apply)(LoginFormObj.unapply)
   )
 
-  def authentification = Action.async { implicit request =>
+  def authentication = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(
@@ -31,7 +41,9 @@ class Login extends Controller {
         UserLogin.getByEmail( providedLogin.email ).map {
           case Some(user) =>
             if ( Hash.checkPassword(providedLogin.password, user.password) ) {
-              Ok("")
+              val token = Hash.createToken
+              UserLogin.save(UserLogin(user.email, user.password, token))
+              Ok(Json.obj("token" -> token))
             }
             else {
               BadRequest("The password is incorrect.")

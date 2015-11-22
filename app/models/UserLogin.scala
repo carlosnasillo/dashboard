@@ -11,18 +11,21 @@ package models
 /**
  * Created by Julien Déray on 23/10/2015.
  */
+
 import com.lattice.lib.utils.DbUtil
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 case class UserLogin (
                        email: String,
-                       password: String
+                       password: String,
+                       token: String
                        )
 
 object UserLogin {
@@ -44,6 +47,18 @@ object UserLogin {
 
   def getByEmail(email: String): Future[Option[UserLogin]] = {
     val query = Json.obj("email" -> email)
+    userLoginTable.find(query).one[UserLogin]
+  }
+
+  def save(userLogin: UserLogin) {
+    val selector = Json.obj("email" -> userLogin.email)
+    val modifier = Json.toJson(userLogin).as[JsObject]
+
+    userLoginTable.update(selector, modifier)
+  }
+
+  def getByToken(token: String): Future[Option[UserLogin]] = {
+    val query = Json.obj("token" -> token)
     userLoginTable.find(query).one[UserLogin]
   }
 }
