@@ -17,63 +17,19 @@
     angular
         .module('app')
         .factory('lendingClubAnalytics', function ($http) {
-            var numLoansPromise = null;
-            var liquidityPromise = null;
-            var liquidityByGradePromise = null;
-            var dailyChangeInNumLoansPromise = null;
-            var dailyChangeInLiquidityPromise = null;
+            var analyticsPromise = null;
 
-            var numLoans = function() {
-                if (numLoansPromise) {
-                    return numLoansPromise;
+            var analytics = function() {
+                if (analyticsPromise) {
+                    return analyticsPromise;
                 } else {
-                    numLoansPromise = $http.get("/api/analytics/lendingClub/numLoans");
-                    return numLoansPromise;
-                }
-            };
-
-            var liquidity = function() {
-                if (liquidityPromise) {
-                    return liquidityPromise;
-                } else {
-                    liquidityPromise = $http.get("/api/analytics/lendingClub/liquidity");
-                    return liquidityPromise;
-                }
-            };
-
-            var liquidityByGrade = function() {
-                if (liquidityByGradePromise) {
-                    return liquidityByGradePromise;
-                } else {
-                    liquidityByGradePromise = $http.get("/api/analytics/lendingClub/liquidityByGrade");
-                    return liquidityByGradePromise;
-                }
-            };
-
-            var dailyChangeInNumLoans = function() {
-                if (dailyChangeInNumLoansPromise) {
-                    return dailyChangeInNumLoansPromise;
-                } else {
-                    dailyChangeInNumLoansPromise = $http.get("/api/analytics/lendingClub/dailyChangeInNumLoans");
-                    return dailyChangeInNumLoansPromise;
-                }
-            };
-
-            var dailyChangeInLiquidity = function() {
-                if (dailyChangeInLiquidityPromise) {
-                    return dailyChangeInLiquidityPromise;
-                } else {
-                    dailyChangeInLiquidityPromise= $http.get("/api/analytics/lendingClub/dailyChangeInLiquidity");
-                    return dailyChangeInLiquidityPromise;
+                    analyticsPromise = $http.get("/api/analytics/lendingClub");
+                    return analyticsPromise;
                 }
             };
 
             return {
-                numLoans: numLoans(),
-                liquidity: liquidity(),
-                liquidityByGrade: liquidityByGrade(),
-                dailyChangeInNumLoans: dailyChangeInNumLoans(),
-                dailyChangeInLiquidity: dailyChangeInLiquidity()
+                analytics: analytics()
             };
         });
 })();
