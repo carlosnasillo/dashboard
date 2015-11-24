@@ -18,8 +18,8 @@
         .module('app')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$rootScope'];
-    function AuthenticationService($http, $rootScope) {
+    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope'];
+    function AuthenticationService($http, $cookieStore, $rootScope) {
         var service = {};
 
         service.Login = Login;
@@ -43,12 +43,14 @@
                 }
             };
 
-            $http.defaults.headers.common.Authorization = token; // jshint ignore:line
+            $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $cookieStore.put('globals', $rootScope.globals);
         }
 
         function ClearCredentials() {
             $rootScope.globals = {};
-            $http.defaults.headers.common.Authorization = 'Basic';
+            $http.defaults.headers.common['X-TOKEN'] = "";
+            $cookieStore.remove('globals');
         }
 
         function GetCurrentUsername() {
