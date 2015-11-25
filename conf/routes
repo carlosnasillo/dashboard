@@ -7,11 +7,7 @@ GET     /                                                               controll
 
 POST    /api/authenticate                                               controllers.Login.authentication
 
-GET     /api/analytics/lendingClub/numLoans                             controllers.Analytics.lendingClubAnalyticsNumLoans
-GET     /api/analytics/lendingClub/liquidity                            controllers.Analytics.lendingClubAnalyticsLiquidity
-GET     /api/analytics/lendingClub/liquidityByGrade                     controllers.Analytics.lendingClubAnalyticsLiquidityByGrade
-GET     /api/analytics/lendingClub/dailyChangeInNumLoans                controllers.Analytics.lendingClubAnalyticsDailyChangeInNumLoans
-GET     /api/analytics/lendingClub/dailyChangeInLiquidity               controllers.Analytics.lendingClubAnalyticsDailyChangeInLiquidity
+GET     /api/analytics/lendingClub                                      controllers.Analytics.lendingClubAnalytics
 
 GET     /api/portfolio/analytics/lendingClub                            controllers.Portfolio.LCportfolioAnalytics
 GET     /api/portfolio/analytics/notesAcquiredTodayByGrade              controllers.Portfolio.notesAcquiredTodayByGrade

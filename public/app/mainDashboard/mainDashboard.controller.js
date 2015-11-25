@@ -42,24 +42,17 @@
          * LendingClug data
          */
         vm.analytics.lendingClub = {};
-        lendingClubAnalytics.numLoans.success(function(numLoans) {
-            vm.analytics.lendingClub.numLoans = numLoans;
-        });
-        lendingClubAnalytics.liquidity.success(function(liquidity) {
-            vm.analytics.lendingClub.liquidity = liquidity;
-        });
-        lendingClubAnalytics.liquidityByGrade.success(function(liquidityByGrade) {
-            vm.analytics.lendingClub.liquidityByGradeLabels = Object.keys(liquidityByGrade);
-            vm.analytics.lendingClub.liquidityByGradeConverted = [];
-            $.map(liquidityByGrade, function(v, i) {
-                vm.analytics.lendingClub.liquidityByGradeConverted.push(v);
-            });
-        });
-        lendingClubAnalytics.dailyChangeInNumLoans.success(function(dailyChangeInNumLoans) {
-            vm.analytics.lendingClub.dailyChangeInNumLoans = dailyChangeInNumLoans;
-        });
-        lendingClubAnalytics.dailyChangeInLiquidity.success(function(dailyChangeInLiquidity) {
-            vm.analytics.lendingClub.dailyChangeInLiquidity = dailyChangeInLiquidity;
+        lendingClubAnalytics.analytics.success(function(analytics) {
+            vm.analytics.lendingClub = analytics;
+            computeLiquidityByGradeLabels(analytics.liquidityByGrade);
+
+            function computeLiquidityByGradeLabels(liquidityByGrade) {
+                vm.analytics.lendingClub.liquidityByGradeLabels = Object.keys(liquidityByGrade);
+                vm.analytics.lendingClub.liquidityByGradeConverted = [];
+                $.map(liquidityByGrade, function(v, i) {
+                    vm.analytics.lendingClub.liquidityByGradeConverted.push(v);
+                });
+            }
         });
 
         /**

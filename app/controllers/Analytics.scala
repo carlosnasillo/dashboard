@@ -11,13 +11,12 @@ package controllers
 
 import com.lattice.lib.integration.lc.impl.LendingClubAnalytics
 import com.lattice.lib.portfolio.MarketPlaceFactory
+import com.lattice.lib.integration.lc.model.Formatters.loanAnalyticsFormat
 import controllers.Security.HasToken
 import models.Originator
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
-
-import utils.Formatters.mapGradeBigDecimalFormat
 
 /**
  * Created by Julien Déray on 26/10/2015.
@@ -27,28 +26,7 @@ class Analytics extends Controller {
 
   private val analytics: LendingClubAnalytics = MarketPlaceFactory.analytics(Originator.LendingClub)
 
-  def lendingClubAnalyticsNumLoans = HasToken.async {
-    val numLoans = analytics.numLoans
-    numLoans.map( nl => Ok( Json.toJson(nl) ) )
-  }
-
-  def lendingClubAnalyticsLiquidity = HasToken.async {
-    val liquidity = analytics.liquidity
-    liquidity.map( l => Ok( Json.toJson(l) ) )
-  }
-
-  def lendingClubAnalyticsLiquidityByGrade = HasToken.async {
-    val liquidityByGrade = analytics.liquidityByGrade
-    liquidityByGrade.map( lbg => Ok( Json.toJson(lbg) ) )
-  }
-
-  def lendingClubAnalyticsDailyChangeInNumLoans = HasToken.async {
-    val dailyChangeInNumLoans = analytics.dailyChangeInNumLoans
-    dailyChangeInNumLoans.map( dcinl => Ok( Json.toJson(dcinl) ) )
-  }
-
-  def lendingClubAnalyticsDailyChangeInLiquidity = HasToken.async {
-    val dailyChangeInLiquidity = analytics.dailyChangeInLiquidity
-    dailyChangeInLiquidity.map( dcil => Ok( Json.toJson(dcil) ) )
+  def lendingClubAnalytics = HasToken.async {
+    analytics.wrappedAnalytics.map( loanAnalytics => Ok(Json.toJson(loanAnalytics)) )
   }
 }
