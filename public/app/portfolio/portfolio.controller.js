@@ -30,38 +30,61 @@
 
         vm.chartOptions = chartUtilsService.doughnutChartOptions;
 
-        PortfolioAnalyticsService.LCPortfolioAnalytics().then(function(analytics) {
-            vm.lendingClubPortfolioAnalytics = analytics;
+        vm.lendingClubPortfolioAnalytics = {};
+        vm.prosperPortfolioAnalytics = {};
 
-            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(vm.lendingClubPortfolioAnalytics.notesByGrade);
+        PortfolioAnalyticsService.lcCurrentBalance().then(function(balance) {
+           vm.lendingClubPortfolioAnalytics.currentBalance = balance;
+        });
+
+        PortfolioAnalyticsService.prosperCurrentBalance().then(function(balance) {
+            vm.prosperPortfolioAnalytics.currentBalance = balance;
+        });
+
+        PortfolioAnalyticsService.LCPortfolioAnalytics().then(function(analytics) {
+            vm.lendingClubPortfolioAnalytics.principalOutstanding = analytics.principalOutstanding;
+            vm.lendingClubPortfolioAnalytics.pendingInvestment = analytics.pendingInvestment;
+            vm.lendingClubPortfolioAnalytics.currentNotes = analytics.currentNotes;
+            vm.lendingClubPortfolioAnalytics.principalReceived = analytics.principalReceived;
+            vm.lendingClubPortfolioAnalytics.interestReceived = analytics.interestReceived;
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByGrade = analytics.principalOutstandingByGrade;
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByTerm = analytics.principalOutstandingByTerm;
+
+            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(analytics.notesByGrade);
             vm.lendingClubPortfolioAnalytics.notesByGradeLabels = splittedNoteByGrade.labels;
             vm.lendingClubPortfolioAnalytics.notesByGradeConverted = splittedNoteByGrade.array;
 
-            var splittedNoteByState = chartUtilsService.splitObjectInArray(vm.lendingClubPortfolioAnalytics.notesByState);
+            var splittedNoteByState = chartUtilsService.splitObjectInArray(analytics.notesByState);
             vm.lendingClubPortfolioAnalytics.notesByStateLabels = splittedNoteByState.labels;
             vm.lendingClubPortfolioAnalytics.notesByStateConverted = splittedNoteByState.array;
 
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(vm.lendingClubPortfolioAnalytics.principalOutstandingByYield);
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield);
 
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade);
-            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(vm.lendingClubPortfolioAnalytics.notesByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.notesByStateByGrade);
         });
 
         PortfolioAnalyticsService.prosperPortfolioAnalytics().then(function(analytics) {
-            vm.prosperPortfolioAnalytics = analytics;
+            vm.prosperPortfolioAnalytics.principalOutstanding = analytics.principalOutstanding;
+            vm.prosperPortfolioAnalytics.pendingInvestment = analytics.pendingInvestment;
+            vm.prosperPortfolioAnalytics.currentNotes = analytics.currentNotes;
+            vm.prosperPortfolioAnalytics.principalReceived = analytics.principalReceived;
+            vm.prosperPortfolioAnalytics.interestReceived = analytics.interestReceived;
+            vm.prosperPortfolioAnalytics.principalOutstandingByGrade = analytics.principalOutstandingByGrade;
+            vm.prosperPortfolioAnalytics.principalOutstandingByTerm = analytics.principalOutstandingByTerm;
 
-            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(vm.prosperPortfolioAnalytics.notesByGrade);
+            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(analytics.notesByGrade);
             vm.prosperPortfolioAnalytics.notesByGradeLabels = splittedNoteByGrade.labels;
             vm.prosperPortfolioAnalytics.notesByGradeConverted = splittedNoteByGrade.array;
 
-            var splittedNoteByState = chartUtilsService.splitObjectInArray(vm.prosperPortfolioAnalytics.notesByState);
+            var splittedNoteByState = chartUtilsService.splitObjectInArray(analytics.notesByState);
             vm.prosperPortfolioAnalytics.notesByStateLabels = splittedNoteByState.labels;
             vm.prosperPortfolioAnalytics.notesByStateConverted = splittedNoteByState.array;
 
-            vm.prosperPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(vm.prosperPortfolioAnalytics.principalOutstandingByYield);
+            vm.prosperPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield);
 
-            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade);
-            vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(vm.prosperPortfolioAnalytics.notesByStateByGrade);
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.notesByStateByGrade);
         });
 
         PortfolioAnalyticsService.allPortfolioAnalytics().then(function(analytics) {
@@ -76,6 +99,9 @@
             var notesByGrade = {};
             var notesByState = {};
 
+            var notesByMarkets = {};
+            var notesAmountByMarket = {};
+
             $.map(analytics, function(v, i) {
                 vm.mergedAnalytics.principalOutstanding += v.principalOutstanding;
                 vm.mergedAnalytics.pendingInvestment += v.pendingInvestment;
@@ -85,6 +111,9 @@
 
                 notesByGrade = chartUtilsService.mergeObjects(v.notesByGrade, notesByGrade);
                 notesByState = chartUtilsService.mergeObjects(v.notesByState, notesByState);
+
+                notesByMarkets[i] = v.currentNotes;
+                notesAmountByMarket[i] = v.principalOutstanding;
             });
 
             var slittedNoteByGrade = chartUtilsService.splitObjectInArray(notesByGrade);
@@ -94,6 +123,9 @@
             var slittedNoteByState = chartUtilsService.splitObjectInArray(notesByState);
             vm.mergedAnalytics.notesByStateLabels = slittedNoteByState.labels;
             vm.mergedAnalytics.notesByStateConverted = slittedNoteByState.array;
+
+            vm.mergedAnalytics.notesByMarkets = notesByMarkets;
+            vm.mergedAnalytics.notesAmountByMarket = notesAmountByMarket;
         });
     }
 })();

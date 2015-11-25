@@ -50,6 +50,10 @@ class Portfolio extends Controller {
     portfoliosAnalytics.map( analytics => analytics.originator.toString -> analytics ).toMap
   }
 
+  def currentBalance = HasToken {
+    Ok( Json.toJson( portfolio.accountBalance(Constants.portfolioName).availableCash ) )
+  }
+
   def notesAcquiredTodayByGrade = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
   }

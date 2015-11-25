@@ -20,6 +20,10 @@
             //var LCPortfolioAnalyticsPromise = null;
             //var prosperPortfolioAnalyticsPromise = null;
             //var allPortfolioAnalyticsPromise = null;
+
+            //var lcCurrentBalancePromise = null;
+            //var prosperCurrentBalancePromise = null;
+
             var notesAcquiredTodayByGradePromise = null;
             var notesAcquiredTodayByYieldPromise = null;
             var notesAcquiredTodayByPurposePromise = null;
@@ -34,7 +38,7 @@
             var mockedDataLC = {
                 principalOutstanding: 4501543,
                 pendingInvestment: 209490,
-                currentNotes: 5380.43,
+                currentNotes: 450,
                 principalReceived: 422.594,
                 interestReceived: 35857,
                 notesByGrade: {
@@ -43,9 +47,9 @@
                     A: 100
                 },
                 notesByState: {
-                    C: 500,
-                    B: 1000,
-                    A: 104
+                    C: 100,
+                    B: 200,
+                    A: 150
                 },
                 principalOutstandingByGrade: {
                     A: 21,
@@ -99,7 +103,7 @@
             var mockedDataProsper = {
                 principalOutstanding: 7396543,
                 pendingInvestment: 274028,
-                currentNotes: 7394.76,
+                currentNotes: 710,
                 principalReceived: 169.734,
                 interestReceived: 46293,
                 notesByGrade: {
@@ -108,9 +112,9 @@
                     A: 300
                 },
                 notesByState: {
-                    C: 50,
-                    B: 2000,
-                    A: 154
+                    C: 60,
+                    B: 450,
+                    A: 200
                 },
                 principalOutstandingByGrade: {
                     A: 51,
@@ -168,11 +172,27 @@
                 });
             }
 
+            function lcCurrentBalancePromise() {
+                return $q(function(resolve, reject) {
+                    setTimeout(function() {
+                        resolve(7678.42);
+                    }, 1000);
+                });
+            }
+
+            function prosperCurrentBalancePromise() {
+                return $q(function(resolve, reject) {
+                    setTimeout(function() {
+                        resolve(89603.66);
+                    }, 1000);
+                });
+            }
+
             /**
              * Real services definitions
              */
 
-            var AllPortfolioAnalytics = function() {
+            var allPortfolioAnalytics = function() {
                 if (allPortfolioAnalyticsPromise) {
                     return allPortfolioAnalyticsPromise;
                 } else {
@@ -181,7 +201,7 @@
                 }
             };
 
-            var LCPortfolioAnalytics = function() {
+            var lCPortfolioAnalytics = function() {
                 if (LCPortfolioAnalyticsPromise) {
                     return LCPortfolioAnalyticsPromise;
                 } else {
@@ -190,12 +210,30 @@
                 }
             };
 
-            var ProsperPortfolioAnalytics = function() {
+            var prosperPortfolioAnalytics = function() {
                 if (prosperPortfolioAnalyticsPromise) {
                     return prosperPortfolioAnalyticsPromise;
                 } else {
                     prosperPortfolioAnalyticsPromise = $http.get("/api/portfolio/analytics/prosper");
                     return prosperPortfolioAnalyticsPromise;
+                }
+            };
+
+            var lcCurrentBalance = function() {
+                if (lcCurrentBalancePromise) {
+                    return lcCurrentBalancePromise;
+                } else {
+                    lcCurrentBalancePromise = $http.get("/api/portfolio/lendingClub/lcCurrentBalance");
+                    return lcCurrentBalancePromise;
+                }
+            };
+
+            var prosperCurrentBalance = function() {
+                if (prosperCurrentBalancePromise) {
+                    return prosperCurrentBalancePromise;
+                } else {
+                    prosperCurrentBalancePromise = $http.get("/api/portfolio/lendingClub/prosperCurrentBalance");
+                    return prosperCurrentBalancePromise;
                 }
             };
 
@@ -255,9 +293,11 @@
 
 
             return {
-                allPortfolioAnalytics: new AllPortfolioAnalytics(),
-                LCPortfolioAnalytics: new LCPortfolioAnalytics(),
-                prosperPortfolioAnalytics: new ProsperPortfolioAnalytics(),
+                allPortfolioAnalytics: allPortfolioAnalytics(),
+                LCPortfolioAnalytics: lCPortfolioAnalytics(),
+                prosperPortfolioAnalytics: prosperPortfolioAnalytics(),
+                lcCurrentBalance: lcCurrentBalance(),
+                prosperCurrentBalance: prosperCurrentBalance(),
                 notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),
                 notesAcquiredTodayByYield: notesAcquiredTodayByYield(),
                 notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose(),

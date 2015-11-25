@@ -30,7 +30,7 @@
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       {{vm.lendingClubPortfolioAnalytics.currentNotes | currency}}
+                                       {{vm.lendingClubPortfolioAnalytics.currentBalance | currency}}
                                        </span>
                                             <span class="label label-primary">3</span> Cash balance
                                         </li>
@@ -220,7 +220,7 @@
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       {{vm.prosperPortfolioAnalytics.currentNotes | currency}}
+                                       {{vm.prosperPortfolioAnalytics.currentBalance | currency}}
                                        </span>
                                             <span class="label label-primary">3</span> Cash balance
                                         </li>
@@ -410,7 +410,7 @@
                                         </li>
                                         <li class="list-group-item">
                                        <span class="pull-right">
-                                       {{vm.mergedAnalytics.currentNotes | currency}}
+                                       {{vm.mergedAnalytics.currentBalance | currency}}
                                        </span>
                                             <span class="label label-primary">3</span> Cash balance
                                         </li>
@@ -472,6 +472,34 @@
                                                 ></canvas>
                                                 <h5>Breakdown by maturity</h5>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title">
+                                            <h5>Notes by market</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <my-pie-chart
+                                                    identifier="notes_by_markets"
+                                                    data="vm.mergedAnalytics.notesByMarkets"
+                                            ></my-pie-chart>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title">
+                                            <h5>Notes amount by market</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <my-pie-chart
+                                                    identifier="notes_amount_by_markets"
+                                                    data="vm.mergedAnalytics.notesAmountByMarket"
+                                            ></my-pie-chart>
                                         </div>
                                     </div>
                                 </div>
