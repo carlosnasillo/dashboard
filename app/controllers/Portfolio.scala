@@ -39,6 +39,8 @@ class Portfolio extends Controller {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
   }
 
+
+
   def notesAcquiredTodayByGrade = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
   }
