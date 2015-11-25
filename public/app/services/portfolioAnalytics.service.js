@@ -31,7 +31,6 @@
              * @returns {Promise}
              */
 
-            // TODO : extract operations on data into dedicated services
              function LCPortfolioAnalyticsPromise() {
                 return $q(function(resolve, reject) {
                     setTimeout(function() {
