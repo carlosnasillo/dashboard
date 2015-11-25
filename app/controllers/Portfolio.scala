@@ -11,19 +11,20 @@ package controllers
 
 import java.time.LocalDate
 
-import com.lattice.lib.portfolio.MarketPlaceFactory
+import com.lattice.lib.portfolio.{MarketplacePortfolioAnalytics, MarketPlaceFactory}
 import controllers.Security.HasToken
 import models.Originator
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
 import play.api.libs.json.Json
 
-import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
 import utils.Formatters.mapGradeIntFormat
-import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
 import utils.Formatters.mapIntMapGradeValueIntFormat
+import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
+import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
 import com.lattice.lib.integration.lc.model.Formatters.mapIntMapDoubleDoubleIntFormat
 import com.lattice.lib.integration.lc.model.Formatters.mapIntMapStringIntFormat
+import com.lattice.lib.integration.lc.model.Formatters.mapStringMarketplacePortfolioAnalytics
 
 import utils.Constants
 
@@ -39,7 +40,15 @@ class Portfolio extends Controller {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
   }
 
+  def allPortfolioAnalytics = HasToken.async {
+    for {
+      lc <- portfolio.portfolioAnalytics(Constants.portfolioName)
+    } yield Ok( Json.toJson( mergePortfoliosAnalytics(lc) ) )
+  }
 
+  private def mergePortfoliosAnalytics(portfoliosAnalytics: MarketplacePortfolioAnalytics*): Map[String, MarketplacePortfolioAnalytics] = {
+    portfoliosAnalytics.map( analytics => analytics.originator.toString -> analytics ).toMap
+  }
 
   def notesAcquiredTodayByGrade = HasToken.async {
     portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )

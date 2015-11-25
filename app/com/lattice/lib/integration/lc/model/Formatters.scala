@@ -43,6 +43,7 @@ object Formatters {
   implicit val mapLocalDateSeqLendingClubNote: Format[Map[LocalDate, Seq[LendingClubNote]]] = mapFormatFactory[LocalDate, Seq[LendingClubNote]](LocalDate.parse, _.asInstanceOf[Seq[LendingClubNote]])(_.toString, _.toString())
   implicit val mapIntMapDoubleDoubleIntFormat: Format[Map[Int,Map[(Double, Double),Int]]] = mapFormatFactory[Int,Map[(Double, Double),Int]](_.toInt, _.asInstanceOf[Map[(Double,Double),Int]])(_.toString, _.toString())
   implicit val mapIntMapStringIntFormat: Format[Map[Int,Map[String,Int]]] = mapFormatFactory[Int,Map[String,Int]](_.toInt, _.asInstanceOf[Map[String,Int]])(_.toString, _.toString())
+  implicit val mapStringMarketplacePortfolioAnalytics: Format[Map[String, MarketplacePortfolioAnalytics]] = mapFormatFactory[String, MarketplacePortfolioAnalytics](_.toString, _.asInstanceOf[MarketplacePortfolioAnalytics])(_.toString, _.toString)
 
   /**
    * Defines the formatter for LoanAnalytics

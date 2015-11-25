@@ -6,6 +6,7 @@
             <div class="col-md-12">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs ">
+                        <li data-ng-class="{'active': vm.tab == 3}"><a data-toggle="tab" data-ng-click="vm.changeTab(3)">Total</a></li>
                         <li data-ng-class="{'active': vm.tab == 1}"><a data-toggle="tab" data-ng-click="vm.changeTab(1)">Lending Club</a></li>
                         <li data-ng-class="{'active': vm.tab == 2}"><a data-toggle="tab" data-ng-click="vm.changeTab(2)">Prosper</a></li>
                     </ul>
@@ -385,6 +386,92 @@
                                                     identifier="p-stacked-status-number"
                                                     data="vm.prosperPortfolioAnalytics.notesByStateByGrade"
                                                     ></my-bar-graph>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-3" class="tab-pane" data-ng-if="vm.tab == 3" data-ng-class="{'active': vm.tab == 3}">
+                            <div class="row  border-bottom white-bg dashboard-header">
+                                <div class="col-sm-3">
+                                    <h2>Prosper</h2>
+                                    <ul class="list-group clear-list m-t">
+                                        <li class="list-group-item fist-item">
+                                       <span class="pull-right">
+                                       {{vm.mergedAnalytics.principalOutstanding | currency}}
+                                       </span>
+                                            <span class="label label-success">1</span> Principal oustanding
+                                        </li>
+                                        <li class="list-group-item">
+                                       <span class="pull-right">
+                                       {{vm.mergedAnalytics.pendingInvestment | currency}}
+                                       </span>
+                                            <span class="label label-info">2</span> Pending investments
+                                        </li>
+                                        <li class="list-group-item">
+                                       <span class="pull-right">
+                                       {{vm.mergedAnalytics.currentNotes | currency}}
+                                       </span>
+                                            <span class="label label-primary">3</span> Cash balance
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title">
+                                            <h5>Cash received</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h1 class="no-margins">{{vm.mergedAnalytics.principalReceived | currency}}</h1>
+
+                                                    <div>
+                                                        <small>Principal received</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h1 class="no-margins">{{vm.mergedAnalytics.interestReceived | currency}}</h1>
+
+                                                    <div>
+                                                        <small>Interest received</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="statistic-box">
+                                        <h4>
+                                            Portfolios Composition (owned notes)
+                                        </h4>
+
+                                        <div class="row text-center">
+                                            <div class="col-lg-6">
+                                                <canvas
+                                                        height="300"
+                                                        width="300"
+                                                        id="allByScoreChart"
+                                                        class="chart chart-doughnut"
+                                                        chart-data="vm.mergedAnalytics.notesByGradeConverted"
+                                                        chart-labels="vm.mergedAnalytics.notesByGradeLabels"
+                                                        chart-option="vm.chartOptions"
+                                                ></canvas>
+                                                <h5>Breakdown by grade</h5>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <canvas
+                                                        height="300"
+                                                        width="300"
+                                                        id="allByMaturityChart"
+                                                        class="chart chart-doughnut"
+                                                        chart-data="vm.mergedAnalytics.notesByStateConverted"
+                                                        chart-labels="vm.mergedAnalytics.notesByStateLabels"
+                                                        chart-option="vm.chartOptions"
+                                                ></canvas>
+                                                <h5>Breakdown by maturity</h5>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

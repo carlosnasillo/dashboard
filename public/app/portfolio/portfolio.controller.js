@@ -23,23 +23,23 @@
     function PortfolioController(PortfolioAnalyticsService, chartUtilsService) {
         var vm = this;
 
-        vm.tab = 1;
+        vm.tab = 3;
         vm.changeTab = function(tabId) {
             vm.tab = tabId;
         };
 
-        PortfolioAnalyticsService.LCPortfolioAnalytics().then(function(analytics) {
-            vm.chartOptions = chartUtilsService.doughnutChartOptions;
+        vm.chartOptions = chartUtilsService.doughnutChartOptions;
 
+        PortfolioAnalyticsService.LCPortfolioAnalytics().then(function(analytics) {
             vm.lendingClubPortfolioAnalytics = analytics;
 
-            var slittedNoteByGrade = chartUtilsService.splitObjectInArray(vm.lendingClubPortfolioAnalytics.notesByGrade);
-            vm.lendingClubPortfolioAnalytics.notesByGradeLabels = slittedNoteByGrade.labels;
-            vm.lendingClubPortfolioAnalytics.notesByGradeConverted = slittedNoteByGrade.array;
+            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(vm.lendingClubPortfolioAnalytics.notesByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByGradeLabels = splittedNoteByGrade.labels;
+            vm.lendingClubPortfolioAnalytics.notesByGradeConverted = splittedNoteByGrade.array;
 
-            var slittedNoteByState = chartUtilsService.splitObjectInArray(vm.lendingClubPortfolioAnalytics.notesByState);
-            vm.lendingClubPortfolioAnalytics.notesByStateLabels = slittedNoteByState.labels;
-            vm.lendingClubPortfolioAnalytics.notesByStateConverted = slittedNoteByState.array;
+            var splittedNoteByState = chartUtilsService.splitObjectInArray(vm.lendingClubPortfolioAnalytics.notesByState);
+            vm.lendingClubPortfolioAnalytics.notesByStateLabels = splittedNoteByState.labels;
+            vm.lendingClubPortfolioAnalytics.notesByStateConverted = splittedNoteByState.array;
 
             vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(vm.lendingClubPortfolioAnalytics.principalOutstandingByYield);
 
@@ -62,6 +62,38 @@
 
             vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade);
             vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(vm.prosperPortfolioAnalytics.notesByStateByGrade);
+        });
+
+        PortfolioAnalyticsService.allPortfolioAnalytics().then(function(analytics) {
+            vm.mergedAnalytics = {};
+
+            vm.mergedAnalytics.principalOutstanding = 0;
+            vm.mergedAnalytics.pendingInvestment = 0;
+            vm.mergedAnalytics.currentNotes = 0;
+            vm.mergedAnalytics.principalReceived = 0;
+            vm.mergedAnalytics.interestReceived = 0;
+
+            var notesByGrade = {};
+            var notesByState = {};
+
+            $.map(analytics, function(v, i) {
+                vm.mergedAnalytics.principalOutstanding += v.principalOutstanding;
+                vm.mergedAnalytics.pendingInvestment += v.pendingInvestment;
+                vm.mergedAnalytics.currentNotes += v.currentNotes;
+                vm.mergedAnalytics.principalReceived += v.principalReceived;
+                vm.mergedAnalytics.interestReceived += v.interestReceived;
+
+                notesByGrade = chartUtilsService.mergeObjects(v.notesByGrade, notesByGrade);
+                notesByState = chartUtilsService.mergeObjects(v.notesByState, notesByState);
+            });
+
+            var slittedNoteByGrade = chartUtilsService.splitObjectInArray(notesByGrade);
+            vm.mergedAnalytics.notesByGradeLabels = slittedNoteByGrade.labels;
+            vm.mergedAnalytics.notesByGradeConverted = slittedNoteByGrade.array;
+
+            var slittedNoteByState = chartUtilsService.splitObjectInArray(notesByState);
+            vm.mergedAnalytics.notesByStateLabels = slittedNoteByState.labels;
+            vm.mergedAnalytics.notesByStateConverted = slittedNoteByState.array;
         });
     }
 })();

@@ -9,6 +9,7 @@ POST    /api/authenticate                                               controll
 
 GET     /api/analytics/lendingClub                                      controllers.Analytics.lendingClubAnalytics
 
+GET     /api/portfolio/analytics                                        controllers.Portfolio.allPortfolioAnalytics
 GET     /api/portfolio/analytics/lendingClub                            controllers.Portfolio.LCportfolioAnalytics
 GET     /api/portfolio/analytics/notesAcquiredTodayByGrade              controllers.Portfolio.notesAcquiredTodayByGrade
 GET     /api/portfolio/analytics/notesAcquiredTodayByYield              controllers.Portfolio.notesAcquiredTodayByYield

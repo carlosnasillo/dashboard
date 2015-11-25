@@ -71,11 +71,24 @@
             return invertedData;
         };
 
+        var mergeObjects = function(obj, accumulator) {
+            $.map(obj, function(v, i) {
+                if ( accumulator[i] ) {
+                    accumulator[i] += v;
+                }
+                else {
+                    accumulator[i] = v;
+                }
+            });
+            return accumulator;
+        };
+
         return {
             doughnutChartOptions: doughnutChartOptions,
             splitObjectInArray: splitObjectInArray,
             doubleDoubleToPercents: doubleDoubleToPercents,
-            movesGradeFromValueToKey: movesGradeFromValueToKey
+            movesGradeFromValueToKey: movesGradeFromValueToKey,
+            mergeObjects: mergeObjects
         };
     }
 
