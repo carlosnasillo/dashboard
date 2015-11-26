@@ -187,6 +187,8 @@
             });
 
             vm.mergedAnalytics.principalOutstandingByStateByGrade = principalOutstandingByStateByGrade;
+
+            vm.mergedAnalytics.defaultWidth = 300;
         });
     }
 })();

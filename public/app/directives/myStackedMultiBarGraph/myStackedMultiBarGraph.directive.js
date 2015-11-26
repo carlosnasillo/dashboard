@@ -27,18 +27,24 @@
             restrict: 'E',
             scope: {
                 identifier: '@',
-                data: '='
+                data: '=',
+                defaultWidth: '='
             },
             template: '<div id="{{identifier}}"></div>',
             link: link
         };
     }
 
-    function link(scope) {
+    function link(scope, elem) {
         scope.$watch('data', function(data) {
+            scope.defaultWidth = elem[0].clientWidth > scope.defaultWidth ? elem[0].clientWidth : scope.defaultWidth;
+
             if ( data !== undefined ) {
                 c3.generate({
                     bindto: '#' + scope.identifier,
+                    size: {
+                        width: scope.defaultWidth
+                    },
                     data: {
                         columns: data.data,
                         type: 'bar',
