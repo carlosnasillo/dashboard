@@ -107,6 +107,10 @@
                 data: []
             };
 
+            var principalOutstandingByStateByGrade = {
+                data: []
+            };
+
             $.map(analytics, function(v, i) {
                 vm.mergedAnalytics.principalOutstanding += v.principalOutstanding;
                 vm.mergedAnalytics.pendingInvestment += v.pendingInvestment;
@@ -126,6 +130,13 @@
                 var notesByStateByGradePrefixed = chartUtilsService.prefixColumnsName(i, notesByStateByGradeC3Style);
                 notesByStateByGrade.data = notesByStateByGrade.data.concat(notesByStateByGradePrefixed);
                 notesByStateByGrade.categories = Object.keys(v.notesByStateByGrade);
+
+                var principalOutstandingByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(v.principalOutstandingByStateByGrade);
+                var principalOutstandingByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(principalOutstandingByStateByGradeInverted);
+                var principalOutstandingByStateByGradeC3Style = chartUtilsService.bindFirstAndSecondDimensions(principalOutstandingByStateByGradeWithArray);
+                var principalOutstandingByStateByGradePrefixed = chartUtilsService.prefixColumnsName(i, principalOutstandingByStateByGradeC3Style);
+                principalOutstandingByStateByGrade.data = principalOutstandingByStateByGrade.data.concat(principalOutstandingByStateByGradePrefixed);
+                principalOutstandingByStateByGrade.categories = Object.keys(v.principalOutstandingByStateByGrade);
             });
 
             var slittedNoteByGrade = chartUtilsService.splitObjectInArray(notesByGrade);
@@ -157,6 +168,25 @@
             });
 
             vm.mergedAnalytics.notesByStateByGrade = notesByStateByGrade;
+
+            principalOutstandingByStateByGrade.groups = chartUtilsService.getColumnsByPrefix(
+                principalOutstandingByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            principalOutstandingByStateByGrade.colors = chartUtilsService.getColorsBySuffix(
+                principalOutstandingByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            principalOutstandingByStateByGrade.names = {};
+            Object.keys(principalOutstandingByStateByGrade.colors).map(function(colName) {
+                principalOutstandingByStateByGrade.names[colName] = chartUtilsService.getSuffix(colName);
+            });
+            firstOriginator = Object.keys(principalOutstandingByStateByGrade.colors)[0].split('-')[0];
+            principalOutstandingByStateByGrade.hide = Object.keys(principalOutstandingByStateByGrade.colors).filter(function(colName) {
+                return colName.indexOf(firstOriginator) < 0;
+            });
+
+            vm.mergedAnalytics.principalOutstandingByStateByGrade = principalOutstandingByStateByGrade;
         });
     }
 })();
