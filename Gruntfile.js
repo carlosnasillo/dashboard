@@ -110,7 +110,8 @@ grunt.initConfig({
                 "bower_components/angular-ui-grid/ui-grid.min.css",
                 "bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css",
                 "bower_components/sweetalert/dist/sweetalert.css",
-                "bower_components/bootstrap-daterangepicker/daterangepicker.css"
+                "bower_components/bootstrap-daterangepicker/daterangepicker.css",
+                "bower_components/c3/c3.min.css"
             ],
             dest: "public/dist/styles.css"
         }

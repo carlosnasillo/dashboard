@@ -8,8 +8,9 @@
  */
 
 /**
- * Created by julienderay on 02/11/2015.
- */
+* @author : julienderay
+* Created on 02/11/2015
+*/
 
 (function () {
     'use strict';
@@ -60,8 +61,8 @@
 
             vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield);
 
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
-            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.notesByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
         });
 
         PortfolioAnalyticsService.prosperPortfolioAnalytics().then(function(analytics) {
@@ -83,8 +84,8 @@
 
             vm.prosperPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield);
 
-            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
-            vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.movesGradeFromValueToKey(analytics.notesByStateByGrade);
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
         });
 
         PortfolioAnalyticsService.allPortfolioAnalytics().then(function(analytics) {
@@ -102,6 +103,10 @@
             var notesByMarkets = {};
             var notesAmountByMarket = {};
 
+            var notesByStateByGrade = {
+                data: []
+            };
+
             $.map(analytics, function(v, i) {
                 vm.mergedAnalytics.principalOutstanding += v.principalOutstanding;
                 vm.mergedAnalytics.pendingInvestment += v.pendingInvestment;
@@ -114,6 +119,13 @@
 
                 notesByMarkets[i] = v.currentNotes;
                 notesAmountByMarket[i] = v.principalOutstanding;
+
+                var notesByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(v.notesByStateByGrade);
+                var notesByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(notesByStateByGradeInverted);
+                var notesByStateByGradeC3Style = chartUtilsService.bindFirstAndSecondDimensions(notesByStateByGradeWithArray);
+                var notesByStateByGradePrefixed = chartUtilsService.prefixColumnsName(i, notesByStateByGradeC3Style);
+                notesByStateByGrade.data = notesByStateByGrade.data.concat(notesByStateByGradePrefixed);
+                notesByStateByGrade.categories = Object.keys(v.notesByStateByGrade);
             });
 
             var slittedNoteByGrade = chartUtilsService.splitObjectInArray(notesByGrade);
@@ -126,6 +138,25 @@
 
             vm.mergedAnalytics.notesByMarkets = notesByMarkets;
             vm.mergedAnalytics.notesAmountByMarket = notesAmountByMarket;
+
+            notesByStateByGrade.groups = chartUtilsService.getColumnsByPrefix(
+                notesByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            notesByStateByGrade.colors = chartUtilsService.getColorsBySuffix(
+                notesByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            notesByStateByGrade.names = {};
+            Object.keys(notesByStateByGrade.colors).map(function(colName) {
+                notesByStateByGrade.names[colName] = chartUtilsService.getSuffix(colName);
+            });
+            var firstOriginator = Object.keys(notesByStateByGrade.colors)[0].split('-')[0];
+            notesByStateByGrade.hide = Object.keys(notesByStateByGrade.colors).filter(function(colName) {
+                return colName.indexOf(firstOriginator) < 0;
+            });
+
+            vm.mergedAnalytics.notesByStateByGrade = notesByStateByGrade;
         });
     }
 })();
