@@ -34,12 +34,12 @@
         /**
          * Mocked data but linked to backend (all empty at the moment)
          */
-        PortfolioAnalyticsService.notesAcquiredTodayByGrade.success(function(ordersByGrade) {
+        PortfolioAnalyticsService.lendingClub.notesAcquiredTodayByGrade().then(function(ordersByGrade) {
             ordersByGrade = { "AA": 21, "A": 3, "B": 15, "C": 52, "D": 52 };
             vm.analytics.ordersByGrade = ordersByGrade;
         });
 
-        PortfolioAnalyticsService.notesAcquiredTodayByYield.success(function(ordersByYield) {
+        PortfolioAnalyticsService.lendingClub.notesAcquiredTodayByYield().then(function(ordersByYield) {
             ordersByYield = { "5;8.9": 32, "9;12.9": 5, "13;16.9": 57, "17;22": 32 };
             var withAdaptedKeys = {};
             for ( var k in ordersByYield ) {
@@ -50,14 +50,14 @@
             vm.analytics.ordersByYield = withAdaptedKeys;
         });
 
-        PortfolioAnalyticsService.notesAcquiredTodayByPurpose.success(function(ordersByPurpose) {
+        PortfolioAnalyticsService.lendingClub.notesAcquiredTodayByPurpose().then(function(ordersByPurpose) {
             ordersByPurpose = { "100-999": 21, "1000-4999": 3, "5000-5999": 15, "6000-9999": 52, "10000-49999": 52 };
             vm.analytics.ordersByPurpose = ordersByPurpose;
         });
 
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        PortfolioAnalyticsService.notesAcquiredThisYearByMonthByGrade.success(function(ordersByMonthByGrade) {
+        PortfolioAnalyticsService.lendingClub.notesAcquiredThisYearByMonthByGrade().then(function(ordersByMonthByGrade) {
             ordersByMonthByGrade = {
                 "1": { A: 13077, B: 9611, C: 8141, D: 11511, E: 7716, F: 12804, G: 17433 },
                 "2": { A: 12511, B: 15871, C: 555, D: 11077, E: 15828, F: 840, G: 15733 },
