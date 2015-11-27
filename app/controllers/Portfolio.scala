@@ -34,15 +34,15 @@ import utils.Constants
  */
 class Portfolio extends Controller {
 
-  private val portfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
+  private val lcPortfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
 
   def LCportfolioAnalytics = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
   }
 
   def allPortfolioAnalytics = HasToken.async {
     for {
-      lc <- portfolio.portfolioAnalytics(Constants.portfolioName)
+      lc <- lcPortfolio.portfolioAnalytics(Constants.portfolioName)
     } yield Ok( Json.toJson( mergePortfoliosAnalytics(lc) ) )
   }
 
@@ -51,23 +51,23 @@ class Portfolio extends Controller {
   }
 
   def currentBalance = HasToken {
-    Ok( Json.toJson( portfolio.accountBalance(Constants.portfolioName).availableCash ) )
+    Ok( Json.toJson( lcPortfolio.accountBalance(Constants.portfolioName).availableCash ) )
   }
 
   def notesAcquiredTodayByGrade = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
   }
 
   def notesAcquiredTodayByYield = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByYield) ) )
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByYield) ) )
   }
 
   def notesAcquiredTodayByPurpose = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByPurpose) ) )
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByPurpose) ) )
   }
 
   def notesAcquiredThisYearByMonthByGrade = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now())
           .groupBy(_._1.getMonthValue)
@@ -78,7 +78,7 @@ class Portfolio extends Controller {
   }
 
   def notesAcquiredThisYearByMonthByYield = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByYield(LocalDate.now().minusYears(1), LocalDate.now())
           .groupBy(_._1.getMonthValue)
@@ -89,7 +89,7 @@ class Portfolio extends Controller {
   }
 
   def notesAcquiredThisYearByMonthByPurpose = HasToken.async {
-    portfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
+    lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>{
       Ok( Json.toJson(
         portfolioAnalytics.notesAcquiredByPurpose(LocalDate.now().minusYears(1), LocalDate.now())
           .groupBy(_._1.getMonthValue)
