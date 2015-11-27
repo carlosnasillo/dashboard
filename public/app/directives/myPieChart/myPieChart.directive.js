@@ -25,48 +25,27 @@
             replace: true,
             restrict: 'E',
             scope: {
-                height: '@',
-                width: '@',
                 identifier: '@',
                 data: '='
             },
-            template: '<div class="flot-chart"><div class="flot-chart-pie-content" id="{{identifier}}"></div><div class="flot-chart">',
+            template: '<div id="{{identifier}}"></div>',
             link: link
         };
     }
 
-    function link(scope) {
+    function link(scope, elem) {
+        elem.bind('resize', function() {}); // Resize the chart automaticaly
+
         scope.$watch('data', function(data) {
             if (data !== undefined ) {
-
-                var colors = ["#d3d3d3", "#bababa", "#79d2c0", "#1ab394", "#e67e22", "#FFE3C7", "#f1c40f"];
-
-                var colorId = 0;
-                var convertedData = $.map(data, function(v, i) {
-                    return {
-                        data: v,
-                        label: i,
-                        color: colors[colorId++]
-                    };
-                });
-
-                var plotObj = $.plot($("#" + scope.identifier), convertedData, {
-                    series: {
-                        pie: {
-                            show: true
-                        }
+                c3.generate({
+                    bindto: '#' + scope.identifier,
+                    size: {
+                        width: elem.width()
                     },
-                    grid: {
-                        hoverable: true
-                    },
-                    tooltip: true,
-                    tooltipOpts: {
-                        content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-                        shifts: {
-                            x: 20,
-                            y: 0
-                        },
-                        defaultTheme: false
+                    data: {
+                        columns: data,
+                        type: 'pie'
                     }
                 });
             }

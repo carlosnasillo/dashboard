@@ -27,8 +27,7 @@
             restrict: 'E',
             scope: {
                 identifier: '@',
-                data: '=',
-                defaultWidth: '='
+                data: '='
             },
             template: '<div id="{{identifier}}"></div>',
             link: link
@@ -36,14 +35,14 @@
     }
 
     function link(scope, elem) {
-        scope.$watch('data', function(data) {
-            scope.defaultWidth = elem[0].clientWidth > scope.defaultWidth ? elem[0].clientWidth : scope.defaultWidth;
+        elem.bind('resize', function() {}); // Resize the chart automaticaly
 
+        scope.$watch('data', function(data) {
             if ( data !== undefined ) {
                 c3.generate({
                     bindto: '#' + scope.identifier,
                     size: {
-                        width: scope.defaultWidth
+                        width: elem.width()
                     },
                     data: {
                         columns: data.data,

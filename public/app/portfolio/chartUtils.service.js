@@ -143,8 +143,20 @@
             return res;
         };
 
-        var getSuffix = function (colName) {
+        var getSuffix = function(colName) {
             return colName.split('-')[1];
+        };
+
+        var fromCamelCaseToTitleCase = function(camelStr) {
+            return camelStr
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^./, function(str){ return str.toUpperCase(); });
+        };
+
+        var fromMapToC3StyleData = function(mapObj) {
+            return $.map(mapObj, function(v, i) {
+                return [[fromCamelCaseToTitleCase(i).trim(), v]];
+            });
         };
 
         return {
@@ -158,7 +170,9 @@
             prefixColumnsName: prefixColumnsName,
             getColumnsByPrefix: getColumnsByPrefix,
             getColorsBySuffix: getColorsBySuffix,
-            getSuffix: getSuffix
+            getSuffix: getSuffix,
+            fromCamelCaseToTitleCase: fromCamelCaseToTitleCase,
+            fromMapToC3StyleData: fromMapToC3StyleData
         };
 
         function getColumnsBySuffix(completeList, prefixes) {
