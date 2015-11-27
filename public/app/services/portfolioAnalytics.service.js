@@ -25,6 +25,8 @@
             //var lcCurrentBalancePromise = null;
             //var prosperCurrentBalancePromise = null;
 
+            //var totalCurrentBalancePromise = null;
+
             var notesAcquiredTodayByGradePromise = null;
             var notesAcquiredTodayByYieldPromise = null;
             var notesAcquiredTodayByPurposePromise = null;
@@ -173,6 +175,14 @@
                 });
             }
 
+            function totalCurrentBalancePromise() {
+                return $q(function(resolve, reject) {
+                    setTimeout(function() {
+                        resolve(97202.08);
+                    }, 1000);
+                });
+            }
+
             function lcCurrentBalancePromise() {
                 return $q(function(resolve, reject) {
                     setTimeout(function() {
@@ -217,6 +227,15 @@
                 } else {
                     prosperPortfolioAnalyticsPromise = $http.get("/api/portfolio/analytics/prosper");
                     return prosperPortfolioAnalyticsPromise;
+                }
+            };
+
+            var totalCurrentBalance = function() {
+                if (totalCurrentBalancePromise) {
+                    return totalCurrentBalancePromise;
+                } else {
+                    totalCurrentBalancePromise = $http.get("/api/portfolio/currentBalance");
+                    return totalCurrentBalancePromise;
                 }
             };
 
@@ -297,6 +316,7 @@
                 allPortfolioAnalytics: allPortfolioAnalytics(),
                 LCPortfolioAnalytics: lCPortfolioAnalytics(),
                 prosperPortfolioAnalytics: prosperPortfolioAnalytics(),
+                totalCurrentBalance: totalCurrentBalance(),
                 lcCurrentBalance: lcCurrentBalance(),
                 prosperCurrentBalance: prosperCurrentBalance(),
                 notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),

@@ -28,6 +28,8 @@ import com.lattice.lib.integration.lc.model.Formatters.mapStringMarketplacePortf
 
 import utils.Constants
 
+import scala.concurrent.Future
+
 /**
  * @author : julienderay
  * Created on 02/11/2015
@@ -35,19 +37,23 @@ import utils.Constants
 class Portfolio extends Controller {
 
   private val lcPortfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
+  private val portfolios = Seq(lcPortfolio)
 
   def LCportfolioAnalytics = HasToken.async {
     lcPortfolio.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
   }
 
   def allPortfolioAnalytics = HasToken.async {
-    for {
-      lc <- lcPortfolio.portfolioAnalytics(Constants.portfolioName)
-    } yield Ok( Json.toJson( mergePortfoliosAnalytics(lc) ) )
+    val portfolioAnalytics = portfolios.map(_.portfolioAnalytics(Constants.portfolioName))
+    mergePortfoliosAnalytics( portfolioAnalytics: _* ).map( analytics => Ok( Json.toJson( analytics ) ) )
   }
 
-  private def mergePortfoliosAnalytics(portfoliosAnalytics: MarketplacePortfolioAnalytics*): Map[String, MarketplacePortfolioAnalytics] = {
-    portfoliosAnalytics.map( analytics => analytics.originator.toString -> analytics ).toMap
+  def totalCurrentBalance = HasToken {
+    Ok( Json.toJson( portfolios.map(_.accountBalance(Constants.portfolioName).availableCash).sum ) )
+  }
+
+  private def mergePortfoliosAnalytics(portfoliosAnalytics: Future[MarketplacePortfolioAnalytics]*): Future[Map[String, MarketplacePortfolioAnalytics]] = {
+    Future.sequence(portfoliosAnalytics).map( _.map(analytics => analytics.originator.toString -> analytics ).toMap )
   }
 
   def currentBalance = HasToken {

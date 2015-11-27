@@ -33,6 +33,7 @@
 
         vm.lendingClubPortfolioAnalytics = {};
         vm.prosperPortfolioAnalytics = {};
+        vm.mergedAnalytics = {};
 
         PortfolioAnalyticsService.lcCurrentBalance().then(function(balance) {
            vm.lendingClubPortfolioAnalytics.currentBalance = balance;
@@ -40,6 +41,10 @@
 
         PortfolioAnalyticsService.prosperCurrentBalance().then(function(balance) {
             vm.prosperPortfolioAnalytics.currentBalance = balance;
+        });
+
+        PortfolioAnalyticsService.totalCurrentBalance().then(function(balance) {
+            vm.mergedAnalytics.currentBalance = balance;
         });
 
         PortfolioAnalyticsService.LCPortfolioAnalytics().then(function(analytics) {
@@ -89,8 +94,6 @@
         });
 
         PortfolioAnalyticsService.allPortfolioAnalytics().then(function(analytics) {
-            vm.mergedAnalytics = {};
-
             vm.mergedAnalytics.principalOutstanding = 0;
             vm.mergedAnalytics.pendingInvestment = 0;
             vm.mergedAnalytics.currentNotes = 0;

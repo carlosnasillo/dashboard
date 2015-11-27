@@ -18,6 +18,7 @@ GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByGrade    controll
 GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByYield    controllers.Portfolio.notesAcquiredThisYearByMonthByYield
 GET     /api/portfolio/analytics/notesAcquiredThisYearByMonthByPurpose  controllers.Portfolio.notesAcquiredThisYearByMonthByPurpose
 GET     /api/portfolio/lendingClub/currentBalance                       controllers.Portfolio.currentBalance
+GET     /api/portfolio/currentBalance                                   controllers.Portfolio.totalCurrentBalance
 
 GET     /api/loans                                                      controllers.Loans.availableLoans
 POST    /api/placeOrder                                                 controllers.Loans.submitOrder
