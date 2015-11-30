@@ -19,9 +19,9 @@
         .module('app')
         .controller('MainDashboardController', MainDashboardController);
 
-    MainDashboardController.$inject = ['lendingClubAnalytics'];
+    MainDashboardController.$inject = ['lendingClubAnalytics', 'chartUtilsService'];
 
-    function MainDashboardController(lendingClubAnalytics) {
+    function MainDashboardController(lendingClubAnalytics, chartUtilsService) {
         var vm = this;
 
         vm.chartOptions = {
@@ -44,15 +44,7 @@
         vm.analytics.lendingClub = {};
         lendingClubAnalytics.analytics.success(function(analytics) {
             vm.analytics.lendingClub = analytics;
-            computeLiquidityByGradeLabels(analytics.liquidityByGrade);
-
-            function computeLiquidityByGradeLabels(liquidityByGrade) {
-                vm.analytics.lendingClub.liquidityByGradeLabels = Object.keys(liquidityByGrade);
-                vm.analytics.lendingClub.liquidityByGradeConverted = [];
-                $.map(liquidityByGrade, function(v, i) {
-                    vm.analytics.lendingClub.liquidityByGradeConverted.push(v);
-                });
-            }
+            vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(analytics.liquidityByGrade);
         });
 
         /**
@@ -67,10 +59,6 @@
         vm.analytics.prosper.dailyChangeInLiquidity = 15000943;
 
         var prosperLiquidityByGrade = {AA: 53, A: 276, B: 231, C: 126, D: 43, E: 102, HR: 100};
-        vm.analytics.prosper.liquidityByGradeConverted = [];
-        vm.analytics.prosper.liquidityByGradeLabels = Object.keys(prosperLiquidityByGrade);
-        $.map(prosperLiquidityByGrade, function(v, i) {
-            vm.analytics.prosper.liquidityByGradeConverted.push(v);
-        });
+        vm.analytics.prosper.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(prosperLiquidityByGrade);
     }
 })();

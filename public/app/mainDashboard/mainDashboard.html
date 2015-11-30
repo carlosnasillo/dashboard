@@ -45,15 +45,10 @@
                             <div my-ibox-tools></div>
                         </div>
                         <div class="ibox-content">
-                            <div>
-                                <canvas
-                                        id="lendingClubDoughnutChart"
-                                        class="chart chart-doughnut"
-                                        chart-data="vm.analytics.lendingClub.liquidityByGradeConverted"
-                                        chart-labels="vm.analytics.lendingClub.liquidityByGradeLabels"
-                                        chart-option="vm.chartOptions"
-                                ></canvas>
-                            </div>
+                            <my-donut-chart
+                                    identifier="lc-liquidity-by-grade"
+                                    data="vm.analytics.lendingClub.liquidityByGrade"
+                            ></my-donut-chart>
                         </div>
                     </div>
                 </div>
@@ -64,15 +59,10 @@
                             <div my-ibox-tools></div>
                         </div>
                         <div class="ibox-content">
-                            <div>
-                                <canvas
-                                        id="prosperDoughnutChart"
-                                        class="chart chart-doughnut"
-                                        chart-data="vm.analytics.prosper.liquidityByGradeConverted"
-                                        chart-labels="vm.analytics.prosper.liquidityByGradeLabels"
-                                        chart-option="vm.chartOptions"
-                                ></canvas>
-                            </div>
+                            <my-donut-chart
+                                    identifier="lc-liquidity-by-credit-score"
+                                    data="vm.analytics.prosper.liquidityByGrade"
+                            ></my-donut-chart>
                         </div>
                     </div>
                 </div>
