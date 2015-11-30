@@ -27,7 +27,12 @@
             restrict: 'E',
             scope: {
                 identifier: '@',
-                data: '='
+                columns: '=',
+                groups: '=',
+                colors: '=',
+                names: '=',
+                categories: '=',
+                hide: '='
             },
             template: '<div id="{{identifier}}"></div>',
             link: link
@@ -43,36 +48,36 @@
             }
         });
 
-        scope.$watch('data', function(data) {
-            if ( data !== undefined ) {
-                generateChart(data);
+        scope.$watch('columns', function(columns) {
+            if ( columns !== undefined ) {
+                generateChart(columns);
             }
         });
 
-        function generateChart(data) {
+        function generateChart(columns) {
             chart = c3.generate({
                 bindto: '#' + scope.identifier,
                 size: {
                     width: elem.width()
                 },
                 data: {
-                    columns: data.data,
+                    columns: columns,
                     type: 'bar',
-                    groups: data.groups,
-                    colors: data.colors,
-                    names: data.names
+                    groups: scope.groups,
+                    colors: scope.colors,
+                    names: scope.names
                 },
                 axis: {
                     x: {
                         type: 'category',
-                        categories: data.categories
+                        categories: scope.categories
                     }
                 },
                 tooltip: {
                     grouped: false
                 },
                 legend: {
-                    hide: data.hide
+                    hide: scope.hide
                 }
             });
         }
