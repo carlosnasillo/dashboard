@@ -61,8 +61,23 @@
 
             vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.fromMapToC3StyleData(chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield));
 
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
-            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
+            var principalOutstandingByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            var principalOutstandingByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(principalOutstandingByStateByGradeInverted);
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = {};
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.data = $.map(principalOutstandingByStateByGradeWithArray, function(v, i) {
+                return [[i].concat(v)];
+            });
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.categories = Object.keys(analytics.principalOutstandingByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.groups = [ vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.data.map(function(v) { return v[0]; }) ];
+
+            var notesByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
+            var notesByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(notesByStateByGradeInverted);
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = {};
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade.data = $.map(notesByStateByGradeWithArray, function(v, i) {
+                return [[i].concat(v)];
+            });
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade.categories = Object.keys(analytics.notesByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade.groups = [ vm.lendingClubPortfolioAnalytics.notesByStateByGrade.data.map(function(v) { return v[0]; }) ];
         });
 
         PortfolioAnalyticsService.prosperPortfolioAnalytics().then(function(analytics) {
@@ -81,6 +96,24 @@
 
             vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
             vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
+
+            var principalOutstandingByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            var principalOutstandingByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(principalOutstandingByStateByGradeInverted);
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = {};
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.data = $.map(principalOutstandingByStateByGradeWithArray, function(v, i) {
+                return [[i].concat(v)];
+            });
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.categories = Object.keys(analytics.principalOutstandingByStateByGrade);
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.groups = [ vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.data.map(function(v) { return v[0]; }) ];
+
+            var notesByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
+            var notesByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(notesByStateByGradeInverted);
+            vm.prosperPortfolioAnalytics.notesByStateByGrade = {};
+            vm.prosperPortfolioAnalytics.notesByStateByGrade.data = $.map(notesByStateByGradeWithArray, function(v, i) {
+                return [[i].concat(v)];
+            });
+            vm.prosperPortfolioAnalytics.notesByStateByGrade.categories = Object.keys(analytics.notesByStateByGrade);
+            vm.prosperPortfolioAnalytics.notesByStateByGrade.groups = [ vm.prosperPortfolioAnalytics.notesByStateByGrade.data.map(function(v) { return v[0]; }) ];
         });
 
         PortfolioAnalyticsService.allPortfolioAnalytics().then(function(analytics) {

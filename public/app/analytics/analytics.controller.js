@@ -49,7 +49,6 @@
             vm.analytics.ordersByPurpose = chartUtilsService.fromMapToC3StyleData(ordersByPurpose);
         });
 
-        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         PortfolioAnalyticsService.notesAcquiredThisYearByMonthByGrade.success(function(ordersByMonthByGrade) {
             ordersByMonthByGrade = {
@@ -67,30 +66,45 @@
                 "12": { A: 18905, B: 17072, C: 4945, D: 13275, E: 1247, F: 627, G: 16605 }
             };
 
-            var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
+            var months = chartUtilsService.allLettersMonths;
+
+            var ordersByMonthByGradeInverted = chartUtilsService.moveGradeFromValueToKey(ordersByMonthByGrade);
+            var ordersByMonthByGradeWithArray = chartUtilsService.secondDimensionObjToArray(ordersByMonthByGradeInverted);
+
+            vm.analytics.ordersByMonthByGrade = {};
+
             var firstMonth = (new Date().getMonth() + 2) % 12;
             firstMonth = (firstMonth === 0) ? 12 : firstMonth;
 
             var currentYear = new Date().getFullYear();
 
+            var ordersByMonthByGradeOrdered = { 'A':[], 'B':[], 'C':[], 'D':[], 'E':[], 'F':[], 'G':[] };
+            vm.analytics.ordersByMonthByGrade.categories = [];
+
             var i = firstMonth;
             do {
                 var year = (firstMonth - 1 < i) ? currentYear - 1 : currentYear;
-                invertedData.A[months[i-1] + '-' + year] = ordersByMonthByGrade[i].A;
-                invertedData.B[months[i-1] + '-' + year] = ordersByMonthByGrade[i].B;
-                invertedData.C[months[i-1] + '-' + year] = ordersByMonthByGrade[i].C;
-                invertedData.D[months[i-1] + '-' + year] = ordersByMonthByGrade[i].D;
-                invertedData.E[months[i-1] + '-' + year] = ordersByMonthByGrade[i].E;
-                invertedData.F[months[i-1] + '-' + year] = ordersByMonthByGrade[i].F;
-                invertedData.G[months[i-1] + '-' + year] = ordersByMonthByGrade[i].G;
+                vm.analytics.ordersByMonthByGrade.categories.push(months[i-1] + '-' + year);
+                ordersByMonthByGradeOrdered.A.push(ordersByMonthByGradeWithArray.A[i-1]);
+                ordersByMonthByGradeOrdered.B.push(ordersByMonthByGradeWithArray.B[i-1]);
+                ordersByMonthByGradeOrdered.C.push(ordersByMonthByGradeWithArray.C[i-1]);
+                ordersByMonthByGradeOrdered.D.push(ordersByMonthByGradeWithArray.D[i-1]);
+                ordersByMonthByGradeOrdered.E.push(ordersByMonthByGradeWithArray.E[i-1]);
+                ordersByMonthByGradeOrdered.F.push(ordersByMonthByGradeWithArray.F[i-1]);
+                ordersByMonthByGradeOrdered.G.push(ordersByMonthByGradeWithArray.G[i-1]);
 
                 i = i % 12 + 1;
             }
             while (i !== firstMonth);
 
-            vm.analytics.ordersByMonthByGrade = invertedData;
-            vm.analytics.ordersByMonthByYield = invertedData;
-            vm.analytics.ordersByMonthByPurpose = invertedData;
+            vm.analytics.ordersByMonthByGrade.categories = Object.keys(ordersByMonthByGrade);
+            vm.analytics.ordersByMonthByGrade.data = $.map(ordersByMonthByGradeWithArray, function(v, i) {
+                return [[i].concat(v)];
+            });
+            vm.analytics.ordersByMonthByGrade.groups = [ vm.analytics.ordersByMonthByGrade.data.map(function(v) { return v[0]; }) ];
+
+            vm.analytics.ordersByMonthByYield = vm.analytics.ordersByMonthByGrade;
+            vm.analytics.ordersByMonthByPurpose = vm.analytics.ordersByMonthByGrade;
         });
 
         /**

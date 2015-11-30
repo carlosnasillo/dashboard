@@ -169,10 +169,12 @@
                                             <h5>Portfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                 identifier="lc-stacked-status-amount"
-                                                data="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade"
-                                                ></my-bar-graph>
+                                                columns="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.data"
+                                                groups="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.groups"
+                                                categories="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.categories"
+                                                ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
@@ -182,10 +184,12 @@
                                             <h5>Portfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                     identifier="lc-stacked-status-number"
-                                                    data="vm.lendingClubPortfolioAnalytics.notesByStateByGrade"
-                                                    ></my-bar-graph>
+                                                    columns="vm.lendingClubPortfolioAnalytics.notesByStateByGrade.data"
+                                                    groups="vm.lendingClubPortfolioAnalytics.notesByStateByGrade.groups"
+                                                    categories="vm.lendingClubPortfolioAnalytics.notesByStateByGrade.categories"
+                                            ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
@@ -348,10 +352,12 @@
                                             <h5>Portfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                     identifier="p-stacked-status-amount"
-                                                    data="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade"
-                                                    ></my-bar-graph>
+                                                    columns="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.data"
+                                                    groups="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.groups"
+                                                    categories="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.categories"
+                                            ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
@@ -361,10 +367,12 @@
                                             <h5>Portfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                     identifier="p-stacked-status-number"
-                                                    data="vm.prosperPortfolioAnalytics.notesByStateByGrade"
-                                                    ></my-bar-graph>
+                                                    columns="vm.prosperPortfolioAnalytics.notesByStateByGrade.data"
+                                                    groups="vm.prosperPortfolioAnalytics.notesByStateByGrade.groups"
+                                                    categories="vm.prosperPortfolioAnalytics.notesByStateByGrade.categories"
+                                            ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>

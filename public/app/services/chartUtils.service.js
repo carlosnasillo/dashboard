@@ -159,6 +159,8 @@
             });
         };
 
+        var allLettersMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
         return {
             doughnutChartOptions: doughnutChartOptions,
             splitObjectInArray: splitObjectInArray,
@@ -172,7 +174,8 @@
             getColorsBySuffix: getColorsBySuffix,
             getSuffix: getSuffix,
             fromCamelCaseToTitleCase: fromCamelCaseToTitleCase,
-            fromMapToC3StyleData: fromMapToC3StyleData
+            fromMapToC3StyleData: fromMapToC3StyleData,
+            allLettersMonths: allLettersMonths
         };
 
         function getColumnsBySuffix(completeList, prefixes) {
