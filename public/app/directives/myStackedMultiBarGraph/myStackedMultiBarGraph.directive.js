@@ -35,36 +35,46 @@
     }
 
     function link(scope, elem) {
-        elem.bind('resize', function() {}); // Resize the chart automaticaly
+        var chart;
+
+        $('.tab').on('click', function() {
+            if (chart) {
+                scope.$evalAsync(function() { chart.resize(); });
+            }
+        });
 
         scope.$watch('data', function(data) {
             if ( data !== undefined ) {
-                c3.generate({
-                    bindto: '#' + scope.identifier,
-                    size: {
-                        width: elem.width()
-                    },
-                    data: {
-                        columns: data.data,
-                        type: 'bar',
-                        groups: data.groups,
-                        colors: data.colors,
-                        names: data.names
-                    },
-                    axis: {
-                        x: {
-                            type: 'category',
-                            categories: data.categories
-                        }
-                    },
-                    tooltip: {
-                        grouped: false
-                    },
-                    legend: {
-                        hide: data.hide
-                    }
-                });
+                generateChart(data);
             }
         });
+
+        function generateChart(data) {
+            chart = c3.generate({
+                bindto: '#' + scope.identifier,
+                size: {
+                    width: elem.width()
+                },
+                data: {
+                    columns: data.data,
+                    type: 'bar',
+                    groups: data.groups,
+                    colors: data.colors,
+                    names: data.names
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: data.categories
+                    }
+                },
+                tooltip: {
+                    grouped: false
+                },
+                legend: {
+                    hide: data.hide
+                }
+            });
+        }
     }
 })();

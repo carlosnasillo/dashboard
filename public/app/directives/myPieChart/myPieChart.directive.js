@@ -34,21 +34,31 @@
     }
 
     function link(scope, elem) {
-        elem.bind('resize', function() {}); // Resize the chart automaticaly
+        var chart;
+
+        $('.tab').on('click', function() {
+            if (chart) {
+                scope.$evalAsync(function() { chart.resize(); });
+            }
+        });
 
         scope.$watch('data', function(data) {
             if (data !== undefined ) {
-                c3.generate({
-                    bindto: '#' + scope.identifier,
-                    size: {
-                        width: elem.width()
-                    },
-                    data: {
-                        columns: data,
-                        type: 'pie'
-                    }
-                });
+                generateChart(data);
             }
         });
+
+        function generateChart(data) {
+            chart = c3.generate({
+                bindto: '#' + scope.identifier,
+                size: {
+                    width: elem.width()
+                },
+                data: {
+                    columns: data,
+                    type: 'pie'
+                }
+            });
+        }
     }
 })();
