@@ -12,7 +12,7 @@ package controllers
 import java.time.LocalDate
 
 import com.lattice.lib.integration.lc.impl.PortfolioManagerImpl
-import com.lattice.lib.portfolio.{MarketplacePortfolioAnalytics, MarketPlaceFactory}
+import com.lattice.lib.portfolio.{MarketplacePortfolioManager, MarketplacePortfolioAnalytics, MarketPlaceFactory}
 import controllers.Security.HasToken
 import models.Originator
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -40,7 +40,7 @@ class Portfolio extends Controller {
   private val lcPortfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
   private val portfolios = Seq(lcPortfolio)
 
-  private def originator(strOriginator: String): Option[PortfolioManagerImpl] = strOriginator match {
+  private def originator(strOriginator: String): Option[MarketplacePortfolioManager] = strOriginator match {
     case "lendingClub" => Some(lcPortfolio)
     case "prosper"     => None
     case _             => None
