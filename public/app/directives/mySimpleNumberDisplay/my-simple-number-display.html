@@ -7,22 +7,20 @@
   ~
   -->
 
-<div class="col-lg-3">
-    <div class="ibox float-e-margins">
-        <div class="ibox-title">
-            <div my-ibox-tools class="pull-right"></div>
-            <span class="label label-primary pull-right">{{day}}</span>
-            <h5>{{title}}</h5>
-        </div>
-        <div class="ibox-content">
-            <h1 class="no-margins">{{value}}</h1>
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <div my-ibox-tools class="pull-right"></div>
+        <span class="label label-primary pull-right">{{day}}</span>
+        <h5>{{title}}</h5>
+    </div>
+    <div class="ibox-content">
+        <h1 class="no-margins">{{value}}</h1>
 
-            <div class="stat-percent font-bold {{ratioLastValueNegative ? 'text-danger' : 'text-navy'}}">
-                {{ratioLastValue}}%
-                <i class="fa {{ratioLastValueNegative ? 'fa-level-down' : 'fa-level-up'}}"></i>
-            </div>
-
-            <small>{{legend}}</small>
+        <div class="stat-percent font-bold {{ratioLastValueNegative ? 'text-danger' : 'text-navy'}}">
+            {{ratioLastValue}}%
+            <i class="fa {{ratioLastValueNegative ? 'fa-level-down' : 'fa-level-up'}}"></i>
         </div>
+
+        <small>{{legend}}</small>
     </div>
 </div>

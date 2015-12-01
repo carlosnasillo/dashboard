@@ -4,7 +4,7 @@
         <my-nav-bar-top></my-nav-bar-top>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-                <div class="row">
+                <div class="col-md-3">
                     <my-simple-number-display
                             box-title="Lending Club Liquidity"
                             box-value="vm.analytics.lendingClub.numLoans"
@@ -12,6 +12,8 @@
                             day="Today"
                             diff="vm.analytics.lendingClub.dailyChangeInNumLoans"
                             ></my-simple-number-display>
+                </div>
+                <div class="col-md-3">
                     <my-simple-number-display
                             box-title="Lending Club Liquidity"
                             box-value="vm.analytics.lendingClub.liquidity"
@@ -20,6 +22,8 @@
                             diff="vm.analytics.lendingClub.dailyChangeInLiquidity"
                             filter="currency"
                             ></my-simple-number-display>
+                </div>
+                <div class="col-md-3">
                     <my-simple-number-display
                             box-title="Prosper"
                             box-value="vm.analytics.prosper.numLoans"
@@ -27,18 +31,20 @@
                             day="Today"
                             diff="vm.analytics.prosper.dailyChangeInNumLoans"
                     ></my-simple-number-display>
+                </div>
+                <div class="col-md-3">
                     <my-simple-number-display
                             box-title="Prosper"
                             box-value="vm.analytics.prosper.liquidity"
                             legend="Loans Notional"
                             day="Today"
-                            diff="vm.analytics.prosper.dailyChangeInNumLoans"
+                            diff="vm.analytics.prosper.dailyChangeInLiquidity"
                             filter="currency"
                     ></my-simple-number-display>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>Lending Club Liquidity Breakdown By Credit Score</h5>
@@ -57,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>Prosper Liquidity Breakdown By Credit Score </h5>
@@ -78,7 +84,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>News</h5>
@@ -109,6 +115,8 @@
                             </ul>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>Upcoming Economic Events</h5>
@@ -144,7 +152,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>Key Economic Indicator</h5>

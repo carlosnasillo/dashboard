@@ -34,14 +34,14 @@
             templateUrl: 'assets/app/directives/mySimpleNumberDisplay/my-simple-number-display.html',
             link: function(scope) {
                 scope.$watch('diff', function(diff) {
-                scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
-                if (scope.filter == "currency") {
-                    scope.value = $filter('currency')(scope.value);
-                }
+                    scope.ratioLastValue = ((diff / scope.value) * 100).toFixed(2);
+                    if (scope.filter == "currency") {
+                        scope.displayedValue = $filter('currency')(scope.value);
+                    }
 
-                scope.ratioLastValueNegative = scope.ratioLastValue < 0;
-            });
-        }
+                    scope.ratioLastValueNegative = scope.ratioLastValue < 0;
+                });
+            }
         };
     }
 })();
