@@ -115,11 +115,11 @@
         vm.analytics.ordersByPortion = chartUtilsService.fromMapToC3StyleData({ "Full": 25, "Fractional": 63 });
 
         vm.analytics.ordersByMonthlyReturn = {};
-        vm.analytics.ordersByMonthlyReturn.labels = ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'];
-        vm.analytics.ordersByMonthlyReturn.series = [
-            [1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
-            [1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
-            [1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
+        vm.analytics.ordersByMonthlyReturn.categories = ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'];
+        vm.analytics.ordersByMonthlyReturn.columns = [
+            ['Lending Club A', 1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
+            ['Prosper A', 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
+            ['Lending Club B', 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
         ];
     }
 })();

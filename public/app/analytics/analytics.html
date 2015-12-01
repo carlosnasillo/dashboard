@@ -69,6 +69,23 @@
                         ></my-pie-chart>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Monthly return - Lending Club A vs Prosper A vs Lending Club B
+                        </h5>
+                    </div>
+                    <div class="ibox-content">
+                        <my-spline-graph
+                            identifier="ct_monthly_return"
+                            columns="vm.analytics.ordersByMonthlyReturn.columns"
+                            categories="vm.analytics.ordersByMonthlyReturn.categories"
+                            ></my-spline-graph>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Orders placed today fractional vs full</h5>
@@ -78,21 +95,6 @@
                                 identifier="orders_by_portion"
                                 data="vm.analytics.ordersByPortion"
                         ></my-pie-chart>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Monthly return - Lending Club A vs Prosper A vs Lending Club B
-                        </h5>
-                    </div>
-                    <div class="ibox-content">
-                        <my-line-graph
-                            identifier="ct_monthly_return"
-                            labels="vm.analytics.ordersByMonthlyReturn.labels"
-                            series="vm.analytics.ordersByMonthlyReturn.series"
-                            ></my-line-graph>
                     </div>
                 </div>
             </div>
