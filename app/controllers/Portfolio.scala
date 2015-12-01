@@ -47,10 +47,10 @@ class Portfolio extends Controller {
   }
 
   def portfolioAnalytics(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics) ) )
-      case None             => Future.successful(BadRequest)
-    }
+    originator(strOriginator) map ( originator =>
+      originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>
+        Ok( Json.toJson(portfolioAnalytics) ) )
+    ) orElse Some(Future.successful(BadRequest)) get
   }
 
   def allPortfolioAnalytics = HasToken.async {
@@ -67,72 +67,69 @@ class Portfolio extends Controller {
   }
 
   def currentBalance(strOriginator: String) = HasToken {
-    originator(strOriginator) match {
-      case Some(originator) => Ok( Json.toJson( originator.accountBalance(Constants.portfolioName).availableCash ) )
-      case None             => BadRequest
-    }
+    originator(strOriginator) map ( originator => Ok( Json.toJson( originator.accountBalance(Constants.portfolioName).availableCash ) ) ) orElse Some(BadRequest) get
   }
 
   def notesAcquiredTodayByGrade(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByGrade) ) )
-      case None             => Future.successful(BadRequest)
-    }
+    originator(strOriginator) map ( originator =>
+      originator.portfolioAnalytics(Constants.portfolioName).map( portfolio =>
+        Ok( Json.toJson( portfolio.notesAcquiredTodayByGrade ) )
+      )
+    ) orElse Some(Future.successful(BadRequest)) get
   }
 
   def notesAcquiredTodayByYield(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByYield) ) )
-      case None             => Future.successful(BadRequest)
-    }
+    originator(strOriginator) map ( originator =>
+      originator.portfolioAnalytics(Constants.portfolioName).map( portfolio =>
+        Ok( Json.toJson( portfolio.notesAcquiredTodayByYield ) )
+      )
+    ) orElse Some(Future.successful(BadRequest)) get
   }
 
   def notesAcquiredTodayByPurpose(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => Ok( Json.toJson(portfolioAnalytics.notesAcquiredTodayByPurpose) ) )
-      case None             => Future.successful(BadRequest)
-    }
+    originator(strOriginator) map ( originator =>
+      originator.portfolioAnalytics(Constants.portfolioName).map( portfolio =>
+        Ok( Json.toJson( portfolio.notesAcquiredTodayByPurpose ) )
+      )
+    ) orElse Some(Future.successful(BadRequest)) get
   }
 
   def notesAcquiredThisYearByMonthByGrade(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => {
+    originator(strOriginator) map ( originator =>
+          originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>
           Ok( Json.toJson(
             portfolioAnalytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now())
               .groupBy(_._1.getMonthValue)
               .mapValues(_.values)
               .map { case(i, m) => (i, m reduce (_ ++ _)) }
           ))
-        })
-      case None             => Future.successful(BadRequest)
-    }
+        )
+      ) orElse Some(Future.successful(BadGateway)) get
   }
 
   def notesAcquiredThisYearByMonthByYield(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => {
+    originator(strOriginator) map ( originator =>
+      originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>
           Ok( Json.toJson(
             portfolioAnalytics.notesAcquiredByYield(LocalDate.now().minusYears(1), LocalDate.now())
               .groupBy(_._1.getMonthValue)
               .mapValues(_.values)
               .map { case(i, m) => (i, m reduce (_ ++ _)) }
           ))
-        })
-      case None             => Future.successful(BadRequest)
-    }
+        )
+    ) orElse Some(Future.successful(BadGateway)) get
   }
 
   def notesAcquiredThisYearByMonthByPurpose(strOriginator: String) = HasToken.async {
-    originator(strOriginator) match {
-      case Some(originator) => originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics => {
+    originator(strOriginator) map ( originator =>
+      originator.portfolioAnalytics(Constants.portfolioName).map(portfolioAnalytics =>
           Ok( Json.toJson(
             portfolioAnalytics.notesAcquiredByPurpose(LocalDate.now().minusYears(1), LocalDate.now())
               .groupBy(_._1.getMonthValue)
               .mapValues(_.values)
               .map { case(i, m) => (i, m reduce (_ ++ _)) }
           ))
-        })
-      case None             => Future.successful(BadRequest)
-    }
+        )
+    ) orElse Some(Future.successful(BadGateway)) get
   }
 }
