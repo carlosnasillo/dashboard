@@ -8,8 +8,9 @@
  */
 
 /**
- * Created by julienderay on 02/11/2015.
- */
+* @author : julienderay
+* Created on 02/11/2015
+*/
 
 (function () {
     'use strict';
@@ -18,192 +19,179 @@
         .module('app')
         .controller('PortfolioController', PortfolioController);
 
-    PortfolioController.$inject = ['PortfolioAnalyticsService'];
+    PortfolioController.$inject = ['PortfolioAnalyticsService', 'chartUtilsService'];
 
-    function PortfolioController(PortfolioAnalyticsService) {
+    function PortfolioController(PortfolioAnalyticsService, chartUtilsService) {
         var vm = this;
 
-        vm.tab = 1;
+        vm.tab = 3;
         vm.changeTab = function(tabId) {
             vm.tab = tabId;
         };
 
-        /**
-         * Lending Club mocked data
-         */
+        vm.chartOptions = chartUtilsService.doughnutChartOptions;
+
         vm.lendingClubPortfolioAnalytics = {};
-        PortfolioAnalyticsService.LCPortfolioAnalytics.success(function(analytics) {
-            vm.chartOptions = {
-                segmentShowStroke: true,
-                segmentStrokeColor: "#fff",
-                segmentStrokeWidth: 2,
-                percentageInnerCutout: 45,
-                animationSteps: 100,
-                animationEasing: "easeOutBounce",
-                animateRotate: true,
-                animateScale: false,
-                responsive: true,
-                maintainAspectRatio: true
-            };
-
-            vm.lendingClubPortfolioAnalytics = analytics;
-
-            // Mock data, current data are 0 or empty
-            vm.lendingClubPortfolioAnalytics.principalOutstanding = 4501543;
-            vm.lendingClubPortfolioAnalytics.pendingInvestment = 209490;
-            vm.lendingClubPortfolioAnalytics.currentNotes = 5380.43;
-
-            vm.lendingClubPortfolioAnalytics.principalReceived = 422.594;
-            vm.lendingClubPortfolioAnalytics.interestReceived = 35857;
-
-            vm.lendingClubPortfolioAnalytics.notesByGrade = {
-                C: 300,
-                B: 50,
-                A: 100
-            };
-            vm.lendingClubPortfolioAnalytics.notesByGradeLabels = Object.keys(vm.lendingClubPortfolioAnalytics.notesByGrade);
-            vm.lendingClubPortfolioAnalytics.notesByGradeConverted = [];
-            $.map(vm.lendingClubPortfolioAnalytics.notesByGrade, function(v, i) {
-                vm.lendingClubPortfolioAnalytics.notesByGradeConverted.push(v);
-            });
-
-            vm.lendingClubPortfolioAnalytics.notesByState = {
-                C: 500,
-                B: 1000,
-                A: 104
-            };
-            vm.lendingClubPortfolioAnalytics.notesByStateLabels = Object.keys(vm.lendingClubPortfolioAnalytics.notesByState);
-            vm.lendingClubPortfolioAnalytics.notesByStateConverted = [];
-            $.map(vm.lendingClubPortfolioAnalytics.notesByState, function(v, i) {
-                vm.lendingClubPortfolioAnalytics.notesByStateConverted.push(v);
-            });
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByGrade = {
-                A: 21,
-                B: 3,
-                C: 15,
-                D: 52,
-                E: 52
-            };
-
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = {
-                "10;12.9": 21,
-                "16;18.9": 3,
-                "19;21.9": 15,
-                "22;24.9": 52
-            };
-
-            var withAdaptedKeys = {};
-            for ( var k in vm.lendingClubPortfolioAnalytics.principalOutstandingByYield ) {
-                if ( vm.lendingClubPortfolioAnalytics.principalOutstandingByYield.hasOwnProperty(k) ) {
-                    withAdaptedKeys[k.replace(';','-') + "%"] = vm.lendingClubPortfolioAnalytics.principalOutstandingByYield[k];
-                }
-            }
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = withAdaptedKeys;
-
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByTerm = {
-                "36 months": 21,
-                "60 months": 3
-            };
-
-            var mockedPrincipalOutstandingByStateByGrade = {
-                'FullyPaid': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-                'Current': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-                'InGracePeriod': { 'A': 100000, 'B': 200000, 'C': 400000, 'D': 600000, 'E': 50000, 'F': 80000, 'G': 3000 },
-                'Late16-30days': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-                'Late31-120Days': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-                'Defaulted': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-                'Charged Off': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 }
-            };
-
-            var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
-            $.map(mockedPrincipalOutstandingByStateByGrade, function(v, i) {
-                invertedData.A[i] = v.A;
-                invertedData.B[i] = v.B;
-                invertedData.C[i] = v.C;
-                invertedData.D[i] = v.D;
-                invertedData.E[i] = v.E;
-                invertedData.F[i] = v.F;
-                invertedData.G[i] = v.G;
-            });
-
-            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = invertedData;
-
-            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade;
-        });
-
-        /**
-         * Prosper entirely mocked data
-         */
         vm.prosperPortfolioAnalytics = {};
+        vm.mergedAnalytics = {};
 
-        vm.prosperPortfolioAnalytics.principalOutstanding = 7396543;
-        vm.prosperPortfolioAnalytics.pendingInvestment = 274028;
-        vm.prosperPortfolioAnalytics.currentNotes = 7394.76;
-
-        vm.prosperPortfolioAnalytics.principalReceived = 169.734;
-        vm.prosperPortfolioAnalytics.interestReceived = 46293;
-
-        vm.prosperPortfolioAnalytics.notesByGrade = {
-            C: 400,
-            B: 10,
-            A: 300
-        };
-        vm.prosperPortfolioAnalytics.notesByGradeLabels = Object.keys(vm.prosperPortfolioAnalytics.notesByGrade);
-        vm.prosperPortfolioAnalytics.notesByGradeConverted = [];
-        $.map(vm.prosperPortfolioAnalytics.notesByGrade, function(v, i) {
-            vm.prosperPortfolioAnalytics.notesByGradeConverted.push(v);
+        PortfolioAnalyticsService.lcCurrentBalance().then(function(balance) {
+           vm.lendingClubPortfolioAnalytics.currentBalance = balance;
         });
 
-
-        vm.prosperPortfolioAnalytics.notesByState = {
-            C: 50,
-            B: 2000,
-            A: 154
-        };
-        vm.prosperPortfolioAnalytics.notesByStateLabels = Object.keys(vm.prosperPortfolioAnalytics.notesByState);
-        vm.prosperPortfolioAnalytics.notesByStateConverted = [];
-        $.map(vm.prosperPortfolioAnalytics.notesByState, function(v, i) {
-            vm.prosperPortfolioAnalytics.notesByStateConverted.push(v);
+        PortfolioAnalyticsService.prosperCurrentBalance().then(function(balance) {
+            vm.prosperPortfolioAnalytics.currentBalance = balance;
         });
 
-        vm.prosperPortfolioAnalytics.principalOutstandingByGrade = {
-            A: 51,
-            B: 22,
-            C: 1,
-            D: 53,
-            E: 42
-        };
+        PortfolioAnalyticsService.totalCurrentBalance().then(function(balance) {
+            vm.mergedAnalytics.currentBalance = balance;
+        });
 
-        vm.prosperPortfolioAnalytics.principalOutstandingByYield = {
-            "10;12.9": 43,
-            "16;18.9": 53,
-            "19;21.9": 1,
-            "22;24.9": 5
-        };
+        PortfolioAnalyticsService.LCPortfolioAnalytics().then(function(analytics) {
+            vm.lendingClubPortfolioAnalytics.principalOutstanding = analytics.principalOutstanding;
+            vm.lendingClubPortfolioAnalytics.pendingInvestment = analytics.pendingInvestment;
+            vm.lendingClubPortfolioAnalytics.currentNotes = analytics.currentNotes;
+            vm.lendingClubPortfolioAnalytics.principalReceived = analytics.principalReceived;
+            vm.lendingClubPortfolioAnalytics.interestReceived = analytics.interestReceived;
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByGrade = analytics.principalOutstandingByGrade;
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByTerm = analytics.principalOutstandingByTerm;
 
-        var withAdaptedKeys = {};
-        for ( var k in vm.prosperPortfolioAnalytics.principalOutstandingByYield ) {
-            if ( vm.prosperPortfolioAnalytics.principalOutstandingByYield.hasOwnProperty(k) ) {
-                withAdaptedKeys[k.replace(';','-') + "%"] = vm.prosperPortfolioAnalytics.principalOutstandingByYield[k];
-            }
-        }
-        vm.prosperPortfolioAnalytics.principalOutstandingByYield = withAdaptedKeys;
+            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(analytics.notesByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByGradeLabels = splittedNoteByGrade.labels;
+            vm.lendingClubPortfolioAnalytics.notesByGradeConverted = splittedNoteByGrade.array;
 
-        vm.prosperPortfolioAnalytics.principalOutstandingByTerm = {
-            "36 months": 2,
-            "60 months": 34
-        };
+            var splittedNoteByState = chartUtilsService.splitObjectInArray(analytics.notesByState);
+            vm.lendingClubPortfolioAnalytics.notesByStateLabels = splittedNoteByState.labels;
+            vm.lendingClubPortfolioAnalytics.notesByStateConverted = splittedNoteByState.array;
 
-        vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = {
-            'FullyPaid': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-            'Current': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-            'InGracePeriod': { 'A': 100000, 'B': 200000, 'C': 400000, 'D': 600000, 'E': 50000, 'F': 80000, 'G': 3000 },
-            'Late16-30days': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-            'Late31-120Days': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-            'Defaulted': { 'A': 800000, 'B': 1200000, 'C': 1400000, 'D': 1300000, 'E': 50000, 'F': 80000, 'G': 3000 },
-            'Charged Off': { 'A': 200000, 'B': 400000, 'C': 500000, 'D': 300000, 'E': 50000, 'F': 80000, 'G': 3000 }
-        };
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield);
 
-        vm.prosperPortfolioAnalytics.notesByStateByGrade = vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade;
+            vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            vm.lendingClubPortfolioAnalytics.notesByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
+        });
+
+        PortfolioAnalyticsService.prosperPortfolioAnalytics().then(function(analytics) {
+            vm.prosperPortfolioAnalytics.principalOutstanding = analytics.principalOutstanding;
+            vm.prosperPortfolioAnalytics.pendingInvestment = analytics.pendingInvestment;
+            vm.prosperPortfolioAnalytics.currentNotes = analytics.currentNotes;
+            vm.prosperPortfolioAnalytics.principalReceived = analytics.principalReceived;
+            vm.prosperPortfolioAnalytics.interestReceived = analytics.interestReceived;
+            vm.prosperPortfolioAnalytics.principalOutstandingByGrade = analytics.principalOutstandingByGrade;
+            vm.prosperPortfolioAnalytics.principalOutstandingByTerm = analytics.principalOutstandingByTerm;
+
+            var splittedNoteByGrade = chartUtilsService.splitObjectInArray(analytics.notesByGrade);
+            vm.prosperPortfolioAnalytics.notesByGradeLabels = splittedNoteByGrade.labels;
+            vm.prosperPortfolioAnalytics.notesByGradeConverted = splittedNoteByGrade.array;
+
+            var splittedNoteByState = chartUtilsService.splitObjectInArray(analytics.notesByState);
+            vm.prosperPortfolioAnalytics.notesByStateLabels = splittedNoteByState.labels;
+            vm.prosperPortfolioAnalytics.notesByStateConverted = splittedNoteByState.array;
+
+            vm.prosperPortfolioAnalytics.principalOutstandingByYield = chartUtilsService.doubleDoubleToPercents(analytics.principalOutstandingByYield);
+
+            vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.principalOutstandingByStateByGrade);
+            vm.prosperPortfolioAnalytics.notesByStateByGrade = chartUtilsService.moveGradeFromValueToKey(analytics.notesByStateByGrade);
+        });
+
+        PortfolioAnalyticsService.allPortfolioAnalytics().then(function(analytics) {
+            vm.mergedAnalytics.principalOutstanding = 0;
+            vm.mergedAnalytics.pendingInvestment = 0;
+            vm.mergedAnalytics.currentNotes = 0;
+            vm.mergedAnalytics.principalReceived = 0;
+            vm.mergedAnalytics.interestReceived = 0;
+
+            var notesByGrade = {};
+            var notesByState = {};
+
+            var notesByMarkets = {};
+            var notesAmountByMarket = {};
+
+            var notesByStateByGrade = {
+                data: []
+            };
+
+            var principalOutstandingByStateByGrade = {
+                data: []
+            };
+
+            $.map(analytics, function(v, i) {
+                vm.mergedAnalytics.principalOutstanding += v.principalOutstanding;
+                vm.mergedAnalytics.pendingInvestment += v.pendingInvestment;
+                vm.mergedAnalytics.currentNotes += v.currentNotes;
+                vm.mergedAnalytics.principalReceived += v.principalReceived;
+                vm.mergedAnalytics.interestReceived += v.interestReceived;
+
+                notesByGrade = chartUtilsService.mergeObjects(v.notesByGrade, notesByGrade);
+                notesByState = chartUtilsService.mergeObjects(v.notesByState, notesByState);
+
+                notesByMarkets[i] = v.currentNotes;
+                notesAmountByMarket[i] = v.principalOutstanding;
+
+                var notesByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(v.notesByStateByGrade);
+                var notesByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(notesByStateByGradeInverted);
+                var notesByStateByGradeC3Style = chartUtilsService.bindFirstAndSecondDimensions(notesByStateByGradeWithArray);
+                var notesByStateByGradePrefixed = chartUtilsService.prefixColumnsName(i, notesByStateByGradeC3Style);
+                notesByStateByGrade.data = notesByStateByGrade.data.concat(notesByStateByGradePrefixed);
+                notesByStateByGrade.categories = Object.keys(v.notesByStateByGrade);
+
+                var principalOutstandingByStateByGradeInverted = chartUtilsService.moveGradeFromValueToKey(v.principalOutstandingByStateByGrade);
+                var principalOutstandingByStateByGradeWithArray = chartUtilsService.secondDimensionObjToArray(principalOutstandingByStateByGradeInverted);
+                var principalOutstandingByStateByGradeC3Style = chartUtilsService.bindFirstAndSecondDimensions(principalOutstandingByStateByGradeWithArray);
+                var principalOutstandingByStateByGradePrefixed = chartUtilsService.prefixColumnsName(i, principalOutstandingByStateByGradeC3Style);
+                principalOutstandingByStateByGrade.data = principalOutstandingByStateByGrade.data.concat(principalOutstandingByStateByGradePrefixed);
+                principalOutstandingByStateByGrade.categories = Object.keys(v.principalOutstandingByStateByGrade);
+            });
+
+            var slittedNoteByGrade = chartUtilsService.splitObjectInArray(notesByGrade);
+            vm.mergedAnalytics.notesByGradeLabels = slittedNoteByGrade.labels;
+            vm.mergedAnalytics.notesByGradeConverted = slittedNoteByGrade.array;
+
+            var slittedNoteByState = chartUtilsService.splitObjectInArray(notesByState);
+            vm.mergedAnalytics.notesByStateLabels = slittedNoteByState.labels;
+            vm.mergedAnalytics.notesByStateConverted = slittedNoteByState.array;
+
+            vm.mergedAnalytics.notesByMarkets = notesByMarkets;
+            vm.mergedAnalytics.notesAmountByMarket = notesAmountByMarket;
+
+            notesByStateByGrade.groups = chartUtilsService.getColumnsByPrefix(
+                notesByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            notesByStateByGrade.colors = chartUtilsService.getColorsBySuffix(
+                notesByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            notesByStateByGrade.names = {};
+            Object.keys(notesByStateByGrade.colors).map(function(colName) {
+                notesByStateByGrade.names[colName] = chartUtilsService.getSuffix(colName);
+            });
+            var firstOriginator = Object.keys(notesByStateByGrade.colors)[0].split('-')[0];
+            notesByStateByGrade.hide = Object.keys(notesByStateByGrade.colors).filter(function(colName) {
+                return colName.indexOf(firstOriginator) < 0;
+            });
+
+            vm.mergedAnalytics.notesByStateByGrade = notesByStateByGrade;
+
+            principalOutstandingByStateByGrade.groups = chartUtilsService.getColumnsByPrefix(
+                principalOutstandingByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            principalOutstandingByStateByGrade.colors = chartUtilsService.getColorsBySuffix(
+                principalOutstandingByStateByGrade.data.map(function(v) { return v[0]; }),
+                Object.keys(analytics)
+            );
+            principalOutstandingByStateByGrade.names = {};
+            Object.keys(principalOutstandingByStateByGrade.colors).map(function(colName) {
+                principalOutstandingByStateByGrade.names[colName] = chartUtilsService.getSuffix(colName);
+            });
+            firstOriginator = Object.keys(principalOutstandingByStateByGrade.colors)[0].split('-')[0];
+            principalOutstandingByStateByGrade.hide = Object.keys(principalOutstandingByStateByGrade.colors).filter(function(colName) {
+                return colName.indexOf(firstOriginator) < 0;
+            });
+
+            vm.mergedAnalytics.principalOutstandingByStateByGrade = principalOutstandingByStateByGrade;
+
+            vm.mergedAnalytics.defaultWidth = 300;
+        });
     }
 })();
