@@ -8,31 +8,26 @@
  */
 
 /**
-* @author : julienderay
-* Created on 26/11/2015
-*/
+ * Created by julienderay on 04/11/2015.
+ */
 
-(function(){
+(function () {
     'use strict';
 
     angular
         .module('app')
-        .directive('myStackedMultiBarGraph', myStackedMultiBarGraph);
+        .directive('mySplineGraph', mySplineGraph);
 
-    myStackedMultiBarGraph.$inject = [];
+    mySplineGraph.$inject = [];
 
-    function myStackedMultiBarGraph() {
+    function mySplineGraph() {
         return {
             replace: true,
             restrict: 'E',
             scope: {
                 identifier: '@',
                 columns: '=',
-                groups: '=',
-                colors: '=',
-                names: '=',
-                categories: '=',
-                hide: '='
+                categories: '='
             },
             template: '<div id="{{identifier}}"></div>',
             link: link
@@ -62,22 +57,13 @@
                 },
                 data: {
                     columns: columns,
-                    type: 'bar',
-                    groups: scope.groups,
-                    colors: scope.colors,
-                    names: scope.names
+                    type: 'spline'
                 },
                 axis: {
                     x: {
                         type: 'category',
                         categories: scope.categories
                     }
-                },
-                tooltip: {
-                    grouped: false
-                },
-                legend: {
-                    hide: scope.hide
                 }
             });
         }

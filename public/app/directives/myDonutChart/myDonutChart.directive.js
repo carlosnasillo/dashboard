@@ -9,30 +9,26 @@
 
 /**
 * @author : julienderay
-* Created on 26/11/2015
+* Created on 30/2015
 */
 
-(function(){
+(function () {
     'use strict';
 
     angular
         .module('app')
-        .directive('myStackedMultiBarGraph', myStackedMultiBarGraph);
+        .directive('myDonutChart', myDonutChart);
 
-    myStackedMultiBarGraph.$inject = [];
+    myDonutChart.$inject = [];
 
-    function myStackedMultiBarGraph() {
+    function myDonutChart() {
         return {
             replace: true,
             restrict: 'E',
             scope: {
                 identifier: '@',
-                columns: '=',
-                groups: '=',
-                colors: '=',
-                names: '=',
-                categories: '=',
-                hide: '='
+                data: '=',
+                title: '@'
             },
             template: '<div id="{{identifier}}"></div>',
             link: link
@@ -48,36 +44,24 @@
             }
         });
 
-        scope.$watch('columns', function(columns) {
-            if ( columns !== undefined ) {
-                generateChart(columns);
+        scope.$watch('data', function(data) {
+            if (data !== undefined ) {
+                generateChart(data);
             }
         });
 
-        function generateChart(columns) {
+        function generateChart(data) {
             chart = c3.generate({
                 bindto: '#' + scope.identifier,
                 size: {
                     width: elem.width()
                 },
                 data: {
-                    columns: columns,
-                    type: 'bar',
-                    groups: scope.groups,
-                    colors: scope.colors,
-                    names: scope.names
+                    columns: data,
+                    type: 'donut'
                 },
-                axis: {
-                    x: {
-                        type: 'category',
-                        categories: scope.categories
-                    }
-                },
-                tooltip: {
-                    grouped: false
-                },
-                legend: {
-                    hide: scope.hide
+                donut: {
+                    title: scope.title
                 }
             });
         }

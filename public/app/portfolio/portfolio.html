@@ -6,14 +6,14 @@
             <div class="col-md-12">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs ">
-                        <li data-ng-class="{'active': vm.tab == 3}"><a data-toggle="tab" data-ng-click="vm.changeTab(3)">Total</a></li>
-                        <li data-ng-class="{'active': vm.tab == 1}"><a data-toggle="tab" data-ng-click="vm.changeTab(1)">Lending Club</a></li>
-                        <li data-ng-class="{'active': vm.tab == 2}"><a data-toggle="tab" data-ng-click="vm.changeTab(2)">Prosper</a></li>
+                        <li data-ng-class="{'active': vm.tab == 3}"><a data-toggle="tab" data-ng-click="vm.changeTab(3)" class="tab">Total</a></li>
+                        <li data-ng-class="{'active': vm.tab == 1}"><a data-toggle="tab" data-ng-click="vm.changeTab(1)" class="tab">Lending Club</a></li>
+                        <li data-ng-class="{'active': vm.tab == 2}"><a data-toggle="tab" data-ng-click="vm.changeTab(2)" class="tab">Prosper</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div id="tab-1" class="tab-pane" data-ng-if="vm.tab == 1" data-ng-class="{'active': vm.tab == 1}">
+                        <div id="tab-1" class="tab-pane" data-ng-show="vm.tab == 1" data-ng-class="{'active': vm.tab == 1}">
                             <div class="row  border-bottom white-bg dashboard-header">
-                                <div class="col-sm-3">
+                                <div class="col-md-3">
                                     <h2>Lending Club</h2>
                                     <ul class="list-group clear-list m-t">
                                         <li class="list-group-item fist-item">
@@ -48,7 +48,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
                                             <h5>Cash received</h5>
@@ -96,36 +96,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-md-5">
                                     <div class="statistic-box">
                                         <h4>
                                             Portfolio Composition (owned notes)
                                         </h4>
 
                                         <div class="row text-center">
-                                            <div class="col-lg-6">
-                                                <canvas
-                                                        height="300"
-                                                        width="300"
-                                                        id="lcByScoreChart"
-                                                        class="chart chart-doughnut"
-                                                        chart-data="vm.lendingClubPortfolioAnalytics.notesByGradeConverted"
-                                                        chart-labels="vm.lendingClubPortfolioAnalytics.notesByGradeLabels"
-                                                        chart-option="vm.chartOptions"
-                                                ></canvas>
-                                                <h5>Breakdown by grade</h5>
+                                            <div class="col-md-6">
+                                                <my-donut-chart
+                                                        identifier="lc-notes-by-grade"
+                                                        data="vm.lendingClubPortfolioAnalytics.notesByGrade"
+                                                        title="Breakdown by grade"
+                                                ></my-donut-chart>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <canvas
-                                                        height="300"
-                                                        width="300"
-                                                        id="lcByMaturityChart"
-                                                        class="chart chart-doughnut"
-                                                        chart-data="vm.lendingClubPortfolioAnalytics.notesByStateConverted"
-                                                        chart-labels="vm.lendingClubPortfolioAnalytics.notesByStateLabels"
-                                                        chart-option="vm.chartOptions"
-                                                ></canvas>
-                                                <h5>Breakdown by maturity</h5>
+                                            <div class="col-md-6">
+                                                <my-donut-chart
+                                                        identifier="lc-notes-by-state"
+                                                        data="vm.lendingClubPortfolioAnalytics.notesByState"
+                                                        title="Breakdown by maturity"
+                                                ></my-donut-chart>
                                             </div>
                                         </div>
                                     </div>
@@ -176,34 +166,38 @@
                                 <div class="col-md-6">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
-                                            <h5>Porfolio status - $ Amount</h5>
+                                            <h5>Portfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                 identifier="lc-stacked-status-amount"
-                                                data="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade"
-                                                ></my-bar-graph>
+                                                columns="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.data"
+                                                groups="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.groups"
+                                                categories="vm.lendingClubPortfolioAnalytics.principalOutstandingByStateByGrade.categories"
+                                                ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
-                                            <h5>Porfolio status - # Loans</h5>
+                                            <h5>Portfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                     identifier="lc-stacked-status-number"
-                                                    data="vm.lendingClubPortfolioAnalytics.notesByStateByGrade"
-                                                    ></my-bar-graph>
+                                                    columns="vm.lendingClubPortfolioAnalytics.notesByStateByGrade.data"
+                                                    groups="vm.lendingClubPortfolioAnalytics.notesByStateByGrade.groups"
+                                                    categories="vm.lendingClubPortfolioAnalytics.notesByStateByGrade.categories"
+                                            ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div id="tab-2" class="tab-pane" data-ng-if="vm.tab == 2" data-ng-class="{'active': vm.tab == 2}">
+                        <div id="tab-2" class="tab-pane" data-ng-show="vm.tab == 2" data-ng-class="{'active': vm.tab == 2}">
                             <div class="row  border-bottom white-bg dashboard-header">
-                                <div class="col-sm-3">
+                                <div class="col-md-3">
                                     <h2>Prosper</h2>
                                     <ul class="list-group clear-list m-t">
                                         <li class="list-group-item fist-item">
@@ -238,7 +232,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
                                             <h5>Cash received</h5>
@@ -286,36 +280,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-md-5">
                                     <div class="statistic-box">
                                         <h4>
                                             Portfolio Composition (owned notes)
                                         </h4>
-
                                         <div class="row text-center">
-                                            <div class="col-lg-6">
-                                                <canvas
-                                                        height="300"
-                                                        width="300"
-                                                        id="pByScoreChart"
-                                                        class="chart chart-doughnut"
-                                                        chart-data="vm.prosperPortfolioAnalytics.notesByGradeConverted"
-                                                        chart-labels="vm.prosperPortfolioAnalytics.notesByGradeLabels"
-                                                        chart-option="vm.chartOptions"
-                                                ></canvas>
-                                                <h5>Breakdown by grade</h5>
+                                            <div class="col-md-6">
+                                                <my-donut-chart
+                                                        identifier="prosper-notes-by-grade"
+                                                        data="vm.prosperPortfolioAnalytics.notesByGrade"
+                                                        title="Breakdown by grade"
+                                                ></my-donut-chart>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <canvas
-                                                        height="300"
-                                                        width="300"
-                                                        id="pByMaturityChart"
-                                                        class="chart chart-doughnut"
-                                                        chart-data="vm.prosperPortfolioAnalytics.notesByStateConverted"
-                                                        chart-labels="vm.prosperPortfolioAnalytics.notesByStateLabels"
-                                                        chart-option="vm.chartOptions"
-                                                ></canvas>
-                                                <h5>Breakdown by maturity</h5>
+                                            <div class="col-md-6">
+                                                <my-donut-chart
+                                                        identifier="prosper-notes-by-state"
+                                                        data="vm.prosperPortfolioAnalytics.notesByState"
+                                                        title="Breakdown by maturity"
+                                                ></my-donut-chart>
                                             </div>
                                         </div>
                                     </div>
@@ -366,34 +349,38 @@
                                 <div class="col-md-6">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
-                                            <h5>Porfolio status - $ Amount</h5>
+                                            <h5>Portfolio status - $ Amount</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                     identifier="p-stacked-status-amount"
-                                                    data="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade"
-                                                    ></my-bar-graph>
+                                                    columns="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.data"
+                                                    groups="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.groups"
+                                                    categories="vm.prosperPortfolioAnalytics.principalOutstandingByStateByGrade.categories"
+                                            ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
-                                            <h5>Porfolio status - # Loans</h5>
+                                            <h5>Portfolio status - # Loans</h5>
                                         </div>
                                         <div class="ibox-content">
-                                            <my-bar-graph
+                                            <my-stacked-bar-graph
                                                     identifier="p-stacked-status-number"
-                                                    data="vm.prosperPortfolioAnalytics.notesByStateByGrade"
-                                                    ></my-bar-graph>
+                                                    columns="vm.prosperPortfolioAnalytics.notesByStateByGrade.data"
+                                                    groups="vm.prosperPortfolioAnalytics.notesByStateByGrade.groups"
+                                                    categories="vm.prosperPortfolioAnalytics.notesByStateByGrade.categories"
+                                            ></my-stacked-bar-graph>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div id="tab-3" class="tab-pane" data-ng-if="vm.tab == 3" data-ng-class="{'active': vm.tab == 3}">
+                        <div id="tab-3" class="tab-pane" data-ng-show="vm.tab == 3" data-ng-class="{'active': vm.tab == 3}">
                             <div class="row  border-bottom white-bg dashboard-header">
-                                <div class="col-sm-3">
+                                <div class="col-md-3">
                                     <h2>Prosper</h2>
                                     <ul class="list-group clear-list m-t">
                                         <li class="list-group-item fist-item">
@@ -416,7 +403,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-title">
                                             <h5>Cash received</h5>
@@ -441,36 +428,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-md-5">
                                     <div class="statistic-box">
                                         <h4>
                                             Portfolios Composition (owned notes)
                                         </h4>
 
                                         <div class="row text-center">
-                                            <div class="col-lg-6">
-                                                <canvas
-                                                        height="300"
-                                                        width="300"
-                                                        id="allByScoreChart"
-                                                        class="chart chart-doughnut"
-                                                        chart-data="vm.mergedAnalytics.notesByGradeConverted"
-                                                        chart-labels="vm.mergedAnalytics.notesByGradeLabels"
-                                                        chart-option="vm.chartOptions"
-                                                ></canvas>
-                                                <h5>Breakdown by grade</h5>
+                                            <div class="col-md-6">
+                                                <my-donut-chart
+                                                    identifier="all-notes-by-grade"
+                                                    data="vm.mergedAnalytics.notesByGrade"
+                                                    title="Breakdown by grade"
+                                                ></my-donut-chart>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <canvas
-                                                        height="300"
-                                                        width="300"
-                                                        id="allByMaturityChart"
-                                                        class="chart chart-doughnut"
-                                                        chart-data="vm.mergedAnalytics.notesByStateConverted"
-                                                        chart-labels="vm.mergedAnalytics.notesByStateLabels"
-                                                        chart-option="vm.chartOptions"
-                                                ></canvas>
-                                                <h5>Breakdown by maturity</h5>
+                                            <div class="col-md-6">
+                                                <my-donut-chart
+                                                        identifier="all-notes-by-maturity"
+                                                        data="vm.mergedAnalytics.notesByState"
+                                                        title="Breakdown by maturity"
+                                                ></my-donut-chart>
                                             </div>
                                         </div>
                                     </div>
@@ -513,9 +490,13 @@
                                         <div class="ibox-content">
                                             <my-stacked-multi-bar-graph
                                                     identifier="portfolio-composition-notes"
-                                                    data="vm.mergedAnalytics.notesByStateByGrade"
-                                                    default-width="vm.mergedAnalytics.defaultWidth">
-                                            </my-stacked-multi-bar-graph>
+                                                    columns="vm.mergedAnalytics.notesByStateByGrade.data"
+                                                    colors="vm.mergedAnalytics.notesByStateByGrade.colors"
+                                                    groups="vm.mergedAnalytics.notesByStateByGrade.groups"
+                                                    names="vm.mergedAnalytics.notesByStateByGrade.names"
+                                                    categories="vm.mergedAnalytics.notesByStateByGrade.categories"
+                                                    hide="vm.mergedAnalytics.notesByStateByGrade.hide"
+                                            ></my-stacked-multi-bar-graph>
                                         </div>
                                     </div>
                                 </div>
@@ -527,9 +508,13 @@
                                         <div class="ibox-content">
                                             <my-stacked-multi-bar-graph
                                                     identifier="portfolio-composition-notes-amount"
-                                                    data="vm.mergedAnalytics.principalOutstandingByStateByGrade"
-                                                    default-width="vm.mergedAnalytics.defaultWidth">
-                                            </my-stacked-multi-bar-graph>
+                                                    columns="vm.mergedAnalytics.principalOutstandingByStateByGrade.data"
+                                                    colors="vm.mergedAnalytics.principalOutstandingByStateByGrade.colors"
+                                                    groups="vm.mergedAnalytics.principalOutstandingByStateByGrade.groups"
+                                                    names="vm.mergedAnalytics.principalOutstandingByStateByGrade.names"
+                                                    categories="vm.mergedAnalytics.principalOutstandingByStateByGrade.categories"
+                                                    hide="vm.mergedAnalytics.principalOutstandingByStateByGrade.hide"
+                                            ></my-stacked-multi-bar-graph>
                                         </div>
                                     </div>
                                 </div>

@@ -19,9 +19,9 @@
         .module('app')
         .controller('AnalyticsController', AnalyticsController);
 
-    AnalyticsController.$inject = ['PortfolioAnalyticsService'];
+    AnalyticsController.$inject = ['PortfolioAnalyticsService', 'chartUtilsService'];
 
-    function AnalyticsController(PortfolioAnalyticsService) {
+    function AnalyticsController(PortfolioAnalyticsService, chartUtilsService) {
         var vm = this;
 
         vm.tab = 1;
@@ -36,26 +36,19 @@
          */
         PortfolioAnalyticsService.notesAcquiredTodayByGrade.success(function(ordersByGrade) {
             ordersByGrade = { "AA": 21, "A": 3, "B": 15, "C": 52, "D": 52 };
-            vm.analytics.ordersByGrade = ordersByGrade;
+            vm.analytics.ordersByGrade = chartUtilsService.fromMapToC3StyleData(ordersByGrade);
         });
 
         PortfolioAnalyticsService.notesAcquiredTodayByYield.success(function(ordersByYield) {
             ordersByYield = { "5;8.9": 32, "9;12.9": 5, "13;16.9": 57, "17;22": 32 };
-            var withAdaptedKeys = {};
-            for ( var k in ordersByYield ) {
-                if ( ordersByYield.hasOwnProperty(k) ) {
-                    withAdaptedKeys[k.replace(';','-') + "%"] = ordersByYield[k];
-                }
-            }
-            vm.analytics.ordersByYield = withAdaptedKeys;
+            vm.analytics.ordersByYield = chartUtilsService.fromMapToC3StyleData(chartUtilsService.doubleDoubleToPercents(ordersByYield));
         });
 
         PortfolioAnalyticsService.notesAcquiredTodayByPurpose.success(function(ordersByPurpose) {
             ordersByPurpose = { "100-999": 21, "1000-4999": 3, "5000-5999": 15, "6000-9999": 52, "10000-49999": 52 };
-            vm.analytics.ordersByPurpose = ordersByPurpose;
+            vm.analytics.ordersByPurpose = chartUtilsService.fromMapToC3StyleData(ordersByPurpose);
         });
 
-        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         PortfolioAnalyticsService.notesAcquiredThisYearByMonthByGrade.success(function(ordersByMonthByGrade) {
             ordersByMonthByGrade = {
@@ -73,45 +66,60 @@
                 "12": { A: 18905, B: 17072, C: 4945, D: 13275, E: 1247, F: 627, G: 16605 }
             };
 
-            var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
+            var months = chartUtilsService.allLettersMonths;
+
+            var ordersByMonthByGradeInverted = chartUtilsService.moveGradeFromValueToKey(ordersByMonthByGrade);
+            var ordersByMonthByGradeWithArray = chartUtilsService.secondDimensionObjToArray(ordersByMonthByGradeInverted);
+
+            vm.analytics.ordersByMonthByGrade = {};
+
             var firstMonth = (new Date().getMonth() + 2) % 12;
             firstMonth = (firstMonth === 0) ? 12 : firstMonth;
 
             var currentYear = new Date().getFullYear();
 
+            var ordersByMonthByGradeOrdered = { 'A':[], 'B':[], 'C':[], 'D':[], 'E':[], 'F':[], 'G':[] };
+            vm.analytics.ordersByMonthByGrade.categories = [];
+
             var i = firstMonth;
             do {
                 var year = (firstMonth - 1 < i) ? currentYear - 1 : currentYear;
-                invertedData.A[months[i-1] + '-' + year] = ordersByMonthByGrade[i].A;
-                invertedData.B[months[i-1] + '-' + year] = ordersByMonthByGrade[i].B;
-                invertedData.C[months[i-1] + '-' + year] = ordersByMonthByGrade[i].C;
-                invertedData.D[months[i-1] + '-' + year] = ordersByMonthByGrade[i].D;
-                invertedData.E[months[i-1] + '-' + year] = ordersByMonthByGrade[i].E;
-                invertedData.F[months[i-1] + '-' + year] = ordersByMonthByGrade[i].F;
-                invertedData.G[months[i-1] + '-' + year] = ordersByMonthByGrade[i].G;
+                vm.analytics.ordersByMonthByGrade.categories.push(months[i-1] + '-' + year);
+                ordersByMonthByGradeOrdered.A.push(ordersByMonthByGradeWithArray.A[i-1]);
+                ordersByMonthByGradeOrdered.B.push(ordersByMonthByGradeWithArray.B[i-1]);
+                ordersByMonthByGradeOrdered.C.push(ordersByMonthByGradeWithArray.C[i-1]);
+                ordersByMonthByGradeOrdered.D.push(ordersByMonthByGradeWithArray.D[i-1]);
+                ordersByMonthByGradeOrdered.E.push(ordersByMonthByGradeWithArray.E[i-1]);
+                ordersByMonthByGradeOrdered.F.push(ordersByMonthByGradeWithArray.F[i-1]);
+                ordersByMonthByGradeOrdered.G.push(ordersByMonthByGradeWithArray.G[i-1]);
 
                 i = i % 12 + 1;
             }
             while (i !== firstMonth);
 
-            vm.analytics.ordersByMonthByGrade = invertedData;
-            vm.analytics.ordersByMonthByYield = invertedData;
-            vm.analytics.ordersByMonthByPurpose = invertedData;
+            vm.analytics.ordersByMonthByGrade.categories = Object.keys(ordersByMonthByGrade);
+            vm.analytics.ordersByMonthByGrade.data = $.map(ordersByMonthByGradeWithArray, function(v, i) {
+                return [[i].concat(v)];
+            });
+            vm.analytics.ordersByMonthByGrade.groups = [ vm.analytics.ordersByMonthByGrade.data.map(function(v) { return v[0]; }) ];
+
+            vm.analytics.ordersByMonthByYield = vm.analytics.ordersByMonthByGrade;
+            vm.analytics.ordersByMonthByPurpose = vm.analytics.ordersByMonthByGrade;
         });
 
         /**
          * Mocked data and NOT linked to backend
          */
-        vm.analytics.ordersByMarketplace = { "Lending Club": 21, "Prosper": 3 };
-        vm.analytics.ordersByMechanism = { "Automatic": 41, "Manual": 44 };
-        vm.analytics.ordersByPortion = { "Full": 25, "Fractional": 63 };
+        vm.analytics.ordersByMarketplace = chartUtilsService.fromMapToC3StyleData({ "Lending Club": 21, "Prosper": 3 });
+        vm.analytics.ordersByMechanism = chartUtilsService.fromMapToC3StyleData({ "Automatic": 41, "Manual": 44 });
+        vm.analytics.ordersByPortion = chartUtilsService.fromMapToC3StyleData({ "Full": 25, "Fractional": 63 });
 
         vm.analytics.ordersByMonthlyReturn = {};
-        vm.analytics.ordersByMonthlyReturn.labels = ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'];
-        vm.analytics.ordersByMonthlyReturn.series = [
-            [1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
-            [1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
-            [1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
+        vm.analytics.ordersByMonthlyReturn.categories = ['Oct14', 'Nov14', 'Dec14', 'Jan15', 'Feb15', 'Mar15', 'Apr15', 'May15', 'Jun15', 'Jul15', 'Aug15', 'Sep15', 'Oct'];
+        vm.analytics.ordersByMonthlyReturn.columns = [
+            ['Lending Club A', 1.4, 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23],
+            ['Prosper A', 1.2, 1.5, 1.5, 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4],
+            ['Lending Club B', 1.46, 1.89, 2.1, 1.2, 1.5, 1.6, 1.45, 1.23, 1.4, 1.4, 1.2, 1.5]
         ];
     }
 })();

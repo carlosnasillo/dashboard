@@ -47,8 +47,7 @@ grunt.initConfig({
         all: {
             dest: 'public/dist/bower.js',
             mainFiles: {
-                'font-awesome': 'css/font-awesome.min.css',
-                'Flot': ['jquery.flot.js', 'jquery.flot.resize.js', 'jquery.flot.pie.js']
+                'font-awesome': 'css/font-awesome.min.css'
             }
         }
     },
@@ -105,8 +104,6 @@ grunt.initConfig({
             src: [
                 "bower_components/bootstrap/dist/css/bootstrap.min.css",
                 "bower_components/font-awesome/css/font-awesome.min.css",
-                "bower_components/chartist/dist/chartist.min.css",
-                "bower_components/angular-chart.js/dist/angular-chart.min.css",
                 "bower_components/angular-ui-grid/ui-grid.min.css",
                 "bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css",
                 "bower_components/sweetalert/dist/sweetalert.css",

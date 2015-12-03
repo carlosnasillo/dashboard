@@ -9,7 +9,7 @@
 
 /**
 * @author : julienderay
-* Created on 26/11/2015
+* Created on 30/11/2015
 */
 
 (function(){
@@ -17,11 +17,11 @@
 
     angular
         .module('app')
-        .directive('myStackedMultiBarGraph', myStackedMultiBarGraph);
+        .directive('myStackedBarGraph', myStackedBarGraph);
 
-    myStackedMultiBarGraph.$inject = [];
+    myStackedBarGraph.$inject = [];
 
-    function myStackedMultiBarGraph() {
+    function myStackedBarGraph() {
         return {
             replace: true,
             restrict: 'E',
@@ -29,10 +29,7 @@
                 identifier: '@',
                 columns: '=',
                 groups: '=',
-                colors: '=',
-                names: '=',
-                categories: '=',
-                hide: '='
+                categories: '='
             },
             template: '<div id="{{identifier}}"></div>',
             link: link
@@ -63,9 +60,7 @@
                 data: {
                     columns: columns,
                     type: 'bar',
-                    groups: scope.groups,
-                    colors: scope.colors,
-                    names: scope.names
+                    groups: scope.groups
                 },
                 axis: {
                     x: {
@@ -75,9 +70,6 @@
                 },
                 tooltip: {
                     grouped: false
-                },
-                legend: {
-                    hide: scope.hide
                 }
             });
         }
