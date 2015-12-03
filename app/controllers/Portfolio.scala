@@ -37,46 +37,28 @@ import scala.concurrent.Future
  */
 class Portfolio extends Controller {
 
-  private val lcPortfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
-  private val portfolios = Seq(lcPortfolio)
-
-  private def originator(strOriginator: String): Option[MarketplacePortfolioManager] = strOriginator match {
-    case "lendingClub" => Some(lcPortfolio)
-    case "prosper"     => None
-    case _             => None
-  }
-
   private def extractFromPortfolio[T](strOriginator: String, f: MarketplacePortfolioAnalytics => T)(implicit tjs: Writes[T]): Future[Result] =
-    originator(strOriginator) map (originator =>
+    Portfolio.originator(strOriginator) map (originator =>
       originator.portfolioAnalytics(Constants.portfolioName) map (portfolioAnalytics =>
         Ok( Json.toJson( f(portfolioAnalytics) ) )
       )
     ) orElse Some(Future.successful(BadRequest)) get
-
-  private def groupByMonthNumber[A, B](map: Map[LocalDate, Map[A, B]]): Map[Int, Map[A, B]] =
-    map.groupBy(_._1.getMonthValue)
-      .mapValues(_.values)
-      .map { case(i, m) => (i, m reduce (_ ++ _)) }
-
-  private def mergePortfoliosAnalytics(portfoliosAnalytics: Future[MarketplacePortfolioAnalytics]*): Future[Map[String, MarketplacePortfolioAnalytics]] = {
-    Future.sequence(portfoliosAnalytics).map( _.map(analytics => analytics.originator.toString -> analytics ).toMap )
-  }
 
   def portfolioAnalytics(strOriginator: String) = HasToken.async {
     extractFromPortfolio[MarketplacePortfolioAnalytics](strOriginator, analytics => analytics)
   }
 
   def allPortfolioAnalytics = HasToken.async {
-    val portfolioAnalytics = portfolios.map(_.portfolioAnalytics(Constants.portfolioName))
-    mergePortfoliosAnalytics( portfolioAnalytics: _* ).map( analytics => Ok( Json.toJson( analytics ) ) )
+    val portfolioAnalytics = Portfolio.portfolios.map(_.portfolioAnalytics(Constants.portfolioName))
+    Portfolio.mergePortfoliosAnalytics( portfolioAnalytics: _* ).map( analytics => Ok( Json.toJson( analytics ) ) )
   }
 
   def totalCurrentBalance = HasToken {
-    Ok( Json.toJson( portfolios.map(_.accountBalance(Constants.portfolioName).availableCash).sum ) )
+    Ok( Json.toJson( Portfolio.portfolios.map(_.accountBalance(Constants.portfolioName).availableCash).sum ) )
   }
 
   def currentBalance(strOriginator: String) = HasToken {
-    originator(strOriginator) map ( originator => Ok( Json.toJson( originator.accountBalance(Constants.portfolioName).availableCash ) ) ) orElse Some(BadRequest) get
+    Portfolio.originator(strOriginator) map ( originator => Ok( Json.toJson( originator.accountBalance(Constants.portfolioName).availableCash ) ) ) orElse Some(BadRequest) get
   }
 
   def notesAcquiredTodayByGrade(strOriginator: String) = HasToken.async {
@@ -93,19 +75,41 @@ class Portfolio extends Controller {
 
   def notesAcquiredThisYearByMonthByGrade(strOriginator: String) = HasToken.async {
     extractFromPortfolio[Map[Int, Map[Grade.Value, Int]]](strOriginator, analytics =>
-      groupByMonthNumber[Grade.Value, Int]( analytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now()) )
+      Portfolio.groupByMonthNumber[Grade.Value]( analytics.notesAcquiredByGrade(LocalDate.now().minusYears(1), LocalDate.now()) )
     )
   }
 
   def notesAcquiredThisYearByMonthByYield(strOriginator: String) = HasToken.async {
     extractFromPortfolio[Map[Int, Map[(Double, Double), Int]]](strOriginator, analytics =>
-      groupByMonthNumber[(Double, Double), Int]( analytics.notesAcquiredByYield(LocalDate.now().minusYears(1), LocalDate.now()) )
+      Portfolio.groupByMonthNumber[(Double, Double)]( analytics.notesAcquiredByYield(LocalDate.now().minusYears(1), LocalDate.now()) )
     )
   }
 
   def notesAcquiredThisYearByMonthByPurpose(strOriginator: String) = HasToken.async {
     extractFromPortfolio[Map[Int, Map[String, Int]]](strOriginator, analytics =>
-      groupByMonthNumber[String, Int]( analytics.notesAcquiredByPurpose(LocalDate.now().minusYears(1), LocalDate.now()) )
+      Portfolio.groupByMonthNumber[String]( analytics.notesAcquiredByPurpose(LocalDate.now().minusYears(1), LocalDate.now()) )
     )
+  }
+}
+
+object Portfolio {
+  lazy val lcPortfolio = MarketPlaceFactory.portfolio(Originator.LendingClub)
+  lazy val portfolios: Seq[MarketplacePortfolioManager] = Seq(lcPortfolio)
+
+  private[controllers] def originator(strOriginator: String): Option[MarketplacePortfolioManager] = strOriginator match {
+    case "lendingClub" => Some(lcPortfolio)
+    case "prosper"     => None
+    case _             => None
+  }
+
+  private[controllers] def groupByMonthNumber[A](map: Map[LocalDate, Map[A, Int]]): Map[Int, Map[A, Int]] =
+    map
+      .groupBy(_._1.getMonthValue)
+      .mapValues( m => (Map[A, Int]() /: (for (m <- m.values; kv <- m) yield kv)) { (a, kv) =>
+        a + (if (a.contains(kv._1)) kv._1 -> (a(kv._1) + kv._2) else kv)
+      })
+
+  private[controllers] def mergePortfoliosAnalytics(portfoliosAnalytics: Future[MarketplacePortfolioAnalytics]*): Future[Map[String, MarketplacePortfolioAnalytics]] = {
+    Future.sequence(portfoliosAnalytics).map( _.map(analytics => analytics.originator.toString -> analytics ).toMap )
   }
 }
