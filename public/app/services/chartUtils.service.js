@@ -126,7 +126,7 @@
         };
 
         var getColorsBySuffix = function(completeList, prefixes) {
-            var colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#ea6153", "#f39c12", "#f1c40f"];
+            var colors = c3jsDefaultColors;
             var res = {};
             var columnsBySuffix = getColumnsBySuffix(completeList, prefixes);
 
@@ -160,6 +160,8 @@
         };
 
         var allLettersMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        var c3jsDefaultColors = ["#1F77B4", "#FF7F0E", "#2CA02C", "#D62728", "#9467BD", "#8C564B", "#E377C2"];
 
         return {
             doughnutChartOptions: doughnutChartOptions,
