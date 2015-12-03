@@ -11,25 +11,19 @@ package controllers
 
 import java.time.LocalDate
 
-import com.lattice.lib.integration.lc.impl.{PortfolioAnalytics, PortfolioManagerImpl}
-import com.lattice.lib.portfolio.{MarketplacePortfolioManager, MarketplacePortfolioAnalytics, MarketPlaceFactory}
+import com.lattice.lib.integration.lc.model.Formatters.{mapDoubleDoubleInt, mapIntMapDoubleDoubleIntFormat, mapIntMapStringIntFormat, mapStringMarketplacePortfolioAnalytics, marketplacePortfolioAnalyticsFormat}
+import com.lattice.lib.portfolio.{MarketPlaceFactory, MarketplacePortfolioAnalytics, MarketplacePortfolioManager}
 import controllers.Security.HasToken
 import models.{Grade, Originator}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.{Json, Writes}
 import play.api.mvc._
-import play.api.libs.json.{Writes, Json}
-
-import utils.Formatters.mapGradeIntFormat
-import utils.Formatters.mapIntMapGradeValueIntFormat
-import com.lattice.lib.integration.lc.model.Formatters.marketplacePortfolioAnalyticsFormat
-import com.lattice.lib.integration.lc.model.Formatters.mapDoubleDoubleInt
-import com.lattice.lib.integration.lc.model.Formatters.mapIntMapDoubleDoubleIntFormat
-import com.lattice.lib.integration.lc.model.Formatters.mapIntMapStringIntFormat
-import com.lattice.lib.integration.lc.model.Formatters.mapStringMarketplacePortfolioAnalytics
-
 import utils.Constants
+import utils.Formatters.{mapGradeIntFormat, mapIntMapGradeValueIntFormat}
 
 import scala.concurrent.Future
+import scalaz._
+import Scalaz._
 
 /**
  * @author : julienderay
@@ -105,9 +99,7 @@ object Portfolio {
   private[controllers] def groupByMonthNumber[A](map: Map[LocalDate, Map[A, Int]]): Map[Int, Map[A, Int]] =
     map
       .groupBy(_._1.getMonthValue)
-      .mapValues( m => (Map[A, Int]() /: (for (m <- m.values; kv <- m) yield kv)) { (a, kv) =>
-        a + (if (a.contains(kv._1)) kv._1 -> (a(kv._1) + kv._2) else kv)
-      })
+      .mapValues( _.values.reduceLeft(_ |+| _) )
 
   private[controllers] def mergePortfoliosAnalytics(portfoliosAnalytics: Future[MarketplacePortfolioAnalytics]*): Future[Map[String, MarketplacePortfolioAnalytics]] = {
     Future.sequence(portfoliosAnalytics).map( _.map(analytics => analytics.originator.toString -> analytics ).toMap )
