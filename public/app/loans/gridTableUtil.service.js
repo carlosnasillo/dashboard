@@ -25,17 +25,8 @@
     function GridTableUtil() {
 
         return {
-            highlightFilteredHeader: highlightFilteredHeader,
             applyDateFilter: applyDateFilter
         };
-
-        function highlightFilteredHeader( row, rowRenderIndex, col ) {
-            if ( col.filters[0].term ) {
-                return 'header-filtered';
-            } else {
-                return '';
-            }
-        }
 
         function applyDateFilter(startDateTerm, endDateTerm, filterKey, originalData, callback) {
             var data = originalData;
