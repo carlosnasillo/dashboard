@@ -22,8 +22,9 @@ import utils.Constants
 import utils.Formatters.{mapGradeIntFormat, mapIntMapGradeValueIntFormat}
 
 import scala.concurrent.Future
-import scalaz._
-import Scalaz._
+
+import scalaz.std.AllInstances._
+import scalaz.syntax.all._
 
 /**
  * @author : julienderay

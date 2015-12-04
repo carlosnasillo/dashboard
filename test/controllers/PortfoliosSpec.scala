@@ -13,9 +13,12 @@ import java.time.LocalDate
 
 import com.lattice.lib.integration.lc.impl.PortfolioAnalytics
 import com.lattice.lib.portfolio.MarketplacePortfolioAnalytics
-import models.{Grade, Term}
+import models.{Originator, Grade, Term}
 import org.scalatestplus.play._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mock.MockitoSugar
+
+import org.mockito.Mockito._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,7 +27,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * @author : julienderay
   * Created on 02/12/2015
   */
-class PortfoliosSpec extends PlaySpec with ScalaFutures {
+class PortfoliosSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
   "groupByMonthNumber" must {
     "convert months in there integer value" in {
@@ -61,10 +64,13 @@ class PortfoliosSpec extends PlaySpec with ScalaFutures {
     "return a Future Map of PortfolioAnalytics by originator" in {
       val pa = PortfolioAnalytics(0, 0, 0, 0, 0, Map(Grade.A -> 0), Map("" -> 0), Map(0 -> null), Map("" -> Map(Grade.A -> 0)), Map(Grade.A -> BigDecimal(0)), Map((2d -> 2d) -> BigDecimal(0)), Map(Term._24 -> BigDecimal(0)), Map("" -> BigDecimal(0)), Map("" -> Map(Grade.A -> BigDecimal(0))), 0, Map(LocalDate.now -> Seq()))
 
-      val mpaList: Seq[Future[MarketplacePortfolioAnalytics]] = Seq( Future{ pa } )
+      val mockPA = mock[MarketplacePortfolioAnalytics]
+      when(mockPA.originator) thenReturn Originator.Prosper
+
+      val mpaList: Seq[Future[MarketplacePortfolioAnalytics]] = Seq( Future{ pa }, Future{ mockPA } )
 
       whenReady(Portfolio.mergePortfoliosAnalytics( mpaList:_* )) { result =>
-        result mustEqual Map( pa.originator.toString -> pa )
+        result mustEqual Map( pa.originator.toString -> pa, mockPA.originator.toString -> mockPA )
       }
     }
     "return an empty map if no argument is given" in {
