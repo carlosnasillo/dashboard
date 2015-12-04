@@ -18,25 +18,11 @@
     angular
         .module('app')
         .factory('PortfolioAnalyticsService', function ($http, $q) {
-            //var LCPortfolioAnalyticsPromise = null;
-            //var prosperPortfolioAnalyticsPromise = null;
             //var allPortfolioAnalyticsPromise = null;
-
-            //var lcCurrentBalancePromise = null;
-            //var prosperCurrentBalancePromise = null;
-
             //var totalCurrentBalancePromise = null;
-
-            var notesAcquiredTodayByGradePromise = null;
-            var notesAcquiredTodayByYieldPromise = null;
-            var notesAcquiredTodayByPurposePromise = null;
-            var notesAcquiredThisYearByMonthByGradePromise = null;
-            var notesAcquiredThisYearByMonthByYieldPromise = null;
-            var notesAcquiredThisYearByMonthByPurposePromise = null;
 
             /**
              * Mocked data as LC portflio analytics are all at 0
-             * @returns {Promise}
              */
             var mockedDataLC = {
                 principalOutstanding: 4501543,
@@ -91,17 +77,8 @@
                 }
             };
 
-             function LCPortfolioAnalyticsPromise() {
-                return $q(function(resolve, reject) {
-                    setTimeout(function() {
-                        resolve(mockedDataLC);
-                    }, 1000);
-                });
-            }
-
             /**
              * Mocked data (Prosper not implemented yet)
-             * @returns {Promise}
              */
             var mockedDataProsper = {
                 principalOutstanding: 7396543,
@@ -156,13 +133,17 @@
                 }
             };
 
-            function prosperPortfolioAnalyticsPromise() {
-                return $q(function (resolve, reject) {
-                    setTimeout(function () {
-                        resolve(mockedDataProsper);
-                    }, 1000);
-                });
-            }
+            var mockedNotesAcquiredTodayByGrade = {};
+
+            var mockedNotesAcquiredTodayByYield = {};
+
+            var mockedNotesAcquiredTodayByPurpose = {};
+
+            var mockedNotesAcquiredThisYearByMonthByGrade = {};
+
+            var mockedNotesAcquiredThisYearByMonthByYield = {};
+
+            var mockedNotesAcquiredThisYearByMonthByPurpose = {};
 
             function allPortfolioAnalyticsPromise() {
                 return $q(function(resolve, reject) {
@@ -183,148 +164,193 @@
                 });
             }
 
-            function lcCurrentBalancePromise() {
-                return $q(function(resolve, reject) {
-                    setTimeout(function() {
-                        resolve(7678.42);
-                    }, 1000);
-                });
-            }
-
-            function prosperCurrentBalancePromise() {
-                return $q(function(resolve, reject) {
-                    setTimeout(function() {
-                        resolve(89603.66);
-                    }, 1000);
-                });
-            }
-
-            /**
-             * Real services definitions
-             */
-
-            var allPortfolioAnalytics = function() {
+            function allPortfolioAnalytics() {
                 if (allPortfolioAnalyticsPromise) {
                     return allPortfolioAnalyticsPromise;
                 } else {
                     allPortfolioAnalyticsPromise = $http.get("/api/portfolio/analytics");
                     return allPortfolioAnalyticsPromise;
                 }
-            };
+            }
 
-            var lCPortfolioAnalytics = function() {
-                if (LCPortfolioAnalyticsPromise) {
-                    return LCPortfolioAnalyticsPromise;
-                } else {
-                    LCPortfolioAnalyticsPromise = $http.get("/api/portfolio/analytics/lendingClub");
-                    return LCPortfolioAnalyticsPromise;
-                }
-            };
-
-            var prosperPortfolioAnalytics = function() {
-                if (prosperPortfolioAnalyticsPromise) {
-                    return prosperPortfolioAnalyticsPromise;
-                } else {
-                    prosperPortfolioAnalyticsPromise = $http.get("/api/portfolio/analytics/prosper");
-                    return prosperPortfolioAnalyticsPromise;
-                }
-            };
-
-            var totalCurrentBalance = function() {
+            function totalCurrentBalance() {
                 if (totalCurrentBalancePromise) {
                     return totalCurrentBalancePromise;
                 } else {
                     totalCurrentBalancePromise = $http.get("/api/portfolio/currentBalance");
                     return totalCurrentBalancePromise;
                 }
-            };
+            }
 
-            var lcCurrentBalance = function() {
-                if (lcCurrentBalancePromise) {
-                    return lcCurrentBalancePromise;
-                } else {
-                    lcCurrentBalancePromise = $http.get("/api/portfolio/lendingClub/lcCurrentBalance");
-                    return lcCurrentBalancePromise;
+            var portfolioServiceFactory = function(originator) {
+                //var portfolioAnalyticsPromise = null;
+                //var currentBalancePromise = null;
+
+                //var notesAcquiredTodayByGradePromise = null;
+                //var notesAcquiredTodayByYieldPromise = null;
+                //var notesAcquiredTodayByPurposePromise = null;
+                //var notesAcquiredThisYearByMonthByGradePromise = null;
+                //var notesAcquiredThisYearByMonthByYieldPromise = null;
+                //var notesAcquiredThisYearByMonthByPurposePromise = null;
+
+                function notesAcquiredTodayByGradePromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(mockedNotesAcquiredTodayByGrade);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var prosperCurrentBalance = function() {
-                if (prosperCurrentBalancePromise) {
-                    return prosperCurrentBalancePromise;
-                } else {
-                    prosperCurrentBalancePromise = $http.get("/api/portfolio/lendingClub/prosperCurrentBalance");
-                    return prosperCurrentBalancePromise;
+                function notesAcquiredTodayByYieldPromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(mockedNotesAcquiredTodayByYield);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var notesAcquiredTodayByGrade = function() {
-                if (notesAcquiredTodayByGradePromise) {
-                    return notesAcquiredTodayByGradePromise;
-                } else {
-                    notesAcquiredTodayByGradePromise = $http.get("/api/portfolio/analytics/notesAcquiredTodayByGrade");
-                    return notesAcquiredTodayByGradePromise;
+                function notesAcquiredTodayByPurposePromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(mockedNotesAcquiredTodayByPurpose);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var notesAcquiredTodayByYield = function() {
-                if (notesAcquiredTodayByYieldPromise) {
-                    return notesAcquiredTodayByYieldPromise;
-                } else {
-                    notesAcquiredTodayByYieldPromise = $http.get("/api/portfolio/analytics/notesAcquiredTodayByYield");
-                    return notesAcquiredTodayByYieldPromise;
+                function notesAcquiredThisYearByMonthByGradePromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(mockedNotesAcquiredThisYearByMonthByGrade);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var notesAcquiredTodayByPurpose = function() {
-                if (notesAcquiredTodayByPurposePromise) {
-                    return notesAcquiredTodayByPurposePromise;
-                } else {
-                    notesAcquiredTodayByPurposePromise = $http.get("/api/portfolio/analytics/notesAcquiredTodayByPurpose");
-                    return notesAcquiredTodayByPurposePromise;
+                function notesAcquiredThisYearByMonthByYieldPromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(mockedNotesAcquiredThisYearByMonthByYield);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var notesAcquiredThisYearByMonthByGrade = function() {
-                if (notesAcquiredThisYearByMonthByGradePromise) {
-                    return notesAcquiredThisYearByMonthByGradePromise;
-                } else {
-                    notesAcquiredThisYearByMonthByGradePromise = $http.get("/api/portfolio/analytics/notesAcquiredThisYearByMonthByGrade");
-                    return notesAcquiredThisYearByMonthByGradePromise;
+                function notesAcquiredThisYearByMonthByPurposePromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(mockedNotesAcquiredThisYearByMonthByPurpose);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var notesAcquiredThisYearByMonthByYield = function() {
-                if (notesAcquiredThisYearByMonthByYieldPromise) {
-                    return notesAcquiredThisYearByMonthByYieldPromise;
-                } else {
-                    notesAcquiredThisYearByMonthByYieldPromise = $http.get("/api/portfolio/analytics/notesAcquiredThisYearByMonthByYield");
-                    return notesAcquiredThisYearByMonthByYieldPromise;
+                function portfolioAnalyticsPromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(originator == "lendingClub" ? mockedDataLC : mockedDataProsper);
+                        }, 1000);
+                    });
                 }
-            };
 
-            var notesAcquiredThisYearByMonthByPurpose = function() {
-                if (notesAcquiredThisYearByMonthByPurposePromise) {
-                    return notesAcquiredThisYearByMonthByPurposePromise;
-                } else {
-                    notesAcquiredThisYearByMonthByPurposePromise = $http.get("/api/portfolio/analytics/notesAcquiredThisYearByMonthByPurpose");
-                    return notesAcquiredThisYearByMonthByPurposePromise;
+                function currentBalancePromise() {
+                    return $q(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(7678.42);
+                        }, 1000);
+                    });
                 }
-            };
 
+                /**
+                 * Real services definitions
+                 */
+
+                function portfolioAnalytics() {
+                    if (portfolioAnalyticsPromise) {
+                        return portfolioAnalyticsPromise;
+                    } else {
+                        portfolioAnalyticsPromise = $http.get("/api/portfolio/" + originator + "/analytics");
+                        return portfolioAnalyticsPromise;
+                    }
+                }
+
+                function currentBalance() {
+                    if (currentBalancePromise) {
+                        return currentBalancePromise;
+                    } else {
+                        currentBalancePromise = $http.get("/api/portfolio/" + originator + "/currentBalance");
+                        return currentBalancePromise;
+                    }
+                }
+
+                function notesAcquiredTodayByGrade() {
+                    if (notesAcquiredTodayByGradePromise) {
+                        return notesAcquiredTodayByGradePromise;
+                    } else {
+                        notesAcquiredTodayByGradePromise = $http.get("/api/portfolio/" + originator + "/analytics/notesAcquiredTodayByGrade");
+                        return notesAcquiredTodayByGradePromise;
+                    }
+                }
+
+                function notesAcquiredTodayByYield() {
+                    if (notesAcquiredTodayByYieldPromise) {
+                        return notesAcquiredTodayByYieldPromise;
+                    } else {
+                        notesAcquiredTodayByYieldPromise = $http.get("/api/portfolio/" + originator + "/analytics/notesAcquiredTodayByYield");
+                        return notesAcquiredTodayByYieldPromise;
+                    }
+                }
+
+                function notesAcquiredTodayByPurpose() {
+                    if (notesAcquiredTodayByPurposePromise) {
+                        return notesAcquiredTodayByPurposePromise;
+                    } else {
+                        notesAcquiredTodayByPurposePromise = $http.get("/api/portfolio/" + originator + "/analytics/notesAcquiredTodayByPurpose");
+                        return notesAcquiredTodayByPurposePromise;
+                    }
+                }
+
+                function notesAcquiredThisYearByMonthByGrade() {
+                    if (notesAcquiredThisYearByMonthByGradePromise) {
+                        return notesAcquiredThisYearByMonthByGradePromise;
+                    } else {
+                        notesAcquiredThisYearByMonthByGradePromise = $http.get("/api/portfolio/" + originator + "/analytics/notesAcquiredThisYearByMonthByGrade");
+                        return notesAcquiredThisYearByMonthByGradePromise;
+                    }
+                }
+
+                function notesAcquiredThisYearByMonthByYield() {
+                    if (notesAcquiredThisYearByMonthByYieldPromise) {
+                        return notesAcquiredThisYearByMonthByYieldPromise;
+                    } else {
+                        notesAcquiredThisYearByMonthByYieldPromise = $http.get("/api/portfolio/" + originator + "/analytics/notesAcquiredThisYearByMonthByYield");
+                        return notesAcquiredThisYearByMonthByYieldPromise;
+                    }
+                }
+
+                function notesAcquiredThisYearByMonthByPurpose() {
+                    if (notesAcquiredThisYearByMonthByPurposePromise) {
+                        return notesAcquiredThisYearByMonthByPurposePromise;
+                    } else {
+                        notesAcquiredThisYearByMonthByPurposePromise = $http.get("/api/portfolio/" + originator + "/analytics/notesAcquiredThisYearByMonthByPurpose");
+                        return notesAcquiredThisYearByMonthByPurposePromise;
+                    }
+                }
+
+                return {
+                    portfolioAnalytics: portfolioAnalytics(),
+                    notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),
+                    notesAcquiredTodayByYield: notesAcquiredTodayByYield(),
+                    notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose(),
+                    notesAcquiredThisYearByMonthByGrade: notesAcquiredThisYearByMonthByGrade(),
+                    notesAcquiredThisYearByMonthByYield: notesAcquiredThisYearByMonthByYield(),
+                    notesAcquiredThisYearByMonthByPurpose: notesAcquiredThisYearByMonthByPurpose(),
+                    currentBalance: currentBalance()
+                };
+
+            };
 
             return {
                 allPortfolioAnalytics: allPortfolioAnalytics(),
-                LCPortfolioAnalytics: lCPortfolioAnalytics(),
-                prosperPortfolioAnalytics: prosperPortfolioAnalytics(),
                 totalCurrentBalance: totalCurrentBalance(),
-                lcCurrentBalance: lcCurrentBalance(),
-                prosperCurrentBalance: prosperCurrentBalance(),
-                notesAcquiredTodayByGrade: notesAcquiredTodayByGrade(),
-                notesAcquiredTodayByYield: notesAcquiredTodayByYield(),
-                notesAcquiredTodayByPurpose: notesAcquiredTodayByPurpose(),
-                notesAcquiredThisYearByMonthByGrade: notesAcquiredThisYearByMonthByGrade(),
-                notesAcquiredThisYearByMonthByYield: notesAcquiredThisYearByMonthByYield(),
-                notesAcquiredThisYearByMonthByPurpose: notesAcquiredThisYearByMonthByPurpose()
+                lendingClub: portfolioServiceFactory("lendingClub"),
+                prosper: portfolioServiceFactory("prosper")
             };
         });
 })();
