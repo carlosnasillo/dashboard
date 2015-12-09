@@ -2,11 +2,11 @@
     <my-nav-bar active="analytics"></my-nav-bar>
     <div id="page-wrapper" class="gray-bg">
         <my-nav-bar-top></my-nav-bar-top>
-        <div class="row">
+        <div class="row first-row">
             <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Orders placed today by grade</h5>
+                        <h5>Today's orders by grade</h5>
                     </div>
                     <div class="ibox-content">
                         <my-pie-chart
@@ -19,7 +19,7 @@
             <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Orders placed today by marketplace</h5>
+                        <h5>Today's orders by marketplace</h5>
                     </div>
                     <div class="ibox-content">
                         <my-pie-chart
@@ -32,7 +32,7 @@
             <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Orders placed today by yield</h5>
+                        <h5>Today's orders by yield</h5>
                     </div>
                     <div class="ibox-content">
                         <my-pie-chart
@@ -45,7 +45,7 @@
             <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Orders placed today by notional</h5>
+                        <h5>Today's orders by notional</h5>
                     </div>
                     <div class="ibox-content">
                         <my-pie-chart
@@ -60,7 +60,7 @@
             <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Orders placed today auto vs manual</h5>
+                        <h5>Today's orders : auto vs manual</h5>
                     </div>
                     <div class="ibox-content">
                         <my-pie-chart
@@ -78,17 +78,17 @@
                     </div>
                     <div class="ibox-content">
                         <my-spline-graph
-                            identifier="ct_monthly_return"
-                            columns="vm.analytics.ordersByMonthlyReturn.columns"
-                            categories="vm.analytics.ordersByMonthlyReturn.categories"
-                            ></my-spline-graph>
+                                identifier="ct_monthly_return"
+                                columns="vm.analytics.ordersByMonthlyReturn.columns"
+                                categories="vm.analytics.ordersByMonthlyReturn.categories"
+                        ></my-spline-graph>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Orders placed today fractional vs full</h5>
+                        <h5>Today's orders fractional vs full</h5>
                     </div>
                     <div class="ibox-content">
                         <my-pie-chart

@@ -25,7 +25,7 @@
 
         // Hardcoded since we don't really manage this for now
         vm.investorId = 'BlackRock';
-        vm.originalData = {};
+        vm.originalData = { loans: [], notes: [] };
 
         /**
          * Loans Table
@@ -36,12 +36,12 @@
         LoansService.loansAvailable().success(function(data) {
 
             vm.loansTable.options.data = data.loans.map(function(data) {
-                data.fundedAmountPerCenter = (data.fundedAmount / data.loanAmount) * 100;
-                data.foundedPie = [data.fundedAmountPerCenter, 100 - data.fundedAmountPerCenter];
+                data.fundedAmountPerCent = (data.fundedAmount / data.loanAmount) * 100;
+                data.foundedPie = [data.fundedAmountPerCent, 100 - data.fundedAmountPerCent];
 
                 data.originator = "Lending Club";
 
-                data.listDToFormatedDate = $filter('date')(data.listD, "dd/MM/yyyy");
+                data.listDtoFormattedDate = $filter('date')(data.listD, "dd/MM/yyyy");
 
                 return data;
             });
@@ -52,9 +52,362 @@
         vm.globalFilterLoans = {
             value: "",
             onChange: function() {
-                vm.loansTable.options.data = vm.originalData.loans.filter(
-                    LoansTableService.globalFilterFactory( vm.globalFilterLoans.value )
-                );
+                var filterValue = vm.globalFilterLoans.value;
+                if ( filterValue.length > 0 ) {
+                    vm.loansTable.options.data = vm.originalData.loans.filter(
+                        LoansTableService.globalFilterFactory( filterValue )
+                    );
+                }
+                else {
+                    vm.loansTable.filters.filterLoans();
+                }
+            }
+        };
+
+        vm.loansTable.filters = {
+            filterLoans: function() {
+                vm.loansTable.options.data = vm.originalData.loans.filter(function(loanObj) {
+                    return vm.loansTable.filters.identifier.filterFn(loanObj) &&
+                        vm.loansTable.filters.originator.filterFn(loanObj) &&
+                        vm.loansTable.filters.loanAmount.start.filterFn(loanObj) &&
+                        vm.loansTable.filters.loanAmount.end.filterFn(loanObj) &&
+                        vm.loansTable.filters.fundedAmountPerCent.start.filterFn(loanObj) &&
+                        vm.loansTable.filters.fundedAmountPerCent.end.filterFn(loanObj) &&
+                        vm.loansTable.filters.grade.filterFn(loanObj) &&
+                        vm.loansTable.filters.term.start.filterFn(loanObj) &&
+                        vm.loansTable.filters.term.end.filterFn(loanObj) &&
+                        vm.loansTable.filters.intRate.start.filterFn(loanObj) &&
+                        vm.loansTable.filters.intRate.end.filterFn(loanObj) &&
+                        vm.loansTable.filters.purpose.filterFn(loanObj);
+                });
+                GridTableUtil.applyDateFilter(
+                    vm.loansTable.filters.listD.start.value,
+                    vm.loansTable.filters.listD.end.value,
+                    'listDtoFormattedDate',
+                    vm.loansTable.options.data,
+                    function(filteredData) { vm.loansTable.options.data = filteredData; });
+            },
+            identifier: {
+                value: "",
+                reset: function() {
+                    vm.loansTable.filters.identifier.value = "";
+                    vm.loansTable.filters.filterLoans();
+                },
+                filterFn: function(loanObj) {
+                    var filter = vm.loansTable.filters.identifier.value;
+                    if (filter) {
+                        return String( loanObj.id ).startsWith( filter );
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            },
+            originator: {
+                value: "",
+                reset: function() {
+                    vm.loansTable.filters.originator.value = "";
+                    vm.loansTable.filters.filterLoans();
+                },
+                filterFn: function(loanObj) {
+                    var searchTerm = vm.loansTable.filters.originator.value;
+                    if (searchTerm) {
+                        var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
+                        for (var i in searchTerms) {
+                            if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                                if (loanObj.originator.startsWith(searchTerms[i])) return true;
+                            }
+                        }
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            },
+            listD: {
+                start: {
+                    value: null,
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.listD.start.value ) {
+                            return $filter('date')(vm.loansTable.filters.listD.start.value.toDate(), 'dd/MM/yyyy');
+                        }
+                        else {
+                            return vm.loansTable.filters.listD.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() { vm.loansTable.filters.listD.start.value = null; },
+                    filterFn: function() {
+                        GridTableUtil.applyDateFilter(
+                            vm.loansTable.filters.listD.start.value,
+                            vm.loansTable.filters.listD.end.value,
+                            'listDtoFormattedDate',
+                            vm.originalData.loans,
+                            function(filteredData) { vm.loansTable.options.data = filteredData; });
+                    }
+                },
+                end: {
+                    value: null,
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.listD.end.value ) {
+                            return $filter('date')(vm.loansTable.filters.listD.end.value.toDate(), 'dd/MM/yyyy');
+                        }
+                        else {
+                            return vm.loansTable.filters.listD.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() { vm.loansTable.filters.listD.end.value= null; },
+                    filterFn: function() {
+                        GridTableUtil.applyDateFilter(
+                            vm.loansTable.filters.listD.start.value,
+                            vm.loansTable.filters.listD.end.value,
+                            'listDtoFormattedDate',
+                            vm.originalData.loans,
+                            function(filteredData) { vm.loansTable.options.data = filteredData; });
+                    }
+                },
+                options: {
+                    singleDatePicker: true
+                }
+            },
+            loanAmount: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.loanAmount.start.value ) {
+                            return vm.loansTable.filters.loanAmount.start.value;
+                        }
+                        else {
+                            return vm.loansTable.filters.loanAmount.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.loanAmount.start.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.loanAmount.start.value;
+                        if (filter) {
+                            return loanObj.loanAmount > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.loanAmount.end.value ) {
+                            return vm.loansTable.filters.loanAmount.end.value;
+                        }
+                        else {
+                            return vm.loansTable.filters.loanAmount.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.loanAmount.end.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.loanAmount.end.value;
+                        if (filter) {
+                            return loanObj.loanAmount < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            },
+            fundedAmountPerCent: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.fundedAmountPerCent.start.value ) {
+                            return vm.loansTable.filters.fundedAmountPerCent.start.value + " %";
+                        }
+                        else {
+                            return vm.loansTable.filters.fundedAmountPerCent.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.fundedAmountPerCent.start.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.fundedAmountPerCent.start.value;
+                        if (filter) {
+                            return loanObj.fundedAmountPerCent > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.fundedAmountPerCent.end.value ) {
+                            return vm.loansTable.filters.fundedAmountPerCent.end.value + " %";
+                        }
+                        else {
+                            return vm.loansTable.filters.fundedAmountPerCent.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.fundedAmountPerCent.end.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.fundedAmountPerCent.end.value;
+                        if (filter) {
+                            return loanObj.fundedAmountPerCent < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            },
+            grade: {
+                value: "",
+                reset: function() {
+                    vm.loansTable.filters.grade.value = "";
+                    vm.loansTable.filters.filterLoans();
+                },
+                filterFn: function(loanObj) {
+                    var filter = vm.loansTable.filters.grade.value;
+                    if (filter) {
+                        return filter.split(',').map(function(search) { return search.trim(); }).indexOf(loanObj.grade) >= 0;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            },
+            term: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.term.start.value ) {
+                            return vm.loansTable.filters.term.start.value;
+                        }
+                        else {
+                            return vm.loansTable.filters.term.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.term.start.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.term.start.value;
+                        if (filter) {
+                            return loanObj.term > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.term.end.value ) {
+                            return vm.loansTable.filters.term.end.value;
+                        }
+                        else {
+                            return vm.loansTable.filters.term.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.term.end.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.term.end.value;
+                        if (filter) {
+                            return loanObj.term < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            },
+            intRate: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.intRate.start.value ) {
+                            return vm.loansTable.filters.intRate.start.value + ' %';
+                        }
+                        else {
+                            return vm.loansTable.filters.intRate.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.intRate.start.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.intRate.start.value;
+                        if (filter) {
+                            return loanObj.intRate > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.loansTable.filters.intRate.end.value ) {
+                            return vm.loansTable.filters.intRate.end.value + ' %';
+                        }
+                        else {
+                            return vm.loansTable.filters.intRate.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.loansTable.filters.intRate.end.value = "";
+                        vm.loansTable.filters.filterLoans();
+                    },
+                    filterFn: function(loanObj) {
+                        var filter = vm.loansTable.filters.intRate.end.value;
+                        if (filter) {
+                            return loanObj.intRate < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            },
+            purpose: {
+                value: "",
+                reset: function() {
+                    vm.loansTable.filters.purpose.value = "";
+                    vm.loansTable.filters.filterLoans();
+                },
+                filterFn: function(loanObj) {
+                    var filter = vm.loansTable.filters.purpose.value;
+
+                    if (filter) {
+                        var searchTerms = filter.split(',').map(function(search) { return search.trim(); });
+                        for (var i in searchTerms) {
+                            if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                                if (loanObj.purpose.startsWith(searchTerms[i])) return true;
+                            }
+                        }
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
             }
         };
 
@@ -63,37 +416,8 @@
             width: 50
         };
 
-        vm.loansTable.datePicker = {
-            date: {
-                startDate: null,
-                endDate: null
-            },
-            options: {
-                singleDatePicker: true
-            },
-            reset: {
-                start: function() { vm.loansTable.datePicker.date.startDate = null; },
-                end: function() { vm.loansTable.datePicker.date.endDate = null; }
-            }
-        };
-
-        $scope.$watch('vm.loansTable.datePicker.date.startDate', function() {
-            GridTableUtil.applyDateFilter(
-                vm.loansTable.datePicker.date.startDate,
-                vm.loansTable.datePicker.date.endDate,
-                'listDToFormatedDate',
-                vm.originalData.loans,
-                function(filteredData) { vm.loansTable.options.data = filteredData; });
-        }, false);
-
-        $scope.$watch('vm.loansTable.datePicker.date.endDate', function() {
-            GridTableUtil.applyDateFilter(
-                vm.loansTable.datePicker.date.startDate,
-                vm.loansTable.datePicker.date.endDate,
-                'listDToFormatedDate',
-                vm.originalData.loans,
-                function(filteredData) { vm.loansTable.options.data = filteredData; });
-        }, false);
+        $scope.$watch('vm.loansTable.filters.listD.start.value', vm.loansTable.filters.filterLoans, false);
+        $scope.$watch('vm.loansTable.filters.listD.end.value', vm.loansTable.filters.filterLoans, false);
 
         vm.loansTable.options = LoansTableService.options;
 
@@ -106,8 +430,8 @@
         LoansService.ownedNotes(vm.investorId).success(function(data) {
 
             vm.notesTable.options.data = data.map(function(data) {
-                data.issueDateToFormatedDate = $filter('date')(data.issueDate, "dd/MM/yyyy");
-                data.orderDateToFormatedDate = $filter('date')(data.orderDate, "dd/MM/yyyy");
+                data.issueDatetoFormattedDate = $filter('date')(data.issueDate, "dd/MM/yyyy");
+                data.orderDatetoFormattedDate = $filter('date')(data.orderDate, "dd/MM/yyyy");
 
                 return data;
             });
@@ -115,74 +439,403 @@
             vm.originalData.notes = vm.notesTable.options.data;
         });
 
-        vm.notesTable.datePicker = {
+        vm.notesTable.filters = {
+            filterNotes: function () {
+                vm.notesTable.options.data = vm.originalData.notes.filter(function (noteObj) {
+                    return vm.notesTable.filters.noteId.filterFn(noteObj) &&
+                        vm.notesTable.filters.loanAmount.start.filterFn(noteObj) &&
+                        vm.notesTable.filters.loanAmount.end.filterFn(noteObj) &&
+                        vm.notesTable.filters.noteAmount.start.filterFn(noteObj) &&
+                        vm.notesTable.filters.noteAmount.end.filterFn(noteObj) &&
+                        vm.notesTable.filters.grade.filterFn(noteObj) &&
+                        vm.notesTable.filters.term.start.filterFn(noteObj) &&
+                        vm.notesTable.filters.term.end.filterFn(noteObj) &&
+                        vm.notesTable.filters.interestRate.start.filterFn(noteObj) &&
+                        vm.notesTable.filters.interestRate.end.filterFn(noteObj) &&
+                        vm.notesTable.filters.purpose.filterFn(noteObj);
+                });
+
+                GridTableUtil.applyDateFilter(
+                    vm.notesTable.filters.issueDate.start.value,
+                    vm.notesTable.filters.issueDate.end.value,
+                    'issueDatetoFormattedDate',
+                    vm.notesTable.options.data,
+                    function (filteredData) {
+                        vm.notesTable.options.data = filteredData;
+                    });
+                GridTableUtil.applyDateFilter(
+                    vm.notesTable.filters.orderDate.start.value,
+                    vm.notesTable.filters.orderDate.end.value,
+                    'orderDatetoFormattedDate',
+                    vm.notesTable.options.data,
+                    function (filteredData) {
+                        vm.notesTable.options.data = filteredData;
+                    });
+            },
+            noteId: {
+                value: "",
+                reset: function() {
+                    vm.notesTable.filters.noteId.value = "";
+                    vm.notesTable.filters.filterNotes();
+                },
+                filterFn: function(noteObj) {
+                    var filter = vm.notesTable.filters.noteId.value;
+                    if (filter) {
+                        return String( noteObj.noteId ).startsWith( filter );
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            },
             issueDate: {
-                startDate: null,
-                endDate: null
+                start: {
+                    value: null,
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.issueDate.start.value ) {
+                            return $filter('date')(vm.notesTable.filters.issueDate.start.value.toDate(), 'dd/MM/yyyy');
+                        }
+                        else {
+                            return vm.notesTable.filters.issueDate.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() { vm.notesTable.filters.issueDate.start.value = null; },
+                    filterFn: function() {
+                        GridTableUtil.applyDateFilter(
+                            vm.notesTable.filters.issueDate.start.value,
+                            vm.notesTable.filters.issueDate.end.value,
+                            'issueDatetoFormattedDate',
+                            vm.originalData.notes,
+                            function(filteredData) { vm.notesTable.options.data = filteredData; });
+                    }
+                },
+                end: {
+                    value: null,
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.issueDate.end.value ) {
+                            return $filter('date')(vm.notesTable.filters.issueDate.end.value.toDate(), 'dd/MM/yyyy');
+                        }
+                        else {
+                            return vm.notesTable.filters.issueDate.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() { vm.notesTable.filters.issueDate.end.value= null; },
+                    filterFn: function() {
+                        GridTableUtil.applyDateFilter(
+                            vm.notesTable.filters.issueDate.start.value,
+                            vm.notesTable.filters.issueDate.end.value,
+                            'issueDatetoFormattedDate',
+                            vm.originalData.notes,
+                            function(filteredData) { vm.notesTable.options.data = filteredData; });
+                    }
+                },
+                options: {
+                    singleDatePicker: true
+                }
             },
             orderDate: {
-                startDate: null,
-                endDate: null
+                start: {
+                    value: null,
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.orderDate.start.value ) {
+                            return $filter('date')(vm.notesTable.filters.orderDate.start.value.toDate(), 'dd/MM/yyyy');
+                        }
+                        else {
+                            return vm.notesTable.filters.orderDate.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() { vm.notesTable.filters.orderDate.start.value = null; },
+                    filterFn: function() {
+                        GridTableUtil.applyDateFilter(
+                            vm.notesTable.filters.orderDate.start.value,
+                            vm.notesTable.filters.orderDate.end.value,
+                            'orderDatetoFormattedDate',
+                            vm.originalData.notes,
+                            function(filteredData) { vm.notesTable.options.data = filteredData; });
+                    }
+                },
+                end: {
+                    value: null,
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.orderDate.end.value ) {
+                            return $filter('date')(vm.notesTable.filters.orderDate.end.value.toDate(), 'dd/MM/yyyy');
+                        }
+                        else {
+                            return vm.notesTable.filters.orderDate.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() { vm.notesTable.filters.orderDate.end.value= null; },
+                    filterFn: function() {
+                        GridTableUtil.applyDateFilter(
+                            vm.notesTable.filters.orderDate.start.value,
+                            vm.notesTable.filters.orderDate.end.value,
+                            'orderDatetoFormattedDate',
+                            vm.originalData.notes,
+                            function(filteredData) { vm.notesTable.options.data = filteredData; });
+                    }
+                },
+                options: {
+                    singleDatePicker: true
+                }
             },
-            options: {
-                singleDatePicker: true
+            loanAmount: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.loanAmount.start.value ) {
+                            return vm.notesTable.filters.loanAmount.start.value;
+                        }
+                        else {
+                            return vm.notesTable.filters.loanAmount.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.loanAmount.start.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.loanAmount.start.value;
+                        if (filter) {
+                            return noteObj.loanAmount > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.loanAmount.end.value ) {
+                            return vm.notesTable.filters.loanAmount.end.value;
+                        }
+                        else {
+                            return vm.notesTable.filters.loanAmount.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.loanAmount.end.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.loanAmount.end.value;
+                        if (filter) {
+                            return noteObj.loanAmount < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
             },
-            resetIssueDate: {
-                start: function() { vm.notesTable.datePicker.issueDate.startDate = null; },
-                end: function() { vm.notesTable.datePicker.issueDate.endDate = null; }
+            noteAmount: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.noteAmount.start.value ) {
+                            return vm.notesTable.filters.noteAmount.start.value;
+                        }
+                        else {
+                            return vm.notesTable.filters.noteAmount.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.noteAmount.start.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.noteAmount.start.value;
+                        if (filter) {
+                            return noteObj.noteAmount > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.noteAmount.end.value ) {
+                            return vm.notesTable.filters.noteAmount.end.value;
+                        }
+                        else {
+                            return vm.notesTable.filters.noteAmount.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.noteAmount.end.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.noteAmount.end.value;
+                        if (filter) {
+                            return noteObj.noteAmount < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
             },
-            resetOrderDate: {
-                start: function() { vm.notesTable.datePicker.orderDate.startDate = null; },
-                end: function() { vm.notesTable.datePicker.orderDate.endDate = null; }
+            grade: {
+                value: "",
+                reset: function() {
+                    vm.notesTable.filters.grade.value = "";
+                    vm.notesTable.filters.filterNotes();
+                },
+                filterFn: function(noteObj) {
+                    var filter = vm.notesTable.filters.grade.value;
+                    if (filter) {
+                        return filter.split(',').map(function(search) { return search.trim(); }).indexOf(noteObj.grade) >= 0;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            },
+            term: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.term.start.value ) {
+                            return vm.notesTable.filters.term.start.value;
+                        }
+                        else {
+                            return vm.notesTable.filters.term.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.term.start.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.term.start.value;
+                        if (filter) {
+                            return noteObj.term > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.term.end.value ) {
+                            return vm.notesTable.filters.term.end.value;
+                        }
+                        else {
+                            return vm.notesTable.filters.term.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.term.end.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.term.end.value;
+                        if (filter) {
+                            return noteObj.term < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            },
+            interestRate: {
+                start: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.interestRate.start.value ) {
+                            return vm.notesTable.filters.interestRate.start.value + ' %';
+                        }
+                        else {
+                            return vm.notesTable.filters.interestRate.end.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.interestRate.start.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.interestRate.start.value;
+                        if (filter) {
+                            return noteObj.interestRate > filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                end: {
+                    value: "",
+                    formattedValue: function() {
+                        if ( vm.notesTable.filters.interestRate.end.value ) {
+                            return vm.notesTable.filters.interestRate.end.value + ' %';
+                        }
+                        else {
+                            return vm.notesTable.filters.interestRate.start.value ? "..." : "";
+                        }
+                    },
+                    reset: function() {
+                        vm.notesTable.filters.interestRate.end.value = "";
+                        vm.notesTable.filters.filterNotes();
+                    },
+                    filterFn: function(noteObj) {
+                        var filter = vm.notesTable.filters.interestRate.end.value;
+                        if (filter) {
+                            return noteObj.interestRate < filter;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            },
+            purpose: {
+                value: "",
+                reset: function() {
+                    vm.notesTable.filters.purpose.value = "";
+                    vm.notesTable.filters.filterNotes();
+                },
+                filterFn: function(notesObj) {
+                    var filter = vm.notesTable.filters.purpose.value;
+
+                    if (filter) {
+                        var searchTerms = filter.split(',').map(function(search) { return search.trim(); });
+                        for (var i in searchTerms) {
+                            if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                                if (notesObj.purpose.startsWith(searchTerms[i])) return true;
+                            }
+                        }
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
             }
         };
 
-        $scope.$watch('vm.notesTable.datePicker.issueDate.startDate', function() {
-            GridTableUtil.applyDateFilter(
-                vm.notesTable.datePicker.issueDate.startDate,
-                vm.notesTable.datePicker.issueDate.endDate,
-                'issueDateToFormatedDate',
-                vm.originalData.notes,
-                function(filteredData) { vm.notesTable.options.data = filteredData; }
-            );
-        }, false);
-
-        $scope.$watch('vm.notesTable.datePicker.issueDate.endDate', function() {
-            GridTableUtil.applyDateFilter(
-                vm.notesTable.datePicker.issueDate.startDate,
-                vm.notesTable.datePicker.issueDate.endDate,
-                'issueDateToFormatedDate',
-                vm.originalData.notes,
-                function(filteredData) { vm.notesTable.options.data = filteredData; }
-            );
-        }, false);
-
-        $scope.$watch('vm.notesTable.datePicker.orderDate.startDate', function() {
-            GridTableUtil.applyDateFilter(
-                vm.notesTable.datePicker.orderDate.startDate,
-                vm.notesTable.datePicker.orderDate.endDate,
-                'orderDateToFormatedDate',
-                vm.originalData.notes,
-                function(filteredData) { vm.notesTable.options.data = filteredData; }
-            );
-        }, false);
-
-        $scope.$watch('vm.notesTable.datePicker.orderDate.endDate', function() {
-            GridTableUtil.applyDateFilter(
-                vm.notesTable.datePicker.orderDate.startDate,
-                vm.notesTable.datePicker.orderDate.endDate,
-                'orderDateToFormatedDate',
-                vm.originalData.notes,
-                function(filteredData) { vm.notesTable.options.data = filteredData; }
-            );
-        }, false);
+        $scope.$watch('vm.notesTable.filters.issueDate.start.value', vm.notesTable.filters.filterNotes, false);
+        $scope.$watch('vm.notesTable.filters.issueDate.end.value', vm.notesTable.filters.filterNotes, false);
+        $scope.$watch('vm.notesTable.filters.orderDate.start.value', vm.notesTable.filters.filterNotes, false);
+        $scope.$watch('vm.notesTable.filters.orderDate.end.value', vm.notesTable.filters.filterNotes, false);
 
         vm.globalFilterNotes = {
             value: "",
             onChange: function() {
-                vm.notesTable.options.data = vm.originalData.notes.filter(
-                    NotesTableService.globalFilterFactory(vm.globalFilterNotes.value)
-                );
+                var filterValue = vm.globalFilterNotes.value;
+                if ( filterValue.length > 0 ) {
+                    vm.notesTable.options.data = vm.originalData.notes.filter(
+                        NotesTableService.globalFilterFactory( filterValue )
+                    );
+                }
+                else {
+                    vm.notesTable.filters.filterNotes();
+                }
             }
         };
 
@@ -193,5 +846,10 @@
          */
 
         vm.order = OrderLoansModalService.orderModal;
+
+        /**
+         * Popover (see filters)
+         */
+        $("[data-toggle=popover]").popover();
     }
 })();
