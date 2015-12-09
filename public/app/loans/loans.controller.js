@@ -129,12 +129,11 @@
                 start: {
                     value: null,
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.listD.start.value ) {
-                            return $filter('date')(vm.loansTable.filters.listD.start.value.toDate(), 'dd/MM/yyyy');
-                        }
-                        else {
-                            return vm.loansTable.filters.listD.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.listD.start.value,
+                            vm.loansTable.filters.listD.end.value,
+                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy');}
+                        );
                     },
                     reset: function() { vm.loansTable.filters.listD.start.value = null; },
                     filterFn: function() {
@@ -149,12 +148,11 @@
                 end: {
                     value: null,
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.listD.end.value ) {
-                            return $filter('date')(vm.loansTable.filters.listD.end.value.toDate(), 'dd/MM/yyyy');
-                        }
-                        else {
-                            return vm.loansTable.filters.listD.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.listD.end.value,
+                            vm.loansTable.filters.listD.start.value,
+                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
+                        );
                     },
                     reset: function() { vm.loansTable.filters.listD.end.value= null; },
                     filterFn: function() {
@@ -174,12 +172,10 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.loanAmount.start.value ) {
-                            return vm.loansTable.filters.loanAmount.start.value;
-                        }
-                        else {
-                            return vm.loansTable.filters.loanAmount.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.loanAmount.start.value,
+                            vm.loansTable.filters.loanAmount.end.value
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.loanAmount.start.value = "";
@@ -198,12 +194,10 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.loanAmount.end.value ) {
-                            return vm.loansTable.filters.loanAmount.end.value;
-                        }
-                        else {
-                            return vm.loansTable.filters.loanAmount.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.loanAmount.end.value,
+                            vm.loansTable.filters.loanAmount.start.value
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.loanAmount.end.value = "";
@@ -224,12 +218,11 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.fundedAmountPerCent.start.value ) {
-                            return vm.loansTable.filters.fundedAmountPerCent.start.value + " %";
-                        }
-                        else {
-                            return vm.loansTable.filters.fundedAmountPerCent.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.fundedAmountPerCent.start.value,
+                            vm.loansTable.filters.fundedAmountPerCent.end.value,
+                            function(value) { return value + " %"; }
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.fundedAmountPerCent.start.value = "";
@@ -248,12 +241,11 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.fundedAmountPerCent.end.value ) {
-                            return vm.loansTable.filters.fundedAmountPerCent.end.value + " %";
-                        }
-                        else {
-                            return vm.loansTable.filters.fundedAmountPerCent.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.fundedAmountPerCent.end.value,
+                            vm.loansTable.filters.fundedAmountPerCent.start.value,
+                            function(value) { return value + " %"; }
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.fundedAmountPerCent.end.value = "";
@@ -290,12 +282,10 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.term.start.value ) {
-                            return vm.loansTable.filters.term.start.value;
-                        }
-                        else {
-                            return vm.loansTable.filters.term.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.term.start.value,
+                            vm.loansTable.filters.term.end.value
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.term.start.value = "";
@@ -314,12 +304,10 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.term.end.value ) {
-                            return vm.loansTable.filters.term.end.value;
-                        }
-                        else {
-                            return vm.loansTable.filters.term.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.term.end.value,
+                            vm.loansTable.filters.term.start.value
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.term.end.value = "";
@@ -340,12 +328,11 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.intRate.start.value ) {
-                            return vm.loansTable.filters.intRate.start.value + ' %';
-                        }
-                        else {
-                            return vm.loansTable.filters.intRate.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.intRate.start.value,
+                            vm.loansTable.filters.intRate.end.value,
+                            function(value) { return value + " %"; }
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.intRate.start.value = "";
@@ -364,12 +351,11 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.loansTable.filters.intRate.end.value ) {
-                            return vm.loansTable.filters.intRate.end.value + ' %';
-                        }
-                        else {
-                            return vm.loansTable.filters.intRate.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.loansTable.filters.intRate.end.value,
+                            vm.loansTable.filters.intRate.start.value,
+                            function(value) { return value + " %"; }
+                        );
                     },
                     reset: function() {
                         vm.loansTable.filters.intRate.end.value = "";
@@ -492,12 +478,11 @@
                 start: {
                     value: null,
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.issueDate.start.value ) {
-                            return $filter('date')(vm.notesTable.filters.issueDate.start.value.toDate(), 'dd/MM/yyyy');
-                        }
-                        else {
-                            return vm.notesTable.filters.issueDate.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.issueDate.start.value,
+                            vm.notesTable.filters.issueDate.end.value,
+                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
+                        );
                     },
                     reset: function() { vm.notesTable.filters.issueDate.start.value = null; },
                     filterFn: function() {
@@ -512,12 +497,11 @@
                 end: {
                     value: null,
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.issueDate.end.value ) {
-                            return $filter('date')(vm.notesTable.filters.issueDate.end.value.toDate(), 'dd/MM/yyyy');
-                        }
-                        else {
-                            return vm.notesTable.filters.issueDate.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.issueDate.end.value,
+                            vm.notesTable.filters.issueDate.start.value,
+                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
+                        );
                     },
                     reset: function() { vm.notesTable.filters.issueDate.end.value= null; },
                     filterFn: function() {
@@ -537,12 +521,11 @@
                 start: {
                     value: null,
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.orderDate.start.value ) {
-                            return $filter('date')(vm.notesTable.filters.orderDate.start.value.toDate(), 'dd/MM/yyyy');
-                        }
-                        else {
-                            return vm.notesTable.filters.orderDate.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.orderDate.start.value,
+                            vm.notesTable.filters.orderDate.end.value,
+                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
+                        );
                     },
                     reset: function() { vm.notesTable.filters.orderDate.start.value = null; },
                     filterFn: function() {
@@ -557,12 +540,11 @@
                 end: {
                     value: null,
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.orderDate.end.value ) {
-                            return $filter('date')(vm.notesTable.filters.orderDate.end.value.toDate(), 'dd/MM/yyyy');
-                        }
-                        else {
-                            return vm.notesTable.filters.orderDate.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.orderDate.end.value,
+                            vm.notesTable.filters.orderDate.start.value,
+                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
+                        );
                     },
                     reset: function() { vm.notesTable.filters.orderDate.end.value= null; },
                     filterFn: function() {
@@ -582,12 +564,10 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.loanAmount.start.value ) {
-                            return vm.notesTable.filters.loanAmount.start.value;
-                        }
-                        else {
-                            return vm.notesTable.filters.loanAmount.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.loanAmount.start.value,
+                            vm.notesTable.filters.loanAmount.end.value
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.loanAmount.start.value = "";
@@ -606,12 +586,10 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.loanAmount.end.value ) {
-                            return vm.notesTable.filters.loanAmount.end.value;
-                        }
-                        else {
-                            return vm.notesTable.filters.loanAmount.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.loanAmount.end.value,
+                            vm.notesTable.filters.loanAmount.start.value
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.loanAmount.end.value = "";
@@ -632,12 +610,10 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.noteAmount.start.value ) {
-                            return vm.notesTable.filters.noteAmount.start.value;
-                        }
-                        else {
-                            return vm.notesTable.filters.noteAmount.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.noteAmount.start.value,
+                            vm.notesTable.filters.noteAmount.end.value
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.noteAmount.start.value = "";
@@ -656,12 +632,10 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.noteAmount.end.value ) {
-                            return vm.notesTable.filters.noteAmount.end.value;
-                        }
-                        else {
-                            return vm.notesTable.filters.noteAmount.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.noteAmount.end.value,
+                            vm.notesTable.filters.noteAmount.start.value
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.noteAmount.end.value = "";
@@ -698,12 +672,10 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.term.start.value ) {
-                            return vm.notesTable.filters.term.start.value;
-                        }
-                        else {
-                            return vm.notesTable.filters.term.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.term.start.value,
+                            vm.notesTable.filters.term.end.value
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.term.start.value = "";
@@ -722,12 +694,10 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.term.end.value ) {
-                            return vm.notesTable.filters.term.end.value;
-                        }
-                        else {
-                            return vm.notesTable.filters.term.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.term.end.value,
+                            vm.notesTable.filters.term.start.value
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.term.end.value = "";
@@ -748,12 +718,11 @@
                 start: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.interestRate.start.value ) {
-                            return vm.notesTable.filters.interestRate.start.value + ' %';
-                        }
-                        else {
-                            return vm.notesTable.filters.interestRate.end.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.interestRate.start.value,
+                            vm.notesTable.filters.interestRate.end.value,
+                            function(value) { return value + ' %'; }
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.interestRate.start.value = "";
@@ -772,12 +741,11 @@
                 end: {
                     value: "",
                     formattedValue: function() {
-                        if ( vm.notesTable.filters.interestRate.end.value ) {
-                            return vm.notesTable.filters.interestRate.end.value + ' %';
-                        }
-                        else {
-                            return vm.notesTable.filters.interestRate.start.value ? "..." : "";
-                        }
+                        return GridTableUtil.formatValue(
+                            vm.notesTable.filters.interestRate.end.value,
+                            vm.notesTable.filters.interestRate.start.value,
+                            function(value) { return value + ' %'; }
+                        );
                     },
                     reset: function() {
                         vm.notesTable.filters.interestRate.end.value = "";

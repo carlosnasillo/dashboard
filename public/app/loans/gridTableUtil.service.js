@@ -25,7 +25,8 @@
     function GridTableUtil() {
 
         return {
-            applyDateFilter: applyDateFilter
+            applyDateFilter: applyDateFilter,
+            formatValue: formatValue
         };
 
         function applyDateFilter(startDateTerm, endDateTerm, filterKey, originalData, callback) {
@@ -61,5 +62,13 @@
             }
         }
 
+        function formatValue( value1, value2, formatter ) {
+            if ( value1 ) {
+                return formatter ? formatter(value1) : value1;
+            }
+            else {
+                return value2 ? "..." : "";
+            }
+        }
     }
 })();
