@@ -64,9 +64,12 @@
             }
         };
 
-        vm.loansTable.filters = {
-            filterLoans: function() {
-                vm.loansTable.options.data = vm.originalData.loans.filter(function(loanObj) {
+        vm.loansTable.filters = {};
+
+        vm.loansTable.filters.listD = GridTableUtil.dateFilterFactory(vm.originalData.loans, function(filteredData) { vm.loansTable.options.data = filteredData; }, 'listDtoFormattedDate');
+
+        vm.loansTable.filters.filterLoans = function () {
+                vm.loansTable.options.data = vm.originalData.loans.filter(function (loanObj) {
                     return vm.loansTable.filters.identifier.filterFn(loanObj) &&
                         vm.loansTable.filters.originator.filterFn(loanObj) &&
                         vm.loansTable.filters.loanAmount.start.filterFn(loanObj) &&
@@ -85,317 +88,19 @@
                     vm.loansTable.filters.listD.end.value,
                     'listDtoFormattedDate',
                     vm.loansTable.options.data,
-                    function(filteredData) { vm.loansTable.options.data = filteredData; });
-            },
-            identifier: {
-                value: "",
-                reset: function() {
-                    vm.loansTable.filters.identifier.value = "";
-                    vm.loansTable.filters.filterLoans();
-                },
-                filterFn: function(loanObj) {
-                    var filter = vm.loansTable.filters.identifier.value;
-                    if (filter) {
-                        return String( loanObj.id ).startsWith( filter );
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            },
-            originator: {
-                value: "",
-                reset: function() {
-                    vm.loansTable.filters.originator.value = "";
-                    vm.loansTable.filters.filterLoans();
-                },
-                filterFn: function(loanObj) {
-                    var searchTerm = vm.loansTable.filters.originator.value;
-                    if (searchTerm) {
-                        var searchTerms = searchTerm.split(',').map(function(search) { return search.trim(); });
-                        for (var i in searchTerms) {
-                            if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                                if (loanObj.originator.startsWith(searchTerms[i])) return true;
-                            }
-                        }
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            },
-            listD: {
-                start: {
-                    value: null,
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.listD.start.value,
-                            vm.loansTable.filters.listD.end.value,
-                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy');}
-                        );
-                    },
-                    reset: function() { vm.loansTable.filters.listD.start.value = null; },
-                    filterFn: function() {
-                        GridTableUtil.applyDateFilter(
-                            vm.loansTable.filters.listD.start.value,
-                            vm.loansTable.filters.listD.end.value,
-                            'listDtoFormattedDate',
-                            vm.originalData.loans,
-                            function(filteredData) { vm.loansTable.options.data = filteredData; });
-                    }
-                },
-                end: {
-                    value: null,
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.listD.end.value,
-                            vm.loansTable.filters.listD.start.value,
-                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
-                        );
-                    },
-                    reset: function() { vm.loansTable.filters.listD.end.value= null; },
-                    filterFn: function() {
-                        GridTableUtil.applyDateFilter(
-                            vm.loansTable.filters.listD.start.value,
-                            vm.loansTable.filters.listD.end.value,
-                            'listDtoFormattedDate',
-                            vm.originalData.loans,
-                            function(filteredData) { vm.loansTable.options.data = filteredData; });
-                    }
-                },
-                options: {
-                    singleDatePicker: true
-                }
-            },
-            loanAmount: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.loanAmount.start.value,
-                            vm.loansTable.filters.loanAmount.end.value
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.loanAmount.start.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.loanAmount.start.value;
-                        if (filter) {
-                            return loanObj.loanAmount > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.loanAmount.end.value,
-                            vm.loansTable.filters.loanAmount.start.value
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.loanAmount.end.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.loanAmount.end.value;
-                        if (filter) {
-                            return loanObj.loanAmount < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            fundedAmountPerCent: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.fundedAmountPerCent.start.value,
-                            vm.loansTable.filters.fundedAmountPerCent.end.value,
-                            function(value) { return value + " %"; }
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.fundedAmountPerCent.start.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.fundedAmountPerCent.start.value;
-                        if (filter) {
-                            return loanObj.fundedAmountPerCent > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.fundedAmountPerCent.end.value,
-                            vm.loansTable.filters.fundedAmountPerCent.start.value,
-                            function(value) { return value + " %"; }
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.fundedAmountPerCent.end.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.fundedAmountPerCent.end.value;
-                        if (filter) {
-                            return loanObj.fundedAmountPerCent < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            grade: {
-                value: "",
-                reset: function() {
-                    vm.loansTable.filters.grade.value = "";
-                    vm.loansTable.filters.filterLoans();
-                },
-                filterFn: function(loanObj) {
-                    var filter = vm.loansTable.filters.grade.value;
-                    if (filter) {
-                        return filter.split(',').map(function(search) { return search.trim(); }).indexOf(loanObj.grade) >= 0;
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            },
-            term: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.term.start.value,
-                            vm.loansTable.filters.term.end.value
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.term.start.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.term.start.value;
-                        if (filter) {
-                            return loanObj.term > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.term.end.value,
-                            vm.loansTable.filters.term.start.value
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.term.end.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.term.end.value;
-                        if (filter) {
-                            return loanObj.term < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            intRate: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.intRate.start.value,
-                            vm.loansTable.filters.intRate.end.value,
-                            function(value) { return value + " %"; }
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.intRate.start.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.intRate.start.value;
-                        if (filter) {
-                            return loanObj.intRate > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.loansTable.filters.intRate.end.value,
-                            vm.loansTable.filters.intRate.start.value,
-                            function(value) { return value + " %"; }
-                        );
-                    },
-                    reset: function() {
-                        vm.loansTable.filters.intRate.end.value = "";
-                        vm.loansTable.filters.filterLoans();
-                    },
-                    filterFn: function(loanObj) {
-                        var filter = vm.loansTable.filters.intRate.end.value;
-                        if (filter) {
-                            return loanObj.intRate < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            purpose: {
-                value: "",
-                reset: function() {
-                    vm.loansTable.filters.purpose.value = "";
-                    vm.loansTable.filters.filterLoans();
-                },
-                filterFn: function(loanObj) {
-                    var filter = vm.loansTable.filters.purpose.value;
+                    function (filteredData) {
+                        vm.loansTable.options.data = filteredData;
+                    });
+            };
 
-                    if (filter) {
-                        var searchTerms = filter.split(',').map(function(search) { return search.trim(); });
-                        for (var i in searchTerms) {
-                            if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                                if (loanObj.purpose.startsWith(searchTerms[i])) return true;
-                            }
-                        }
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            }
-        };
+        vm.loansTable.filters.identifier = LoansTableService.identifierFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.originator = LoansTableService.originatorFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.loanAmount = LoansTableService.loanAmountFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.fundedAmountPerCent = LoansTableService.fundedAmountPerCentFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.grade = LoansTableService.gradeFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.term = LoansTableService.termFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.intRate = LoansTableService.intRateFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.purpose = LoansTableService.purposeFilterFactory(vm.loansTable.filters.filterLoans);
 
         vm.loansTable.pieChartOptions = {
             fill: ["#00b494", "#d7d7d7"],
@@ -422,370 +127,71 @@
                 return data;
             });
 
+            //vm.originalData.notes = vm.notesTable.options.data;
+            vm.notesTable.options.data = [{
+                "noteId":9796230,
+                "loanAmount":15000,
+                "noteAmount":7500,
+                "term":36,
+                "interestRate":21.99,
+                "grade":"E",
+                "issueDate":"2015-11-05T06:41:58",
+                "issueDatetoFormattedDate":"05/11/2015",
+                "orderDate":"2015-11-05T06:41:58",
+                "orderDatetoFormattedDate":"05/11/2015",
+                "purpose":"house",
+                "fundedAmountPerCent":0,
+                "foundedPie":[0, 100],
+                "originator":"Lending Club",
+                "$$hashKey":"uiGrid-0019"
+            }];
             vm.originalData.notes = vm.notesTable.options.data;
         });
 
-        vm.notesTable.filters = {
-            filterNotes: function () {
-                vm.notesTable.options.data = vm.originalData.notes.filter(function (noteObj) {
-                    return vm.notesTable.filters.noteId.filterFn(noteObj) &&
-                        vm.notesTable.filters.loanAmount.start.filterFn(noteObj) &&
-                        vm.notesTable.filters.loanAmount.end.filterFn(noteObj) &&
-                        vm.notesTable.filters.noteAmount.start.filterFn(noteObj) &&
-                        vm.notesTable.filters.noteAmount.end.filterFn(noteObj) &&
-                        vm.notesTable.filters.grade.filterFn(noteObj) &&
-                        vm.notesTable.filters.term.start.filterFn(noteObj) &&
-                        vm.notesTable.filters.term.end.filterFn(noteObj) &&
-                        vm.notesTable.filters.interestRate.start.filterFn(noteObj) &&
-                        vm.notesTable.filters.interestRate.end.filterFn(noteObj) &&
-                        vm.notesTable.filters.purpose.filterFn(noteObj);
+        vm.notesTable.filters = {};
+
+        vm.notesTable.filters.issueDate = GridTableUtil.dateFilterFactory(vm.originalData.notes, function(filteredData) { vm.notesTable.options.data = filteredData; }, 'issueDatetoFormattedDate');
+        vm.notesTable.filters.orderDate = GridTableUtil.dateFilterFactory(vm.originalData.notes, function(filteredData) { vm.notesTable.options.data = filteredData; }, 'orderDatetoFormattedDate');
+
+        vm.notesTable.filters.filterNotes = function () {
+            vm.notesTable.options.data = vm.originalData.notes.filter(function (noteObj) {
+                return vm.notesTable.filters.noteId.filterFn(noteObj) &&
+                    vm.notesTable.filters.loanAmount.start.filterFn(noteObj) &&
+                    vm.notesTable.filters.loanAmount.end.filterFn(noteObj) &&
+                    vm.notesTable.filters.noteAmount.start.filterFn(noteObj) &&
+                    vm.notesTable.filters.noteAmount.end.filterFn(noteObj) &&
+                    vm.notesTable.filters.grade.filterFn(noteObj) &&
+                    vm.notesTable.filters.term.start.filterFn(noteObj) &&
+                    vm.notesTable.filters.term.end.filterFn(noteObj) &&
+                    vm.notesTable.filters.interestRate.start.filterFn(noteObj) &&
+                    vm.notesTable.filters.interestRate.end.filterFn(noteObj) &&
+                    vm.notesTable.filters.purpose.filterFn(noteObj);
+            });
+            GridTableUtil.applyDateFilter(
+                vm.notesTable.filters.issueDate.start.value,
+                vm.notesTable.filters.issueDate.end.value,
+                'issueDatetoFormattedDate',
+                vm.notesTable.options.data,
+                function (filteredData) {
+                    vm.notesTable.options.data = filteredData;
                 });
-
-                GridTableUtil.applyDateFilter(
-                    vm.notesTable.filters.issueDate.start.value,
-                    vm.notesTable.filters.issueDate.end.value,
-                    'issueDatetoFormattedDate',
-                    vm.notesTable.options.data,
-                    function (filteredData) {
-                        vm.notesTable.options.data = filteredData;
-                    });
-                GridTableUtil.applyDateFilter(
-                    vm.notesTable.filters.orderDate.start.value,
-                    vm.notesTable.filters.orderDate.end.value,
-                    'orderDatetoFormattedDate',
-                    vm.notesTable.options.data,
-                    function (filteredData) {
-                        vm.notesTable.options.data = filteredData;
-                    });
-            },
-            noteId: {
-                value: "",
-                reset: function() {
-                    vm.notesTable.filters.noteId.value = "";
-                    vm.notesTable.filters.filterNotes();
-                },
-                filterFn: function(noteObj) {
-                    var filter = vm.notesTable.filters.noteId.value;
-                    if (filter) {
-                        return String( noteObj.noteId ).startsWith( filter );
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            },
-            issueDate: {
-                start: {
-                    value: null,
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.issueDate.start.value,
-                            vm.notesTable.filters.issueDate.end.value,
-                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
-                        );
-                    },
-                    reset: function() { vm.notesTable.filters.issueDate.start.value = null; },
-                    filterFn: function() {
-                        GridTableUtil.applyDateFilter(
-                            vm.notesTable.filters.issueDate.start.value,
-                            vm.notesTable.filters.issueDate.end.value,
-                            'issueDatetoFormattedDate',
-                            vm.originalData.notes,
-                            function(filteredData) { vm.notesTable.options.data = filteredData; });
-                    }
-                },
-                end: {
-                    value: null,
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.issueDate.end.value,
-                            vm.notesTable.filters.issueDate.start.value,
-                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
-                        );
-                    },
-                    reset: function() { vm.notesTable.filters.issueDate.end.value= null; },
-                    filterFn: function() {
-                        GridTableUtil.applyDateFilter(
-                            vm.notesTable.filters.issueDate.start.value,
-                            vm.notesTable.filters.issueDate.end.value,
-                            'issueDatetoFormattedDate',
-                            vm.originalData.notes,
-                            function(filteredData) { vm.notesTable.options.data = filteredData; });
-                    }
-                },
-                options: {
-                    singleDatePicker: true
-                }
-            },
-            orderDate: {
-                start: {
-                    value: null,
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.orderDate.start.value,
-                            vm.notesTable.filters.orderDate.end.value,
-                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
-                        );
-                    },
-                    reset: function() { vm.notesTable.filters.orderDate.start.value = null; },
-                    filterFn: function() {
-                        GridTableUtil.applyDateFilter(
-                            vm.notesTable.filters.orderDate.start.value,
-                            vm.notesTable.filters.orderDate.end.value,
-                            'orderDatetoFormattedDate',
-                            vm.originalData.notes,
-                            function(filteredData) { vm.notesTable.options.data = filteredData; });
-                    }
-                },
-                end: {
-                    value: null,
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.orderDate.end.value,
-                            vm.notesTable.filters.orderDate.start.value,
-                            function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); }
-                        );
-                    },
-                    reset: function() { vm.notesTable.filters.orderDate.end.value= null; },
-                    filterFn: function() {
-                        GridTableUtil.applyDateFilter(
-                            vm.notesTable.filters.orderDate.start.value,
-                            vm.notesTable.filters.orderDate.end.value,
-                            'orderDatetoFormattedDate',
-                            vm.originalData.notes,
-                            function(filteredData) { vm.notesTable.options.data = filteredData; });
-                    }
-                },
-                options: {
-                    singleDatePicker: true
-                }
-            },
-            loanAmount: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.loanAmount.start.value,
-                            vm.notesTable.filters.loanAmount.end.value
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.loanAmount.start.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.loanAmount.start.value;
-                        if (filter) {
-                            return noteObj.loanAmount > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.loanAmount.end.value,
-                            vm.notesTable.filters.loanAmount.start.value
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.loanAmount.end.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.loanAmount.end.value;
-                        if (filter) {
-                            return noteObj.loanAmount < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            noteAmount: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.noteAmount.start.value,
-                            vm.notesTable.filters.noteAmount.end.value
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.noteAmount.start.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.noteAmount.start.value;
-                        if (filter) {
-                            return noteObj.noteAmount > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.noteAmount.end.value,
-                            vm.notesTable.filters.noteAmount.start.value
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.noteAmount.end.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.noteAmount.end.value;
-                        if (filter) {
-                            return noteObj.noteAmount < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            grade: {
-                value: "",
-                reset: function() {
-                    vm.notesTable.filters.grade.value = "";
-                    vm.notesTable.filters.filterNotes();
-                },
-                filterFn: function(noteObj) {
-                    var filter = vm.notesTable.filters.grade.value;
-                    if (filter) {
-                        return filter.split(',').map(function(search) { return search.trim(); }).indexOf(noteObj.grade) >= 0;
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            },
-            term: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.term.start.value,
-                            vm.notesTable.filters.term.end.value
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.term.start.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.term.start.value;
-                        if (filter) {
-                            return noteObj.term > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.term.end.value,
-                            vm.notesTable.filters.term.start.value
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.term.end.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.term.end.value;
-                        if (filter) {
-                            return noteObj.term < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            interestRate: {
-                start: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.interestRate.start.value,
-                            vm.notesTable.filters.interestRate.end.value,
-                            function(value) { return value + ' %'; }
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.interestRate.start.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.interestRate.start.value;
-                        if (filter) {
-                            return noteObj.interestRate > filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                },
-                end: {
-                    value: "",
-                    formattedValue: function() {
-                        return GridTableUtil.formatValue(
-                            vm.notesTable.filters.interestRate.end.value,
-                            vm.notesTable.filters.interestRate.start.value,
-                            function(value) { return value + ' %'; }
-                        );
-                    },
-                    reset: function() {
-                        vm.notesTable.filters.interestRate.end.value = "";
-                        vm.notesTable.filters.filterNotes();
-                    },
-                    filterFn: function(noteObj) {
-                        var filter = vm.notesTable.filters.interestRate.end.value;
-                        if (filter) {
-                            return noteObj.interestRate < filter;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                }
-            },
-            purpose: {
-                value: "",
-                reset: function() {
-                    vm.notesTable.filters.purpose.value = "";
-                    vm.notesTable.filters.filterNotes();
-                },
-                filterFn: function(notesObj) {
-                    var filter = vm.notesTable.filters.purpose.value;
-
-                    if (filter) {
-                        var searchTerms = filter.split(',').map(function(search) { return search.trim(); });
-                        for (var i in searchTerms) {
-                            if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                                if (notesObj.purpose.startsWith(searchTerms[i])) return true;
-                            }
-                        }
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                }
-            }
+            GridTableUtil.applyDateFilter(
+                vm.notesTable.filters.orderDate.start.value,
+                vm.notesTable.filters.orderDate.end.value,
+                'orderDatetoFormattedDate',
+                vm.notesTable.options.data,
+                function (filteredData) {
+                    vm.notesTable.options.data = filteredData;
+                });
         };
+
+        vm.notesTable.filters.noteId = NotesTableService.noteIdFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.loanAmount = NotesTableService.loanAmountFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.noteAmount = NotesTableService.noteAmountFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.grade = NotesTableService.gradeFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.term = NotesTableService.termFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.interestRate = NotesTableService.interestRateFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.purpose = NotesTableService.purposeFilterFactory(vm.notesTable.filters.filterNotes);
 
         $scope.$watch('vm.notesTable.filters.issueDate.start.value', vm.notesTable.filters.filterNotes, false);
         $scope.$watch('vm.notesTable.filters.issueDate.end.value', vm.notesTable.filters.filterNotes, false);

@@ -20,16 +20,13 @@
         .factory('GridTableUtil', GridTableUtil);
 
 
-    GridTableUtil.$inject = [];
+    GridTableUtil.$inject = ['$filter'];
 
-    function GridTableUtil() {
+    function GridTableUtil($filter) {
 
-        return {
-            applyDateFilter: applyDateFilter,
-            formatValue: formatValue
-        };
+        var datePickerOptions = { singleDatePicker: true };
 
-        function applyDateFilter(startDateTerm, endDateTerm, filterKey, originalData, callback) {
+        var applyDateFilter = function (startDateTerm, endDateTerm, filterKey, originalData, callback) {
             var data = originalData;
 
             var gt = function(cellDate, filterDate) { return cellDate >= filterDate; };
@@ -60,15 +57,105 @@
                     parseInt(parts[1], 10) - 1,
                     parseInt(parts[0], 10));
             }
-        }
+        };
 
-        function formatValue( value1, value2, formatter ) {
+        var formatValue = function ( value1, value2, formatter ) {
             if ( value1 ) {
                 return formatter ? formatter(value1) : value1;
             }
             else {
                 return value2 ? "..." : "";
             }
-        }
+        };
+
+        var resetFactory = function (obj, toValue, postResetCallback) {
+            if (postResetCallback) {
+                return function() {
+                    obj.value = toValue;
+                    postResetCallback();
+                };
+            }
+            else {
+                return function() {
+                    obj.value = toValue;
+                };
+            }
+        };
+
+        var formattedValueFactory = function (objTop, objBottom, formatter) {
+            if (formatter) {
+                return function() {
+                    return formatValue(
+                        objTop.value,
+                        objBottom.value,
+                        formatter
+                    );
+                };
+            }
+            else {
+                return function() {
+                    return formatValue(
+                        objTop.value,
+                        objBottom.value
+                    );
+                };
+            }
+        };
+
+        var filterFnFactory = function (obj, filterFn) {
+            return function(loanObj) {
+                var filter = obj.value;
+                if (filter) {
+                    return filterFn(loanObj, filter);
+                }
+                else {
+                    return true;
+                }
+            };
+        };
+
+        var dateFilterFactory = function(originalDate, callback, filterKey) {
+            var initialValue = null;
+
+            var start = {};
+            start.value = initialValue;
+            start.reset = resetFactory(start, initialValue);
+
+            var end = {};
+            end.value = initialValue;
+            end.reset = resetFactory(end, initialValue);
+
+            var formatter = function(value) { return $filter('date')(value.toDate(), 'dd/MM/yyyy'); };
+            start.formattedValue = formattedValueFactory(start, end, formatter);
+            end.formattedValue = formattedValueFactory(end, start, formatter);
+
+            var filterFn = function() {
+                applyDateFilter(
+                    start.value,
+                    end.value,
+                    filterKey,
+                    originalData,
+                    callback);
+            };
+
+            start.filterFn = filterFn;
+            end.filterFn = filterFn;
+
+            var options = {
+                singleDatePicker: true
+            };
+
+            return {start: start, end: end, options: options};
+        };
+
+        return {
+            applyDateFilter: applyDateFilter,
+            formatValue: formatValue,
+            resetFactory: resetFactory,
+            formattedValueFactory: formattedValueFactory,
+            filterFnFactory: filterFnFactory,
+            dateFilterFactory: dateFilterFactory,
+            datePickerOptions: datePickerOptions
+        };
     }
 })();

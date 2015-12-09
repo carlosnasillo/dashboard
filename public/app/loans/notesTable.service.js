@@ -20,9 +20,9 @@
         .factory('NotesTableService', NotesTableService);
 
 
-    NotesTableService.$inject = ['uiGridConstants', 'GridTableUtil'];
+    NotesTableService.$inject = ['GridTableUtil'];
 
-    function NotesTableService(uiGridConstants, GridTableUtil) {
+    function NotesTableService(GridTableUtil) {
         var tableOptions = {
             enableColumnMenus: false,
             enableSorting: true,
@@ -84,7 +84,129 @@
             ]
         };
 
-        function globalFilterFactory(filterValue) {
+        var noteIdFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var noteIdFilter = {};
+            noteIdFilter.value = initialValue;
+            noteIdFilter.reset = GridTableUtil.resetFactory(noteIdFilter, initialValue, postResetCallback);
+            noteIdFilter.filterFn = GridTableUtil.filterFnFactory(noteIdFilter, function(objToFilter, filterTerm) { return String( objToFilter.noteId ).startsWith( filterTerm ); });
+
+            return noteIdFilter;
+        };
+
+        var loanAmountFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var start = {};
+            start.value = initialValue;
+            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
+
+            var end = {};
+            end.value = initialValue;
+            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
+
+            start.formattedValue = GridTableUtil.formattedValueFactory(start, end);
+            end.formattedValue = GridTableUtil.formattedValueFactory(end, start);
+
+            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.loanAmount > filterTerm; });
+            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.loanAmount < filterTerm; });
+
+            return { start: start, end: end };
+        };
+
+        var noteAmountFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var start = {};
+            start.value = initialValue;
+            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
+
+            var end = {};
+            end.value = initialValue;
+            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
+
+            start.formattedValue = GridTableUtil.formattedValueFactory(start, end);
+            end.formattedValue = GridTableUtil.formattedValueFactory(end, start);
+
+            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.noteAmount > filterTerm; });
+            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.noteAmount < filterTerm; });
+
+            return { start: start, end: end };
+        };
+
+        var gradeFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var gradeFilter = {};
+            gradeFilter.value = initialValue;
+            gradeFilter.reset = GridTableUtil.resetFactory(gradeFilter, initialValue, postResetCallback);
+            gradeFilter.filterFn = GridTableUtil.filterFnFactory(gradeFilter, function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter.grade) >= 0; });
+
+            return gradeFilter;
+        };
+
+        var termFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var start = {};
+            start.value = initialValue;
+            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
+
+            var end = {};
+            end.value = initialValue;
+            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
+
+            start.formattedValue = GridTableUtil.formattedValueFactory(start, end);
+            end.formattedValue = GridTableUtil.formattedValueFactory(end, start);
+
+            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.term > filterTerm; });
+            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.term < filterTerm; });
+
+            return { start: start, end: end };
+        };
+
+        var interestRateFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var start = {};
+            start.value = initialValue;
+            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
+
+            var end = {};
+            end.value = initialValue;
+            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
+
+            var formatter = function(value) { return value + ' %'; };
+            start.formattedValue = GridTableUtil.formattedValueFactory(start, end, formatter);
+            end.formattedValue = GridTableUtil.formattedValueFactory(end, start, formatter);
+
+            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.interestRate > filterTerm; });
+            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.interestRate < filterTerm; });
+
+            return { start: start, end: end };
+        };
+
+        var purposeFilterFactory = function(postResetCallback) {
+            var initialValue = "";
+
+            var purposeFilter = {};
+            purposeFilter.value = initialValue;
+            purposeFilter.reset = GridTableUtil.resetFactory(purposeFilter, initialValue, postResetCallback);
+            purposeFilter.filterFn = GridTableUtil.filterFnFactory(purposeFilter, function(objToFilter, filterTerm) {
+                var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
+                for (var i in searchTerms) {
+                    if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                        if (objToFilter.purpose.startsWith(searchTerms[i])) return true;
+                    }
+                }
+                return false;
+            });
+
+            return purposeFilter;
+        };
+
+        var globalFilterFactory = function(filterValue) {
             return function(noteObj) {
                 var filter = filterValue;
                 return String( noteObj.noteId ).startsWith( filter ) ||
@@ -97,10 +219,17 @@
                     String( noteObj.interestRate ).startsWith( filter ) ||
                     String( noteObj.purpose ).startsWith( filter );
             };
-        }
+        };
 
         return {
             options: tableOptions,
+            noteIdFilterFactory: noteIdFilterFactory,
+            loanAmountFilterFactory: loanAmountFilterFactory,
+            noteAmountFilterFactory: noteAmountFilterFactory,
+            gradeFilterFactory: gradeFilterFactory,
+            termFilterFactory: termFilterFactory,
+            interestRateFilterFactory: interestRateFilterFactory,
+            purposeFilterFactory: purposeFilterFactory,
             globalFilterFactory: globalFilterFactory
         };
     }
