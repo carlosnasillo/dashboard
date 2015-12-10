@@ -148,6 +148,43 @@
             return {start: start, end: end, options: options};
         };
 
+        var singleFilterFactory = function(postResetCallback, filterFn) {
+            var initialValue = "";
+
+            var gradeFilter = {};
+            gradeFilter.value = initialValue;
+            gradeFilter.reset = resetFactory(gradeFilter, initialValue, postResetCallback);
+            gradeFilter.filterFn = filterFnFactory(gradeFilter, filterFn);
+
+            return gradeFilter;
+        };
+
+        var doubleFilterFactory = function(postResetCallback, filterFnStart, filterFnEnd, formatter) {
+            var initialValue = "";
+
+            var start = {};
+            start.value = initialValue;
+            start.reset = resetFactory(start, initialValue, postResetCallback);
+
+            var end = {};
+            end.value = initialValue;
+            end.reset = resetFactory(end, initialValue, postResetCallback);
+
+            if (formatter) {
+                start.formattedValue = formattedValueFactory(start, end, formatter);
+                end.formattedValue = formattedValueFactory(end, start, formatter);
+            }
+            else {
+                start.formattedValue = formattedValueFactory(start, end);
+                end.formattedValue = formattedValueFactory(end, start);
+            }
+
+            start.filterFn = filterFnFactory(start, filterFnStart);
+            end.filterFn = filterFnFactory(end, filterFnEnd);
+
+            return { start: start, end: end };
+        };
+
         return {
             applyDateFilter: applyDateFilter,
             formatValue: formatValue,
@@ -155,6 +192,8 @@
             formattedValueFactory: formattedValueFactory,
             filterFnFactory: filterFnFactory,
             dateFilterFactory: dateFilterFactory,
+            singleFilterFactory: singleFilterFactory,
+            doubleFilterFactory: doubleFilterFactory,
             datePickerOptions: datePickerOptions
         };
     }

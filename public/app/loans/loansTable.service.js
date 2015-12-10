@@ -88,161 +88,83 @@
         };
 
         var identifierFilterFactory = function(postResetCallback) {
-            var identifierFilter = {
-                value: "",
-                reset: reset,
-                filterFn: filterFn
-            };
-
-            function reset() {
-                identifierFilter.value = "";
-                postResetCallback();
-            }
-
-            function filterFn(loanObj) {
-                var filter = identifierFilter.value;
-                if (filter) {
-                    return String( loanObj.id ).startsWith( filter );
-                }
-                else {
-                    return true;
-                }
-            }
-
-            return identifierFilter;
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return String( objToFilter.id ).startsWith( filterTerm ); }
+            );
         };
 
         var originatorFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var originatorFilter = {};
-            originatorFilter.value = initialValue;
-            originatorFilter.reset = GridTableUtil.resetFactory(originatorFilter, initialValue, postResetCallback);
-            originatorFilter.filterFn = GridTableUtil.filterFnFactory(originatorFilter, function(objToFilter, filterTerm) {
-                var searchTerms = filterTerm.split(',').map(function (search) {
-                    return search.trim();
-                });
-                for (var i in searchTerms) {
-                    if (searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                        if (objToFilter.originator.startsWith(searchTerms[i])) return true;
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) {
+                    var searchTerms = filterTerm.split(',').map(function (search) {
+                        return search.trim();
+                    });
+                    for (var i in searchTerms) {
+                        if (searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                            if (objToFilter.originator.startsWith(searchTerms[i])) return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            });
-
-            return originatorFilter;
+            );
         };
 
         var loanAmountFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var start = {};
-            start.value = initialValue;
-            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
-
-            var end = {};
-            end.value = initialValue;
-            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
-
-            start.formattedValue = GridTableUtil.formattedValueFactory(start, end);
-            end.formattedValue = GridTableUtil.formattedValueFactory(end, start);
-
-            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.loanAmount > filterTerm; });
-            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.loanAmount < filterTerm; });
-
-            return { start: start, end: end };
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.loanAmount > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.loanAmount < filterTerm; }
+            );
         };
 
         var fundedAmountPerCentFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var start = {};
-            start.value = initialValue;
-            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
-
-            var end = {};
-            end.value = initialValue;
-            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
-
-            var formatter = function(value) { return value + " %"; };
-            start.formattedValue = GridTableUtil.formattedValueFactory(start, end, formatter);
-            end.formattedValue = GridTableUtil.formattedValueFactory(end, start, formatter);
-
-            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.fundedAmountPerCent > filterTerm; });
-            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.fundedAmountPerCent < filterTerm; });
-
-            return { start: start, end: end };
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.fundedAmountPerCent > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.fundedAmountPerCent < filterTerm; },
+                function(value) { return value + " %"; }
+            );
         };
 
         var gradeFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var gradeFilter = {};
-            gradeFilter.value = initialValue;
-            gradeFilter.reset = GridTableUtil.resetFactory(gradeFilter, initialValue, postResetCallback);
-            gradeFilter.filterFn = GridTableUtil.filterFnFactory(gradeFilter, function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter.grade) >= 0; });
-
-            return gradeFilter;
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter.grade) >= 0; }
+            );
         };
 
         var termFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var start = {};
-            start.value = initialValue;
-            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
-
-            var end = {};
-            end.value = initialValue;
-            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
-
-            start.formattedValue = GridTableUtil.formattedValueFactory(start, end);
-            end.formattedValue = GridTableUtil.formattedValueFactory(end, start);
-
-            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.term > filterTerm; });
-            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.term < filterTerm; });
-
-            return { start: start, end: end };
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.term > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.term < filterTerm; }
+            );
         };
 
         var intRateFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var start = {};
-            start.value = initialValue;
-            start.reset = GridTableUtil.resetFactory(start, initialValue, postResetCallback);
-
-            var end = {};
-            end.value = initialValue;
-            end.reset = GridTableUtil.resetFactory(end, initialValue, postResetCallback);
-
-            var formatter = function(value) { return value + " %"; };
-            start.formattedValue = GridTableUtil.formattedValueFactory(start, end, formatter);
-            end.formattedValue = GridTableUtil.formattedValueFactory(end, start, formatter);
-
-            start.filterFn = GridTableUtil.filterFnFactory(start, function(objToFilter, filterTerm) { return objToFilter.intRate > filterTerm; });
-            end.filterFn = GridTableUtil.filterFnFactory(end, function(objToFilter, filterTerm) { return objToFilter.intRate < filterTerm; });
-
-            return { start: start, end: end };
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.intRate > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.intRate < filterTerm; },
+                function(value) { return value + " %"; }
+            );
         };
 
         var purposeFilterFactory = function(postResetCallback) {
-            var initialValue = "";
-
-            var purposeFilter = {};
-            purposeFilter.value = initialValue;
-            purposeFilter.reset = GridTableUtil.resetFactory(purposeFilter, initialValue, postResetCallback);
-            purposeFilter.filterFn = GridTableUtil.filterFnFactory(purposeFilter, function(objToFilter, filterTerm) {
-                var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
-                for (var i in searchTerms) {
-                    if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                        if (objToFilter.purpose.startsWith(searchTerms[i])) return true;
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) {
+                    var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
+                    for (var i in searchTerms) {
+                        if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                            if (objToFilter.purpose.startsWith(searchTerms[i])) return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            });
-
-            return purposeFilter;
+            );
         };
 
         var globalFilterFactory = function(filterValue) {

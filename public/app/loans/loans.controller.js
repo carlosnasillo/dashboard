@@ -127,24 +127,6 @@
                 return data;
             });
 
-            //vm.originalData.notes = vm.notesTable.options.data;
-            vm.notesTable.options.data = [{
-                "noteId":9796230,
-                "loanAmount":15000,
-                "noteAmount":7500,
-                "term":36,
-                "interestRate":21.99,
-                "grade":"E",
-                "issueDate":"2015-11-05T06:41:58",
-                "issueDatetoFormattedDate":"05/11/2015",
-                "orderDate":"2015-11-05T06:41:58",
-                "orderDatetoFormattedDate":"05/11/2015",
-                "purpose":"house",
-                "fundedAmountPerCent":0,
-                "foundedPie":[0, 100],
-                "originator":"Lending Club",
-                "$$hashKey":"uiGrid-0019"
-            }];
             vm.originalData.notes = vm.notesTable.options.data;
         });
 
