@@ -29,7 +29,7 @@
             };
 
             return {
-                analytics: analytics()
+                analytics: analytics
             };
         });
 })();

@@ -42,8 +42,8 @@
          * LendingClub data
          */
         vm.analytics.lendingClub = {};
-        lendingClubAnalytics.analytics.success(function(analytics) {
-            vm.analytics.lendingClub = analytics;
+        lendingClubAnalytics.analytics().success(function(analytics) {
+            vm.analytics.lendingClub = Object.create(analytics);
             vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(analytics.liquidityByGrade);
         });
 
