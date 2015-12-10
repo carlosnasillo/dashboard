@@ -39,7 +39,7 @@
         vm.analytics = {};
 
         /**
-         * LendingClug data
+         * LendingClub data
          */
         vm.analytics.lendingClub = {};
         lendingClubAnalytics.analytics.success(function(analytics) {
