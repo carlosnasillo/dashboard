@@ -17,5 +17,6 @@ At some point, description of the project structure + instructions of how to run
 ###Back-end
  * Go back to root directory
  * Run MongoDB's deamon : `mongod`.
+ * Create the tailable collection in Mongo : `use lattice; db.createCollection('rfqs', { capped: true, size: 10000 })` in Mongo console.
  * Run play. In dev mode, the best way is to run `./activator ui` and use it to compile and run. For an unknown reason this is the only way to use automatic compilation and avoid crashes ...
  * You can access the application following `http://localhost:9000`
