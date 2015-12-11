@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.grid', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'daterangepicker', 'nsPopover'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.grid', 'ui.grid.selection', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'daterangepicker', 'nsPopover'])
         .config(config)
         .run(run);
 
@@ -41,6 +41,11 @@
             .when('/loans', {
                 templateUrl: "assets/app/loans/loans.html",
                 controller: "LoansController",
+                controllerAs: 'vm'
+            })
+            .when('/rfqs', {
+                templateUrl: "assets/app/rfqs/rfqs.html",
+                controller: "RFQsController",
                 controllerAs: 'vm'
             })
             .when('/loanbook', {

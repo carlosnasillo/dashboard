@@ -28,6 +28,7 @@ POST    /api/rfqs                                                               
 GET     /api/rfqs/stream                                                            controllers.Rfqs.streamRFQWhenDealersContainsClient(client)
 
 POST    /api/quotes                                                                 controllers.Quotes.submitQuote
+GET     /api/quotes                                                                 controllers.Quotes.getQuoteWithClientByRfqId(client)
 
 
 # Map static resources from the /public folder to the /assets URL path

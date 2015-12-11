@@ -21,6 +21,10 @@
                     <input id="premium" type="text" class="form-control" data-ng-model="form.premium">
                 </div>
             </div>
+            <div class="form-group">
+                <label for="windowInMinutes">Time window (in minutes)</label>
+                <input id="windowInMinutes" type="text" class="form-control" data-ng-model="form.windowInMinutes">
+            </div>
             <div data-ng-show="loading" class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
                 <div class="sk-double-bounce2"></div>
@@ -29,6 +33,9 @@
         <div class="modal-footer row">
             <div class="col-md-6">
                 <div class="text-danger" data-ng-show="conditions.premiumNotNumeric()">Premium should be a number.</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-danger" data-ng-show="conditions.windowInMinutesNotNumeric()">The window should be a number.</div>
             </div>
             <div class="col-md-6">
                 <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>

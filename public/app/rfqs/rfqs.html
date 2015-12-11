@@ -6,9 +6,8 @@
   ~ Lattice Markets, except with written permission of Lattice Markets.
   ~
   -->
-
 <div id="wrapper">
-    <my-nav-bar active="quotes"></my-nav-bar>
+    <my-nav-bar active="rfqs"></my-nav-bar>
     <div id="page-wrapper" class="gray-bg">
         <my-nav-bar-top></my-nav-bar-top>
         <div class="wrapper wrapper-content animated fadeInRight">
@@ -16,10 +15,15 @@
                 <div class="col-md-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>My Quotes</h5>
+                            <h5>My RFQs</h5>
                         </div>
                         <div class="ibox-content">
-                            <div ui-grid="vm.rfqTable.options" class="myGrid"></div>
+                            <h4>Open CDS Tickets</h4>
+                            <div ui-grid="vm.rfqsTable.options" ui-grid-selection class="myGrid"></div>
+                        </div>
+                        <div class="ibox-content">
+                            <h4>Dealer Quotes</h4>
+                            <div ui-grid="vm.quotesTable.options" class="myGrid"></div>
                         </div>
                     </div>
                 </div>
