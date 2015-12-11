@@ -9,6 +9,7 @@
 
 package controllers
 
+import controllers.Security.HasToken
 import models.Quote
 import play.api.data.Form
 import play.api.data.Forms._
@@ -33,7 +34,7 @@ class Quotes extends Controller {
     )(Quote.apply)(models.Quote.unapply)
   )
 
-  def submitQuote = Action { implicit request =>
+  def submitQuote = HasToken { implicit request =>
     quoteForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")

@@ -9,11 +9,16 @@
 
 package controllers
 
+import controllers.Security.HasToken
 import models.Rfq
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc._
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * @author : julienderay
@@ -27,15 +32,21 @@ class Rfqs extends Controller {
       "timestamp" -> ignored(DateTime.now()),
       "durationInMonths" -> number,
       "client" -> nonEmptyText,
-      "dealer" -> list(nonEmptyText),
-      "creditEvent" -> list(nonEmptyText),
+      "dealers" -> list(nonEmptyText),
+      "creditEvents" -> list(nonEmptyText),
       "timeWindowInMinutes" -> number,
       "isValid" -> boolean,
       "cdsValue" -> bigDecimal
     )(Rfq.apply)(models.Rfq.unapply)
   )
 
-  def submitRFQ = Action { implicit request =>
+  implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
+    transform[JsObject]({ obj: JsObject => obj: JsValue }, {
+    case obj: JsObject => obj
+    case js => sys.error(s"unexpected JSON value: $js")
+  })
+
+  def submitRFQ = HasToken { implicit request =>
     rfqForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
@@ -45,5 +56,17 @@ class Rfqs extends Controller {
         Ok
       }
     )
+  }
+
+  def streamRFQByClient(client: String) = WebSocket.using[JsObject] { request =>
+    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
+      val extractedClient = (jsObj \ "client").getOrElse(JsString("")).as[String]
+      extractedClient == client
+    })
+
+    val in = Iteratee.ignore[JsObject]
+    val out = Enumerator.flatten(Rfq.getRfqStream).through(clientFilter)
+
+    (in, out)
   }
 }
