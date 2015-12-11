@@ -20,9 +20,9 @@
         .factory('NotesTableService', NotesTableService);
 
 
-    NotesTableService.$inject = ['uiGridConstants', 'GridTableUtil'];
+    NotesTableService.$inject = ['GridTableUtil'];
 
-    function NotesTableService(uiGridConstants, GridTableUtil) {
+    function NotesTableService(GridTableUtil) {
         var tableOptions = {
             enableColumnMenus: false,
             enableSorting: true,
@@ -84,7 +84,69 @@
             ]
         };
 
-        function globalFilterFactory(filterValue) {
+        var noteIdFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return String( objToFilter.noteId ).startsWith( filterTerm ); }
+            );
+        };
+
+        var loanAmountFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.loanAmount > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.loanAmount < filterTerm; }
+            );
+        };
+
+        var noteAmountFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function (objToFilter, filterTerm) { return objToFilter.noteAmount > filterTerm; },
+                function (objToFilter, filterTerm) { return objToFilter.noteAmount < filterTerm; }
+            );
+        };
+
+        var gradeFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter.grade) >= 0; }
+            );
+        };
+
+        var termFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function (objToFilter, filterTerm) { return objToFilter.term > filterTerm; },
+                function (objToFilter, filterTerm) { return objToFilter.term < filterTerm; }
+            );
+        };
+
+        var interestRateFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.interestRate > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.interestRate < filterTerm; },
+                function(value) { return value + ' %'; }
+            );
+        };
+
+        var purposeFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) {
+                    var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
+                    for (var i in searchTerms) {
+                        if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                            if (objToFilter.purpose.startsWith(searchTerms[i])) return true;
+                        }
+                    }
+                    return false;
+                }
+            );
+        };
+
+        var globalFilterFactory = function(filterValue) {
             return function(noteObj) {
                 var filter = filterValue;
                 return String( noteObj.noteId ).startsWith( filter ) ||
@@ -97,10 +159,17 @@
                     String( noteObj.interestRate ).startsWith( filter ) ||
                     String( noteObj.purpose ).startsWith( filter );
             };
-        }
+        };
 
         return {
             options: tableOptions,
+            noteIdFilterFactory: noteIdFilterFactory,
+            loanAmountFilterFactory: loanAmountFilterFactory,
+            noteAmountFilterFactory: noteAmountFilterFactory,
+            gradeFilterFactory: gradeFilterFactory,
+            termFilterFactory: termFilterFactory,
+            interestRateFilterFactory: interestRateFilterFactory,
+            purposeFilterFactory: purposeFilterFactory,
             globalFilterFactory: globalFilterFactory
         };
     }

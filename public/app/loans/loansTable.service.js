@@ -20,9 +20,9 @@
         .factory('LoansTableService', LoansTableService);
 
 
-    LoansTableService.$inject = ['uiGridConstants', 'GridTableUtil'];
+    LoansTableService.$inject = ['GridTableUtil'];
 
-    function LoansTableService(uiGridConstants, GridTableUtil) {
+    function LoansTableService(GridTableUtil) {
         var tableOptions = {
             enableColumnMenus: false,
             enableSorting: true,
@@ -87,7 +87,87 @@
             ]
         };
 
-        function globalFilterFactory(filterValue) {
+        var identifierFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return String( objToFilter.id ).startsWith( filterTerm ); }
+            );
+        };
+
+        var originatorFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) {
+                    var searchTerms = filterTerm.split(',').map(function (search) {
+                        return search.trim();
+                    });
+                    for (var i in searchTerms) {
+                        if (searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                            if (objToFilter.originator.startsWith(searchTerms[i])) return true;
+                        }
+                    }
+                    return false;
+                }
+            );
+        };
+
+        var loanAmountFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.loanAmount > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.loanAmount < filterTerm; }
+            );
+        };
+
+        var fundedAmountPerCentFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.fundedAmountPerCent > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.fundedAmountPerCent < filterTerm; },
+                function(value) { return value + " %"; }
+            );
+        };
+
+        var gradeFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter.grade) >= 0; }
+            );
+        };
+
+        var termFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.term > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.term < filterTerm; }
+            );
+        };
+
+        var intRateFilterFactory = function(postResetCallback) {
+            return GridTableUtil.doubleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) { return objToFilter.intRate > filterTerm; },
+                function(objToFilter, filterTerm) { return objToFilter.intRate < filterTerm; },
+                function(value) { return value + " %"; }
+            );
+        };
+
+        var purposeFilterFactory = function(postResetCallback) {
+            return GridTableUtil.singleFilterFactory(
+                postResetCallback,
+                function(objToFilter, filterTerm) {
+                    var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
+                    for (var i in searchTerms) {
+                        if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
+                            if (objToFilter.purpose.startsWith(searchTerms[i])) return true;
+                        }
+                    }
+                    return false;
+                }
+            );
+        };
+
+        var globalFilterFactory = function(filterValue) {
             return function(loanObj) {
                 var filter = filterValue;
                 return String( loanObj.id ).startsWith( filter ) ||
@@ -99,10 +179,18 @@
                     String( loanObj.intRate ).startsWith( filter ) ||
                     String( loanObj.purpose ).startsWith( filter );
             };
-        }
+        };
 
         return {
             options: tableOptions,
+            identifierFilterFactory: identifierFilterFactory,
+            originatorFilterFactory: originatorFilterFactory,
+            loanAmountFilterFactory: loanAmountFilterFactory,
+            fundedAmountPerCentFilterFactory: fundedAmountPerCentFilterFactory,
+            gradeFilterFactory: gradeFilterFactory,
+            termFilterFactory: termFilterFactory,
+            intRateFilterFactory: intRateFilterFactory,
+            purposeFilterFactory: purposeFilterFactory,
             globalFilterFactory: globalFilterFactory
         };
     }
