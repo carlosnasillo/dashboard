@@ -22,3 +22,11 @@ h1.with-space-before {
 .login-form {
     margin-top: 60px;
 }
+
+.chosen-container.chosen-container-multi {
+    width: 300px !important;
+}
+
+.chosen-choices {
+    max-height: 150px;
+}

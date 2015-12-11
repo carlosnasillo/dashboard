@@ -84,6 +84,15 @@ grunt.initConfig({
                 'ui-grid.woff': 'angular-ui-grid/ui-grid.woff',
                 'ui-grid.ttf': 'angular-ui-grid/ui-grid.ttf'
             }
+        },
+        chosen: {
+            options: {
+                destPrefix: 'public/dist'
+            },
+            files: {
+                'chosen-sprite.png': 'chosen/chosen-sprite.png',
+                'chosen-sprite@2x.png': 'chosen/chosen-sprite@2x.png'
+            }
         }
     },
     jshint: {
@@ -109,7 +118,8 @@ grunt.initConfig({
                 "bower_components/sweetalert/dist/sweetalert.css",
                 "bower_components/bootstrap-daterangepicker/daterangepicker.css",
                 "bower_components/c3/c3.min.css",
-                "public/stylesheets/popover-custom.css"
+                "public/stylesheets/popover-custom.css",
+                "bower_components/chosen/chosen.min.css"
             ],
             dest: "public/dist/styles.css"
         }

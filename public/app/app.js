@@ -43,6 +43,11 @@
                 controller: "LoansController",
                 controllerAs: 'vm'
             })
+            .when('/loanbook', {
+                templateUrl: "assets/app/loanbook/loanbook.html",
+                controller: "LoanBookController",
+                controllerAs: 'vm'
+            })
             .otherwise({ redirectTo: '/' });
     }
 
