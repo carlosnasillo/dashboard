@@ -19,16 +19,18 @@
         .module('app')
         .controller('LoanBookController', LoanBookController);
 
-    LoanBookController.$inject = ['LoanBookService', 'LoanBookTableService'];
+    LoanBookController.$inject = ['LoanBookService', 'LoanBookTableService', 'RfqModalService'];
 
-    function LoanBookController(LoanBookService, LoanBookTableService) {
+    function LoanBookController(LoanBookService, LoanBookTableService, RfqModalService) {
         var vm = this;
 
-        vm.loanBook = {};
-        vm.loanBook.options = LoanBookTableService.options;
+        vm.loanBookTable = {};
+        vm.loanBookTable.options = LoanBookTableService.options;
 
         LoanBookService.loanBookData().then(function(data) {
-            vm.loanBook.options.data = Object.create(data);
+            vm.loanBookTable.options.data = Object.create(data);
         });
+
+        vm.order = RfqModalService.orderModal;
     }
 })();

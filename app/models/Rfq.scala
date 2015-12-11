@@ -25,7 +25,6 @@ import scala.util.{Failure, Success}
   */
 
 case class Rfq(
-                id: String,
                 timestamp: DateTime,
                 durationInMonths: Int,
                 client: String,

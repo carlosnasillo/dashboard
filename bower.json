@@ -38,7 +38,8 @@
     "ngSweetAlert": "angular-sweetalert#~1.1.0",
     "angular-daterangepicker": "0.2.1",
     "c3": "~0.4.10",
-    "nsPopover": "~0.6.8"
+    "nsPopover": "~0.6.8",
+    "chosen": "~1.4.2"
   },
   "resolutions": {
     "jquery": "~2.1.4",

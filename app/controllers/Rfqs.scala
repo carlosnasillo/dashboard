@@ -10,6 +10,7 @@
 package controllers
 
 import models.Rfq
+import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -23,8 +24,7 @@ class Rfqs extends Controller {
 
   val rfqForm = Form(
     mapping (
-      "id" -> nonEmptyText,
-      "timestamp" -> jodaDate("yyyy-MM-dd HH:mm:ss"),
+      "timestamp" -> ignored(DateTime.now()),
       "durationInMonths" -> number,
       "client" -> nonEmptyText,
       "dealer" -> list(nonEmptyText),

@@ -63,6 +63,12 @@
                 },
                 {
                     field: 'security'
+                },
+                {
+                    field: 'id',
+                    displayName: 'RFQ',
+                    cellTemplate: "<div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.originator)'>RFQ</span></div>",
+                    enableFiltering: false
                 }
             ]
         };
