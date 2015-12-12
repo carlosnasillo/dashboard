@@ -15,7 +15,7 @@ import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,6 +24,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * @author : julienderay
   * Created on 11/12/2015
   */
+
+// Todo : find a better way to not have the id for storage
+case class RfqForm(
+                timestamp: DateTime,
+                durationInMonths: Int,
+                client: String,
+                dealers: List[String],
+                creditEvents: List[String],
+                timeWindowInMinutes: Int,
+                isValid: Boolean,
+                cdsValue: BigDecimal,
+                loanId: String,
+                originator: String
+              )
 
 class Rfqs extends Controller {
 
@@ -36,8 +50,10 @@ class Rfqs extends Controller {
       "creditEvents" -> list(nonEmptyText),
       "timeWindowInMinutes" -> number,
       "isValid" -> boolean,
-      "cdsValue" -> bigDecimal
-    )(Rfq.apply)(models.Rfq.unapply)
+      "cdsValue" -> bigDecimal,
+      "loanId" -> nonEmptyText,
+      "originator" -> nonEmptyText
+    )(RfqForm.apply)(RfqForm.unapply)
   )
 
   implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
@@ -58,10 +74,10 @@ class Rfqs extends Controller {
     )
   }
 
-  def streamRFQByClient(client: String) = WebSocket.using[JsObject] { request =>
+  def streamRFQWhenDealersContainsClient(client: String) = WebSocket.using[JsObject] { request =>
     val clientFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedClient = (jsObj \ "client").getOrElse(JsString("")).as[String]
-      extractedClient == client
+      val extractedDealers = (jsObj \ "dealers").getOrElse(JsArray()).as[List[String]]
+      extractedDealers contains client
     })
 
     val in = Iteratee.ignore[JsObject]

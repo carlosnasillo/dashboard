@@ -22,7 +22,7 @@
     RfqService.$inject = ['$http', '$location', '$rootScope'];
 
     function RfqService($http, $location, $rootScope) {
-        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client) {
+        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, loanId, originator) {
             var element = {
                 durationInMonths: duration,
                 creditEvents: creditEvents,
@@ -30,7 +30,9 @@
                 timeWindowInMinutes: quoteWindow,
                 cdsValue: cdsValue,
                 client: client,
-                isValid: true
+                isValid: true,
+                loanId: loanId,
+                originator: originator
             };
             return $http.post('/api/rfqs', element);
         };
@@ -55,13 +57,16 @@
             var rfq = JSON.parse(strRfq);
 
             return {
+                id: rfq._id.$oid,
                 timestamp: rfq.timestamp,
                 duration: rfq.durationInMonths,
                 client: rfq.client,
                 dealers: rfq.dealers,
                 creditEvents: rfq.creditEvents,
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
-                cdsValue: rfq.cdsValue
+                cdsValue: rfq.cdsValue,
+                loanId: rfq.loanId,
+                originator: rfq.originator
             };
         };
 

@@ -9,6 +9,8 @@
 
 package controllers
 
+import java.time.LocalDateTime
+
 import controllers.Security.HasToken
 import models.Quote
 import play.api.data.Form
@@ -24,9 +26,8 @@ class Quotes extends Controller {
 
   val quoteForm = Form(
     mapping (
-      "id" -> nonEmptyText,
       "rfqId" -> nonEmptyText,
-      "timestamp" -> jodaDate("yyyy-MM-dd HH:mm:ss"),
+      "timestamp" -> nonEmptyText,
       "premium" -> bigDecimal,
       "timeWindowInMinutes" -> number,
       "client" -> nonEmptyText,
@@ -40,8 +41,15 @@ class Quotes extends Controller {
         BadRequest("Wrong data sent.")
       },
       submittedQuote => {
-        Quote.store(submittedQuote)
-        Ok
+        val deadline = LocalDateTime.parse(submittedQuote.timestamp).plusMinutes(submittedQuote.timeWindowInMinutes)
+
+        if ( deadline.compareTo(LocalDateTime.now()) < 0 ) {
+          BadRequest("RFQ expired.")
+        }
+        else {
+          Quote.store(submittedQuote)
+          Ok
+        }
       }
     )
   }

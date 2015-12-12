@@ -10,12 +10,14 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
+import controllers.RfqForm
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.{Cursor, QueryOpts}
+import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -27,6 +29,7 @@ import scala.util.{Failure, Success}
   */
 
 case class Rfq(
+                _id: BSONObjectID,
                 timestamp: DateTime,
                 durationInMonths: Int,
                 client: String,
@@ -34,13 +37,16 @@ case class Rfq(
                 creditEvents: List[String],
                 timeWindowInMinutes: Int,
                 isValid: Boolean,
-                cdsValue: BigDecimal
+                cdsValue: BigDecimal,
+                loanId: String,
+                originator: String
               )
 
 object Rfq {
   val collectionName = "rfqs"
 
   implicit val RFQFormat = Json.format[Rfq]
+  implicit val RFQFormFormat = Json.format[RfqForm]
 
   val RFQsTable: JSONCollection = DbUtil.db.collection(collectionName)
 
@@ -59,7 +65,7 @@ object Rfq {
     }
   }
 
-  def store(rfq: Rfq) {
+  def store(rfq: RfqForm) {
     val future = RFQsTable.insert(Json.toJson(rfq).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e
@@ -69,7 +75,6 @@ object Rfq {
 
   def getRfqStream = {
     val today = DateTime.now().withHourOfDay(0).getMillis
-    Logger.info(today.toString)
     futureCollection.map { collection =>
       val cursor: Cursor[JsObject] = collection
         .find(Json.obj("timestamp" -> Json.obj("$gte" -> today)))

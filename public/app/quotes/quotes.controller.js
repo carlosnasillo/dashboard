@@ -19,9 +19,9 @@
         .module('app')
         .controller('QuotesController', QuotesController);
 
-    QuotesController.$inject = ['RfqService', 'QuotesTableService'];
+    QuotesController.$inject = ['RfqService', 'QuotesTableService', 'QuoteModalService'];
 
-    function QuotesController(RfqService, QuotesTableService) {
+    function QuotesController(RfqService, QuotesTableService, QuoteModalService) {
         var vm = this;
 
         var now = moment();
@@ -72,10 +72,19 @@
             }
         };
 
+        vm.isExpired = function(timeout) {
+            return !isNumeric(timeout) || timeout <= 0;
+        };
+
         setInterval(function() {
             vm.gridApi.core.refresh();
         }, 1000);
-
         RfqService.streamRfq( onWebSocketMessage );
+
+        vm.quote = QuoteModalService.quoteModal;
+
+        function isNumeric(n) {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
     }
 })();
