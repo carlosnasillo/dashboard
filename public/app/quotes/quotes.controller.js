@@ -19,15 +19,15 @@
         .module('app')
         .controller('QuotesController', QuotesController);
 
-    QuotesController.$inject = ['RfqService', 'QuotesTableService', 'QuoteModalService'];
+    QuotesController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService'];
 
-    function QuotesController(RfqService, QuotesTableService, QuoteModalService) {
+    function QuotesController(RfqService, RfqsTableForDealerService, QuoteModalService) {
         var vm = this;
 
         var now = moment();
-
-        vm.quotesTable = {};
-        vm.quotesTable.options = QuotesTableService.options(function( gridApi ) {
+        // todo : rename quotesTAble -> rfqsTable
+        vm.rfqTable = {};
+        vm.rfqTable.options = RfqsTableForDealerService.options(function( gridApi ) {
             vm.gridApi = gridApi;
         });
 
@@ -39,11 +39,11 @@
             rfqObject.dealers = prettifyList(rfqObject.dealers);
             rfqObject.creditEvents = prettifyList(rfqObject.creditEvents);
 
-            if (vm.quotesTable.options.data) {
-                vm.quotesTable.options.data.push(rfqObject);
+            if (vm.rfqTable.options.data) {
+                vm.rfqTable.options.data.push(rfqObject);
             }
             else {
-                vm.quotesTable.options.data = [rfqObject];
+                vm.rfqTable.options.data = [rfqObject];
             }
 
             function setUpTimeout(rfqObject) {

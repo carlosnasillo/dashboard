@@ -76,7 +76,7 @@
 
             $scope.selectUtils = {
                 banks: {
-                    data: ["Bank 1", "Bank 2", "Bank 3"],
+                    data: ["admin@admin.com", "Bank 2", "Bank 3"],
                     clearSelect: function() {
                         $scope.form.counterparty = [];
                     },

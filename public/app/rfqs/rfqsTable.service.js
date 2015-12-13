@@ -8,27 +8,30 @@
  */
 
 /**
-* @author : julienderay
-* Created on 11/12/2015
-*/
+ * Created by julienderay on 13/12/2015.
+ */
 
 (function() {
     'use strict';
 
     angular
         .module('app')
-        .factory('QuotesTableService', QuotesTableService);
+        .factory('RfqsTableService', RfqsTableService);
 
-    QuotesTableService.$inject = ['uiGridConstants'];
+    RfqsTableService.$inject = ['uiGridConstants'];
 
-    function QuotesTableService(uiGridConstants) {
+    function RfqsTableService(uiGridConstants) {
 
-        var tableOptions = function(onRegisterApi) {
+        var tableOptions = function() {
             return {
                 enableColumnMenus: false,
-                    enableSorting: true,
+                enableSorting: true,
                 enableFiltering: true,
-                onRegisterApi: onRegisterApi,
+                enableRowSelection: true,
+                multiSelect: false,
+                modifierKeysToMultiSelect: false,
+                noUnselect: true,
+                enableRowHeaderSelection: false,
                 columnDefs: [
                     {
                         field: 'timestamp',
@@ -55,12 +58,6 @@
                     },
                     {
                         field: 'cdsValue'
-                    },
-                    {
-                        field: 'id',
-                        displayName: 'Quote',
-                        cellTemplate: "<div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.loanId, row.entity.originator, row.entity.id, row.entity.timestamp, row.entity.timeWindowInMinutes, row.entity.client, row.entity.timeout)'>Quote</button></div>",
-                        enableFiltering: false
                     }
                 ]
             };

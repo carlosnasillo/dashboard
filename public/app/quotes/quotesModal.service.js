@@ -22,7 +22,7 @@
     QuoteModalService.$inject = ['$uibModal'];
 
     function QuoteModalService($uibModal) {
-        var quoteModal = function(loanId, originator, rfqId, timestamp, timeWindowInMinutes, client, timeout) {
+        var quoteModal = function(loanId, originator, rfqId, timestamp, client, timeout) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'assets/app/quotes/quotesModal.html',
                 controller: OrderModalInstanceCtrl,
@@ -31,14 +31,13 @@
                     originator: function() { return originator; },
                     rfqId: function() { return rfqId; },
                     timestamp: function() { return timestamp; },
-                    timeWindowInMinutes: function() { return timeWindowInMinutes; },
                     client: function() { return client; },
                     timeout: function() { return timeout; }
                 }
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, rfqId, timestamp, timeWindowInMinutes, client, timeout, QuotesService, $rootScope, SweetAlert) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, rfqId, timestamp, client, timeout, QuotesService, $rootScope, SweetAlert) {
             $scope.loanId = loanId;
             $scope.originator = originator;
             $scope.timeout = timeout;
@@ -46,12 +45,16 @@
             $scope.loading = false;
 
             $scope.form = {
-                premium: 0
+                premium: 0,
+                windowInMinutes: 0
             };
 
             $scope.conditions = {
                 premiumNotNumeric: function() {
                     return !isNumeric($scope.form.premium);
+                },
+                windowInMinutesNotNumeric: function() {
+                    return !isNumeric($scope.form.windowInMinutes);
                 }
             };
 
@@ -76,7 +79,7 @@
                     rfqId,
                     timestamp,
                     $scope.form.premium,
-                    timeWindowInMinutes,
+                    $scope.form.windowInMinutes,
                     client,
                     $rootScope.globals.currentUser.username
                 ).then( orderSuccess, orderError );
