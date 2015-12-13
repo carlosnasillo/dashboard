@@ -52,15 +52,10 @@
             return quote;
         };
 
-        var accept = function(id, acceptSuccess, acceptError) {
-            // TODO : connect to Trade
-        };
-
         return {
             submitQuote: submitQuote,
             getQuotesByClient: getQuotesByClient,
-            setProperId: setProperId,
-            accept: accept
+            setProperId: setProperId
         };
     }
 })();

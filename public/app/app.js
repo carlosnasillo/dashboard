@@ -58,6 +58,11 @@
                 controller: "QuotesController",
                 controllerAs: 'vm'
             })
+            .when('/trades', {
+                templateUrl: "assets/app/trades/trades.html",
+                controller: "TradesController",
+                controllerAs: 'vm'
+            })
             .otherwise({ redirectTo: '/' });
     }
 

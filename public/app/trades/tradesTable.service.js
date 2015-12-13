@@ -8,56 +8,56 @@
  */
 
 /**
- * Created by julienderay on 13/12/2015.
- */
+* @author : julienderay
+* Created on 14/12/2015
+*/
 
 (function() {
     'use strict';
 
     angular
         .module('app')
-        .factory('RfqsTableService', RfqsTableService);
+        .factory('TradesTableService', TradesTableService);
 
-    RfqsTableService.$inject = ['uiGridConstants'];
+    TradesTableService.$inject = ['uiGridConstants'];
 
-    function RfqsTableService(uiGridConstants) {
+    function TradesTableService(uiGridConstants) {
 
         var tableOptions = function() {
             return {
                 enableColumnMenus: false,
                 enableSorting: true,
                 enableFiltering: true,
-                enableRowSelection: true,
-                multiSelect: false,
-                modifierKeysToMultiSelect: false,
-                noUnselect: true,
-                enableRowHeaderSelection: false,
                 columnDefs: [
                     {
+                       field: 'id'
+                    },
+                    {
+                        field: 'rfqId'
+                    },
+                    {
+                        field: 'quoteId'
+                    },
+                    {
                         field: 'timestamp',
-                        sort: { direction: uiGridConstants.DESC, priority: 0 },
-                        visible: false
+                        displayName: 'Created on',
+                        cellFilter: 'date:"dd/MM/yyyy"',
+                        sort: { direction: uiGridConstants.DESC, priority: 0 }
                     },
                     {
-                        field: 'client'
+                        field: 'durationInMonths'
                     },
                     {
-                        field: 'duration',
-                        displayName: 'Duration in Months'
-                    },
-                    {
-                        field: 'dealers'
-                    },
-                    {
-                        field: 'prettyCreditEvents'
-                    },
-                    {
-                        field: 'timeout',
-                        displayName: 'Timeout in seconds',
-                        type: 'text'
+                        field: 'creditEvents'
                     },
                     {
                         field: 'cdsValue'
+                    },
+                    {
+                        field: 'originator'
+                    },
+                    {
+                        field: 'premium'
                     }
                 ]
             };
