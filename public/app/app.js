@@ -48,6 +48,11 @@
                 controller: "LoanBookController",
                 controllerAs: 'vm'
             })
+            .when('/quotes', {
+                templateUrl: "assets/app/quotes/quotes.html",
+                controller: "QuotesController",
+                controllerAs: 'vm'
+            })
             .otherwise({ redirectTo: '/' });
     }
 
