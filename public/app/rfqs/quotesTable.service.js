@@ -52,7 +52,7 @@
                     {
                         field: 'id',
                         displayName: 'Accept',
-                        cellTemplate: "<div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.accept(row.entity.id)'>Accept</button><div data-ng-show='row.grid.appScope.vm.loading' class='sk-spinner sk-spinner-double-bounce'> <div class='sk-double-bounce1'></div> <div class='sk-double-bounce2'></div> </div></div>",
+                        cellTemplate: "<div class='text-center'><button data-ng-hide='row.entity.loading' class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.disableButton(row.entity)' data-ng-click='row.grid.appScope.vm.accept(row.entity)'>Accept</button><div data-ng-show='row.entity.loading' class='sk-spinner sk-spinner-wave'> <div class='sk-rect1'></div> <div class='sk-rect2'></div> <div class='sk-rect3'></div> <div class='sk-rect4'></div> <div class='sk-rect5'></div> </div></div>",
                         enableFiltering: false
                     }
                 ]

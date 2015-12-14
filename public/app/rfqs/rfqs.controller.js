@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'SweetAlert'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert) {
         var vm = this;
 
         /**
@@ -30,16 +30,19 @@
         var now = moment();
 
         vm.rfqsTable = { options: {} };
+        vm.rfqsTable.loading = true;
 
         vm.rfqsTable.options = RfqsTableService.options();
 
         var onWebSocketMessage = function(evt) {
+            vm.rfqsTable.loading = false;
+
             var rfqObject = RfqService.parseRfq(evt.data);
 
             setUpTimeout(rfqObject);
 
             rfqObject.dealers = prettifyList(rfqObject.dealers);
-            rfqObject.creditEvents = prettifyList(rfqObject.creditEvents);
+            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
 
             if (vm.rfqsTable.options.data) {
                 vm.rfqsTable.options.data.push(rfqObject);
@@ -58,10 +61,6 @@
             }
         };
 
-        setInterval(function() {
-            vm.gridApi.core.refresh();
-        }, 1000);
-
         RfqService.streamRfq( onWebSocketMessage );
 
         function isNumeric(n) {
@@ -74,64 +73,110 @@
 
         vm.quotesTable = { options: {} };
 
-        var quotesByRfqId;
+        var selectedRfq;
+        var quotesByRfqId = {};
 
-        QuotesService.getQuotesByClient().success(function(data) {
-            $.map(data, function(v, k) {
-                data[k] = v.map(function(quote) {
-                    quote = setUpTimeout(quote);
-                    return QuotesService.setProperId(quote);
-                });
-            });
-            quotesByRfqId = data;
-        });
+        var onNewQuote = function(evt) {
+
+            var quoteObj = QuotesService.parseQuote(evt.data);
+            quoteObj = setUpTimeout(quoteObj);
+            quoteObj.loading = false;
+
+            quoteObj.accepted = false;
+            if (quotesByRfqId[quoteObj.rfqId]) {
+                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+                updateQuoteTable(selectedRfq);
+
+            } else {
+                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+            }
+        };
+
+
+        QuotesService.streamQuotes(onNewQuote);
 
         vm.quotesTable.options = QuotesTableService.options();
-
         vm.rfqsTable.options.onRegisterApi = function(gridApi) {
-            vm.gridApi = gridApi;
+            vm.rfqsTable.gridApi = gridApi;
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-                vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
+                updateQuoteTable(row.entity);
             });
         };
 
-        var orderSuccess = function() {
-            SweetAlert.swal(
-                "Done !",
-                "Quote aceepted !",
-                "success"
-            );
+        setInterval(function() {
+            vm.rfqsTable.gridApi.core.refresh();
+        }, 1000);
+
+        var orderSuccess = function(quote) {
+            return function() {
+                SweetAlert.swal(
+                    "Done !",
+                    "Quote accepted !",
+                    "success"
+                );
+                quote.loading = false;
+                quote.accepted = true;
+                quote.timeout = "Accepted";
+            };
         };
 
-        var orderError = function() {
-            SweetAlert.swal(
-                "Oops...",
-                "Something went wrong !",
-                "error"
-            );
+        var orderError = function(quote) {
+            return function() {
+                SweetAlert.swal(
+                    "Oops...",
+                    "Something went wrong !",
+                    "error"
+                );
+                quote.loading = false;
+            };
         };
 
-        vm.accept = function(id) {
-            QuotesService.accept(id, orderSuccess, orderError);
+        vm.accept = function(quote) {
+            quote.loading = true;
+            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.duration, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
+            .then(orderSuccess(quote), orderError(quote));
         };
 
-        vm.isExpired = function(timeout) {
+        vm.disableButton = function(quote) {
+            return isExpired(quote.timeout) || quote.accepted;
+        };
+
+        $scope.$on('$destroy', function() {
+            RfqService.closeRfqStream();
+            QuotesService.closeQuotesStream();
+        });
+
+        function updateQuoteTable(currentRfq) {
+            if (quotesByRfqId[currentRfq.id]) {
+                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
+            }
+            else {
+                vm.quotesTable.options.data = [];
+            }
+        }
+
+        function isExpired(timeout) {
             return !isNumeric(timeout) || timeout <= 0;
-        };
+        }
 
         function setUpTimeout(object) {
             var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());
             var counter = setInterval(function () {
-                if (duration > 0) {
-                    duration = duration - 1;
-                    object.timeout = duration;
+                if (object.timeout == "Accepted") {
+                    clearInterval(counter);
                 }
                 else {
-                    object.timeout = "Expired";
-                    clearInterval(counter);
+                    if (duration > 0) {
+                        duration = duration - 1;
+                        object.timeout = duration;
+                    }
+                    else {
+                        object.timeout = "Expired";
+                        clearInterval(counter);
+                    }
                 }
             }, 1000);
 

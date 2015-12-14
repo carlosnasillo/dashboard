@@ -22,6 +22,8 @@
     RfqService.$inject = ['$http', '$location', '$rootScope'];
 
     function RfqService($http, $location, $rootScope) {
+        var websocket;
+
         var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, loanId, originator) {
             var element = {
                 durationInMonths: duration,
@@ -41,7 +43,7 @@
             var currentUser = $rootScope.globals.currentUser.username;
             var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream?client=' + currentUser;
 
-            var websocket = new WebSocket(wsUri);
+            websocket = new WebSocket(wsUri);
 
             var onOpen = function() { console.log('== WebSocket Opened =='); };
             var onClose = function() { console.log('== WebSocket Closed =='); };
@@ -51,6 +53,12 @@
             websocket.onclose = onClose;
             websocket.onmessage = onMessage;
             websocket.onerror = onError;
+        };
+
+        var closeRfqStream = function() {
+            websocket.onclose = function () {};
+            websocket.close();
+            console.log("== RFQs WebSocket Closed ==");
         };
 
         var parseRfq = function(strRfq) {
@@ -73,7 +81,8 @@
         return {
             submitRfq: submitRfq,
             streamRfq: streamRfq,
-            parseRfq: parseRfq
+            parseRfq: parseRfq,
+            closeRfqStream: closeRfqStream
         };
     }
 })();

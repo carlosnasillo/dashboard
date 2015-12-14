@@ -19,11 +19,9 @@
         .module('app')
         .factory('QuotesService', QuotesService);
 
-    QuotesService.$inject = ['$http', '$rootScope'];
+    QuotesService.$inject = ['$http', '$rootScope', '$location'];
 
-    function QuotesService($http, $rootScope) {
-        var quotesPromise;
-
+    function QuotesService($http, $rootScope, $location) {
         var submitQuote = function(rfqId, timestamp, premium, timeWindowInMinutes, client, dealer) {
             var element = {
                 rfqId: rfqId,
@@ -37,30 +35,48 @@
             return $http.post('/api/quotes', element);
         };
 
-        var getQuotesByClient = function() {
-            if (quotesPromise) {
-                return quotesPromise;
-            } else {
-                quotesPromise = $http.get("/api/quotes?client=" + $rootScope.globals.currentUser.username);
-                return quotesPromise;
-            }
+        var websocket;
+        var streamQuotes = function(onMessage) {
+            var currentUser = $rootScope.globals.currentUser.username;
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentUser;
+
+            websocket = new WebSocket(wsUri);
+
+            var onOpen = function() { console.log('== WebSocket Opened =='); };
+            var onClose = function() { console.log('== WebSocket Closed =='); };
+            var onError = function(evt) { console.log('WebSocket Error :', evt); };
+
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;
+            websocket.onerror = onError;
         };
 
-        var setProperId = function(quote) {
-            quote.id = quote._id.$oid;
-            delete quote._id;
-            return quote;
+        var parseQuote = function(strQuote) {
+            var quote = JSON.parse(strQuote);
+
+            return {
+                id: quote._id.$oid,
+                rfqId: quote.rfqId,
+                timestamp: quote.timestamp,
+                premium: quote.premium,
+                timeWindowInMinutes: quote.timeWindowInMinutes,
+                client: quote.client,
+                dealer: quote.dealer
+            };
         };
 
-        var accept = function(id, acceptSuccess, acceptError) {
-            // TODO : connect to Trade
+        var closeQuotesStream = function() {
+            websocket.onclose = function () {};
+            websocket.close();
+            console.log("== Quotes WebSocket Closed ==");
         };
 
         return {
             submitQuote: submitQuote,
-            getQuotesByClient: getQuotesByClient,
-            setProperId: setProperId,
-            accept: accept
+            streamQuotes: streamQuotes,
+            parseQuote: parseQuote,
+            closeQuotesStream: closeQuotesStream
         };
     }
 })();

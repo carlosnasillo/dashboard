@@ -6,8 +6,9 @@
   ~ Lattice Markets, except with written permission of Lattice Markets.
   ~
   -->
+
 <div id="wrapper">
-    <my-nav-bar active="rfqs"></my-nav-bar>
+    <my-nav-bar active="trades"></my-nav-bar>
     <div id="page-wrapper" class="gray-bg">
         <my-nav-bar-top></my-nav-bar-top>
         <div class="wrapper wrapper-content animated fadeInRight">
@@ -15,25 +16,21 @@
                 <div class="col-md-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>My RFQs</h5>
+                            <h5>My Trades</h5>
                         </div>
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <h4>Open CDS Tickets</h4>
+                                    <h4>All trades</h4>
                                 </div>
                                 <div class="col-md-1">
-                                    <div data-ng-show="vm.rfqsTable.loading" class="sk-spinner sk-spinner-chasing-dots">
+                                    <div data-ng-show="vm.tradesTable.loading" class="sk-spinner sk-spinner-chasing-dots">
                                         <div class="sk-dot1"></div>
                                         <div class="sk-dot2"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div ui-grid="vm.rfqsTable.options" ui-grid-selection class="myGrid"></div>
-                        </div>
-                        <div class="ibox-content">
-                            <h4>Dealer Quotes</h4>
-                            <div ui-grid="vm.quotesTable.options" class="myGrid"></div>
+                            <div ui-grid="vm.tradesTable.options" class="myGrid"></div>
                         </div>
                     </div>
                 </div>

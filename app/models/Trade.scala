@@ -10,12 +10,13 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
-import controllers.QuoteForm
+import controllers.TradeForm
+import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.api.{QueryOpts, Cursor}
+import reactivemongo.api.{Cursor, QueryOpts}
 import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,51 +25,55 @@ import scala.util.{Failure, Success}
 
 /**
   * @author : julienderay
-  * Created on 11/12/2015
+  * Created on 13/12/2015
   */
 
-case class Quote(
+case class Trade(
                   _id: BSONObjectID,
-                  rfqId: String,
-                  timestamp: String, // todo : find a better way to manage the dates
-                  premium: BigDecimal,
-                  timeWindowInMinutes: Int,
-                  client: String,
-                  dealer: String
+                 rfqId: String,
+                 quoteId: String,
+                 timestamp: DateTime,
+                 durationInMonths: Int,
+                 client: String,
+                 dealer: String,
+                 creditEvents: List[String],
+                 cdsValue: BigDecimal,
+                 originator: String,
+                 premium: BigDecimal
                 )
 
-object Quote {
-  val collectionName = "quotes"
+object Trade {
+  val collectionName = "trades"
 
-  implicit val quoteFormat = Json.format[Quote]
-  implicit val quoteFormFormat = Json.format[QuoteForm]
+  implicit val tradeFormat = Json.format[Trade]
+  implicit val tradeFormFormat = Json.format[TradeForm]
 
-  val quotesTable: JSONCollection = DbUtil.db.collection(collectionName)
+  val tradesTable: JSONCollection = DbUtil.db.collection(collectionName)
 
   lazy val futureCollection: Future[JSONCollection] = {
-    quotesTable.stats().flatMap {
+    tradesTable.stats().flatMap {
       case stats if !stats.capped =>
         // the collection is not capped, so we convert it
-        quotesTable.convertToCapped(1024 * 1024, None)
-      case _ => Future(quotesTable)
+        tradesTable.convertToCapped(1024 * 1024, None)
+      case _ => Future(tradesTable)
     }.recover {
       // the collection does not exist, so we create it
       case _ =>
-        quotesTable.createCapped(1024 * 1024, None)
+        tradesTable.createCapped(1024 * 1024, None)
     }.map { _ =>
-      quotesTable
+      tradesTable
     }
   }
 
-  def store(quote: QuoteForm) {
-    val future = quotesTable.insert(Json.toJson(quote).as[JsObject])
+  def store(rfq: TradeForm) {
+    val future = tradesTable.insert(Json.toJson(rfq).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e
-      case Success(lastError) => Logger.info(s"New quote inserted : $quote")
+      case Success(lastError) => Logger.info(s"New trade inserted : $rfq")
     }
   }
 
-  def getQuoteStream = {
+  def getTradeStream = {
     futureCollection.map { collection =>
       val cursor: Cursor[JsObject] = collection
         .find(Json.obj())
@@ -79,3 +84,4 @@ object Quote {
     }
   }
 }
+

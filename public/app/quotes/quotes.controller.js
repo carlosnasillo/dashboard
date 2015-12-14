@@ -19,9 +19,9 @@
         .module('app')
         .controller('QuotesController', QuotesController);
 
-    QuotesController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService'];
+    QuotesController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope'];
 
-    function QuotesController(RfqService, RfqsTableForDealerService, QuoteModalService) {
+    function QuotesController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope) {
         var vm = this;
 
         var now = moment();
@@ -82,6 +82,10 @@
         RfqService.streamRfq( onWebSocketMessage );
 
         vm.quote = QuoteModalService.quoteModal;
+
+        $scope.$on('$destroy', function() {
+            RfqService.closeRfqStream();
+        });
 
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
