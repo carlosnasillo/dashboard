@@ -26,6 +26,7 @@
         service.SetCredentials = SetCredentials;
         service.ClearCredentials = ClearCredentials;
         service.GetCurrentUsername = GetCurrentUsername;
+        service.getCurrentAccount = getCurrentAccount;
 
         return service;
 
@@ -35,11 +36,12 @@
                 .then(successCallback, errorCallback);
         }
 
-        function SetCredentials(username, token) {
+        function SetCredentials(username, token, account) {
             $rootScope.globals = {
                 currentUser: {
                     username: username,
-                    authdata: token
+                    authdata: token,
+                    account: account
                 }
             };
 
@@ -55,6 +57,10 @@
 
         function GetCurrentUsername() {
             return $rootScope.globals.currentUser.username;
+        }
+
+        function getCurrentAccount() {
+            return $rootScope.globals.currentUser.account;
         }
     }
 })();

@@ -85,4 +85,16 @@ class Rfqs extends Controller {
 
     (in, out)
   }
+
+  def streamRFQByClient(client: String) = WebSocket.using[JsObject] { request =>
+    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
+      val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
+      extractedClient == client
+    })
+
+    val in = Iteratee.ignore[JsObject]
+    val out = Enumerator.flatten(Rfq.getRfqStream).through(clientFilter)
+
+    (in, out)
+  }
 }

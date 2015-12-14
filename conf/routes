@@ -25,13 +25,14 @@ POST    /api/placeOrder                                                         
 GET     /api/ownedNotes/:investorId                                                 controllers.Loans.ownedNotes(investorId)
 
 POST    /api/rfqs                                                                   controllers.Rfqs.submitRFQ
-GET     /api/rfqs/stream                                                            controllers.Rfqs.streamRFQWhenDealersContainsClient(client)
+GET     /api/rfqs/dealer/stream/:client                                             controllers.Rfqs.streamRFQWhenDealersContainsClient(client)
+GET     /api/rfqs/client/stream/:client                                             controllers.Rfqs.streamRFQByClient(client)
 
 POST    /api/quotes                                                                 controllers.Quotes.submitQuote
 GET     /api/quotes/stream                                                          controllers.Quotes.streamQuoteWithClientByRfqId(client)
 
 POST    /api/trades                                                                 controllers.Trades.submitTrade
-GET     /api/trades/stream                                                          controllers.Trades.streamTradeWithDealerAndClient(user)
+GET     /api/trades/stream                                                          controllers.Trades.streamTradeWithDealerAndClient(account)
 
 
 # Map static resources from the /public folder to the /assets URL path

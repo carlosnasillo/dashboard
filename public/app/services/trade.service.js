@@ -20,9 +20,9 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', '$location', '$rootScope'];
+    TradeService.$inject = ['$http', '$location', 'AuthenticationService'];
 
-    function TradeService($http, $location, $rootScope) {
+    function TradeService($http, $location, AuthenticationService) {
         var websocket;
 
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
@@ -41,8 +41,8 @@
         };
 
         var streamTrades = function(onMessage) {
-            var currentUser = $rootScope.globals.currentUser.username;
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream?user=' + currentUser;
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream?account=' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 

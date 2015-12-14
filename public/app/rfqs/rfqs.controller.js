@@ -61,7 +61,7 @@
             }
         };
 
-        RfqService.streamRfq( onWebSocketMessage );
+        RfqService.streamRfqForClient( onWebSocketMessage );
 
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
@@ -100,6 +100,7 @@
             vm.rfqsTable.gridApi = gridApi;
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+                selectedRfq = row.entity;
                 updateQuoteTable(row.entity);
             });
         };

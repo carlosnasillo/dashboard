@@ -36,7 +36,7 @@
                 vm.username,
                 vm.password,
                 function (response) {
-                    AuthenticationService.SetCredentials(vm.username, response.data.token);
+                    AuthenticationService.SetCredentials(vm.username, response.data.token, response.data.account);
                     $location.path('/dashboard');
                 },
                 function (errorResponse) {

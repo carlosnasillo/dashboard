@@ -19,9 +19,9 @@
         .module('app')
         .factory('QuotesService', QuotesService);
 
-    QuotesService.$inject = ['$http', '$rootScope', '$location'];
+    QuotesService.$inject = ['$http', '$location', 'AuthenticationService'];
 
-    function QuotesService($http, $rootScope, $location) {
+    function QuotesService($http, $location, AuthenticationService) {
         var submitQuote = function(rfqId, timestamp, premium, timeWindowInMinutes, client, dealer) {
             var element = {
                 rfqId: rfqId,
@@ -37,8 +37,8 @@
 
         var websocket;
         var streamQuotes = function(onMessage) {
-            var currentUser = $rootScope.globals.currentUser.username;
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentUser;
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 

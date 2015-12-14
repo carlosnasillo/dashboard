@@ -37,7 +37,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, rfqId, timestamp, client, timeout, QuotesService, $rootScope, SweetAlert) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, rfqId, timestamp, client, timeout, QuotesService, AuthenticationService, SweetAlert) {
             $scope.loanId = loanId;
             $scope.originator = originator;
             $scope.timeout = timeout;
@@ -81,7 +81,7 @@
                     $scope.form.premium,
                     $scope.form.windowInMinutes,
                     client,
-                    $rootScope.globals.currentUser.username
+                    AuthenticationService.getCurrentAccount()
                 ).then( orderSuccess, orderError );
             };
 
