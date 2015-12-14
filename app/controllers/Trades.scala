@@ -12,7 +12,6 @@ package controllers
 import controllers.Security._
 import models.Trade
 import org.joda.time.DateTime
-import play.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}

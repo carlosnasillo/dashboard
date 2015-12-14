@@ -23,6 +23,8 @@
     TradeService.$inject = ['$http', '$location', '$rootScope'];
 
     function TradeService($http, $location, $rootScope) {
+        var websocket;
+
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
             var element = {
                 rfqId: rfqId,
@@ -42,7 +44,7 @@
             var currentUser = $rootScope.globals.currentUser.username;
             var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream?user=' + currentUser;
 
-            var websocket = new WebSocket(wsUri);
+            websocket = new WebSocket(wsUri);
 
             var onOpen = function() { console.log('== WebSocket Opened =='); };
             var onClose = function() { console.log('== WebSocket Closed =='); };
@@ -72,6 +74,12 @@
             };
         };
 
+        var closeTradesStream = function() {
+            websocket.onclose = function () {};
+            websocket.close();
+            console.log("== Trades WebSocket Closed ==");
+        };
+
         function prettifyList(uglyList) {
             var prettyRes = "";
             uglyList.map(function (dealer) {
@@ -84,7 +92,8 @@
         return {
             submitTrade: submitTrade,
             streamTrades: streamTrades,
-            parseTrade: parseTrade
+            parseTrade: parseTrade,
+            closeTradesStream: closeTradesStream
         };
     }
 })();

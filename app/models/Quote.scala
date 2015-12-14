@@ -15,9 +15,11 @@ import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.api.{QueryOpts, Cursor}
 import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 /**
@@ -43,6 +45,21 @@ object Quote {
 
   val quotesTable: JSONCollection = DbUtil.db.collection(collectionName)
 
+  lazy val futureCollection: Future[JSONCollection] = {
+    quotesTable.stats().flatMap {
+      case stats if !stats.capped =>
+        // the collection is not capped, so we convert it
+        quotesTable.convertToCapped(1024 * 1024, None)
+      case _ => Future(quotesTable)
+    }.recover {
+      // the collection does not exist, so we create it
+      case _ =>
+        quotesTable.createCapped(1024 * 1024, None)
+    }.map { _ =>
+      quotesTable
+    }
+  }
+
   def store(quote: QuoteForm) {
     val future = quotesTable.insert(Json.toJson(quote).as[JsObject])
     future.onComplete {
@@ -51,9 +68,14 @@ object Quote {
     }
   }
 
-  def getQuotesByClient(client: String) =
-    quotesTable
-      .find(Json.obj("client" -> client))
-      .cursor[Quote]()
-      .collect[List](Int.MaxValue)
+  def getQuoteStream = {
+    futureCollection.map { collection =>
+      val cursor: Cursor[JsObject] = collection
+        .find(Json.obj())
+        .options(QueryOpts().tailable.awaitData)
+        .cursor[JsObject]()
+
+      cursor.enumerate()
+    }
+  }
 }

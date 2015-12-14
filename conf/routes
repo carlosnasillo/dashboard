@@ -28,7 +28,7 @@ POST    /api/rfqs                                                               
 GET     /api/rfqs/stream                                                            controllers.Rfqs.streamRFQWhenDealersContainsClient(client)
 
 POST    /api/quotes                                                                 controllers.Quotes.submitQuote
-GET     /api/quotes                                                                 controllers.Quotes.getQuoteWithClientByRfqId(client)
+GET     /api/quotes/stream                                                          controllers.Quotes.streamQuoteWithClientByRfqId(client)
 
 POST    /api/trades                                                                 controllers.Trades.submitTrade
 GET     /api/trades/stream                                                          controllers.Trades.streamTradeWithDealerAndClient(user)

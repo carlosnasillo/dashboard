@@ -19,9 +19,9 @@
         .module('app')
         .controller('TradesController', TradesController);
 
-    TradesController.$inject = ['TradeService', 'TradesTableService'];
+    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope'];
 
-    function TradesController(TradeService, TradesTableService) {
+    function TradesController(TradeService, TradesTableService, $scope) {
         var vm = this;
 
         vm.tradesTable = {};
@@ -55,5 +55,9 @@
         setInterval(function() {
             vm.tradesTable.gridApi.core.refresh();
         }, 1000);
+
+        $scope.$on('$destroy', function() {
+            TradeService.closeTradesStream();
+        });
     }
 })();

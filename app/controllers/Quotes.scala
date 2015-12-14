@@ -13,8 +13,9 @@ import controllers.Security.HasToken
 import models.Quote
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
+import play.api.libs.json.{JsValue, JsArray, JsObject}
+import play.api.mvc.{Controller, _}
 import utils.Formatters.mapStringListQuote
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -47,6 +48,12 @@ class Quotes extends Controller {
     )(QuoteForm.apply)(QuoteForm.unapply)
   )
 
+  implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
+    transform[JsObject]({ obj: JsObject => obj: JsValue }, {
+    case obj: JsObject => obj
+    case js => sys.error(s"unexpected JSON value: $js")
+  })
+
   def submitQuote = HasToken { implicit request =>
     quoteForm.bindFromRequest.fold(
       formWithErrors => {
@@ -66,7 +73,15 @@ class Quotes extends Controller {
     )
   }
 
-  def getQuoteWithClientByRfqId(client: String) = HasToken.async {
-    Quote.getQuotesByClient(client).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
+  def streamQuoteWithClientByRfqId(client: String) = WebSocket.using[JsObject] { request =>
+    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
+      val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
+      extractedClient == client
+    })
+
+    val in = Iteratee.ignore[JsObject]
+    val out = Enumerator.flatten(Quote.getQuoteStream).through(clientFilter)
+
+    (in, out)
   }
 }

@@ -73,19 +73,23 @@
 
         vm.quotesTable = { options: {} };
 
-        var quotesByRfqId;
+        var quotesByRfqId = {};
 
-        QuotesService.getQuotesByClient().success(function(data) {
-            $.map(data, function(v, k) {
-                data[k] = v.map(function(quote) {
-                    quote = setUpTimeout(quote);
-                    quote.loading = false;
-                    quote.accepted = false;
-                    return QuotesService.setProperId(quote);
-                });
-            });
-            quotesByRfqId = data;
-        });
+        var onNewQuote = function(evt) {
+            var quoteObj = QuotesService.parseQuote(evt.data);
+
+            quoteObj = setUpTimeout(quoteObj);
+            quoteObj.loading = false;
+            quoteObj.accepted = false;
+
+            if (quotesByRfqId[quoteObj.rfqId]) {
+                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+            } else {
+                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+            }
+        };
+
+        QuotesService.streamQuotes(onNewQuote);
 
         vm.quotesTable.options = QuotesTableService.options();
 
@@ -95,7 +99,12 @@
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 selectedRfq = row.entity;
-                vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
+                if (quotesByRfqId[row.entity.id]) {
+                    vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
+                }
+                else {
+                    vm.quotesTable.options.data = [];
+                }
             });
         };
 
@@ -136,6 +145,11 @@
         vm.disableButton = function(quote) {
             return isExpired(quote.timeout) || quote.accepted;
         };
+
+        $scope.$on('$destroy', function() {
+            RfqService.closeRfqStream();
+            QuotesService.closeQuotesStream();
+        });
 
         function isExpired(timeout) {
             return !isNumeric(timeout) || timeout <= 0;
