@@ -10,13 +10,11 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
-import controllers.TradeForm
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
@@ -27,7 +25,7 @@ import scala.util.{Failure, Success}
   */
 
 case class Trade(
-                  _id: BSONObjectID,
+                  id: String,
                  rfqId: String,
                  quoteId: String,
                  timestamp: DateTime,
@@ -44,11 +42,10 @@ object Trade {
   val collectionName = "trades"
 
   implicit val tradeFormat = Json.format[Trade]
-  implicit val tradeFormFormat = Json.format[TradeForm]
 
   val tradesTable: JSONCollection = DbUtil.db.collection(collectionName)
 
-  def store(rfq: TradeForm) {
+  def store(rfq: Trade) {
     val future = tradesTable.insert(Json.toJson(rfq).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e

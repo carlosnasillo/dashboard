@@ -31,44 +31,58 @@
             vm.gridApi = gridApi;
         });
 
+        var onWebSocketMessage = function(evt) {
+            var rfqObject = RfqService.parseRfq(evt.data);
+            console.log(rfqObject);
+            setUpTimeout(rfqObject);
+            rfqObject.prettyDealers = prettifyList(rfqObject.dealers);
+            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
+
+            if (vm.rfqTable.options.data) {
+                vm.rfqTable.options.data.push(rfqObject);
+            }
+            else {
+                vm.rfqTable.options.data = [rfqObject];
+            }
+        };
+
         RfqService.getRfqForDealer().success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
                 var rfq = Object.create(rfqObj);
 
                 setUpTimeout(rfq);
 
-                rfq.id = rfq._id.$oid;
-                delete rfq._id;
                 rfq.prettyDealers = prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
 
                 return rfq;
             });
-            function setUpTimeout(rfqObject) {
-                var deadline = moment(rfqObject.timestamp).add(rfqObject.timeWindowInMinutes, 'minutes');
-                var diff = deadline.diff(now);
-                var duration = Math.round(moment.duration(diff).asSeconds());
-                var counter = setInterval(function () {
-                    if (duration > 0) {
-                        duration = duration - 1;
-                        rfqObject.timeout = duration;
-                    }
-                    else {
-                        rfqObject.timeout = "Expired";
-                        clearInterval(counter);
-                    }
-                }, 1000);
-            }
-
-            function prettifyList(uglyList) {
-                var prettyRes = "";
-                uglyList.map(function (dealer) {
-                    prettyRes += dealer + ', ';
-                });
-
-                return prettyRes.substr(0, prettyRes.length - 2);
-            }
         });
+
+        function setUpTimeout(rfqObject) {
+            var deadline = moment(rfqObject.timestamp).add(rfqObject.timeWindowInMinutes, 'minutes');
+            var diff = deadline.diff(now);
+            var duration = Math.round(moment.duration(diff).asSeconds());
+            var counter = setInterval(function () {
+                if (duration > 0) {
+                    duration = duration - 1;
+                    rfqObject.timeout = duration;
+                }
+                else {
+                    rfqObject.timeout = "Expired";
+                    clearInterval(counter);
+                }
+            }, 1000);
+        }
+
+        function prettifyList(uglyList) {
+            var prettyRes = "";
+            uglyList.map(function (dealer) {
+                prettyRes += dealer + ', ';
+            });
+
+            return prettyRes.substr(0, prettyRes.length - 2);
+        }
 
         vm.isExpired = function(timeout) {
             return !isNumeric(timeout) || timeout <= 0;
@@ -78,10 +92,12 @@
             vm.gridApi.core.refresh();
         }, 1000);
 
+        RfqService.streamRfqForDealer( onWebSocketMessage );
+
         vm.quote = QuoteModalService.quoteModal;
 
         $scope.$on('$destroy', function() {
-            //RfqService.closeRfqStream();
+            RfqService.closeRfqStream();
         });
 
         function isNumeric(n) {

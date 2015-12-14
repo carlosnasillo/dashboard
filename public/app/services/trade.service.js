@@ -26,8 +26,6 @@
         var websocket;
         var currentAccount = AuthenticationService.getCurrentAccount();
 
-        var tradesByAccountPromise;
-
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
             var element = {
                 rfqId: rfqId,
@@ -44,12 +42,41 @@
         };
 
         var getTradesByAccount = function() {
-            if (tradesByAccountPromise) {
-                return tradesByAccountPromise;
-            } else {
-                tradesByAccountPromise = $http.get('/api/trades/' + currentAccount);
-                return tradesByAccountPromise;
-            }
+            return $http.get('/api/trades/' + currentAccount);
+        };
+
+        var streamTrades = function(onMessage) {
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
+
+            websocket = new WebSocket(wsUri);
+
+            var onOpen = function() { console.log('== WebSocket Opened =='); };
+            var onClose = function() { console.log('== WebSocket Closed =='); };
+            var onError = function(evt) { console.log('WebSocket Error :', evt); };
+
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;
+            websocket.onerror = onError;
+        };
+
+        var parseTrade = function(strTrade) {
+            var trade = JSON.parse(strTrade);
+
+            return {
+                id: trade.id,
+                rfqId: trade.rfqId,
+                quoteId: trade.quoteId,
+                timestamp: trade.timestamp,
+                durationInMonths: trade.durationInMonths,
+                client: trade.client,
+                dealer: trade.dealer,
+                creditEvents: prettifyList(trade.creditEvents),
+                cdsValue: trade.cdsValue,
+                originator: trade.originator,
+                premium: trade.premium
+            };
         };
 
         var closeTradesStream = function() {
@@ -58,10 +85,22 @@
             console.log("== Trades WebSocket Closed ==");
         };
 
+        var prettifyList = function(uglyList) {
+            var prettyRes = "";
+            uglyList.map(function (dealer) {
+                prettyRes += dealer + ', ';
+            });
+
+            return prettyRes.substr(0, prettyRes.length - 2);
+        };
+
         return {
             submitTrade: submitTrade,
+            streamTrades: streamTrades,
+            getTradesByAccount: getTradesByAccount,
+            parseTrade: parseTrade,
             closeTradesStream: closeTradesStream,
-            getTradesByAccount: getTradesByAccount
+            prettifyList: prettifyList
         };
     }
 })();

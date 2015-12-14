@@ -9,13 +9,16 @@
 
 package controllers
 
+import java.util.UUID
+
 import controllers.Security._
 import models.Trade
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.Controller
-import play.api.libs.json.Json
+import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
+import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.mvc.{Controller, WebSocket}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -23,24 +26,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * @author : julienderay
   *         Created on 13/12/2015
   */
-case class TradeForm(
-                  rfqId: String,
-                  quoteId: String,
-                  timestamp: DateTime,
-                  durationInMonths: Int,
-                  client: String,
-                  dealer: String,
-                  creditEvents: List[String],
-                  cdsValue: BigDecimal,
-                  originator: String,
-                  premium: BigDecimal
-                )
 
 class Trades extends Controller {
+
+  val (outTrades, channelTrades) = Concurrent.broadcast[JsValue]
+
+  def streamTrades(account: String) = WebSocket.using[JsValue] {
+    request =>
+      val in = Iteratee.ignore[JsValue]
+      val clientAndDealerFilter = Enumeratee.filter[JsValue](jsObj => {
+        val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
+        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
+        extractedClient == account && extractedDealer == account
+      })
+
+      outTrades through clientAndDealerFilter
+      (in, outTrades)
+  }
 
   def submitTrade = HasToken { implicit request =>
     val tradeForm = Form(
       mapping (
+        "id" -> ignored(UUID.randomUUID().toString),
         "rfqId" -> nonEmptyText,
         "quoteId" -> nonEmptyText,
         "timestamp" -> ignored(DateTime.now()),
@@ -51,7 +58,7 @@ class Trades extends Controller {
         "cdsValue" -> bigDecimal,
         "originator" -> nonEmptyText,
         "premium" -> bigDecimal
-      )(TradeForm.apply)(TradeForm.unapply)
+      )(Trade.apply)(Trade.unapply)
     )
 
     tradeForm.bindFromRequest.fold(
@@ -60,6 +67,7 @@ class Trades extends Controller {
       },
       submittedTrade => {
         Trade.store(submittedTrade)
+        channelTrades push Json.toJson(submittedTrade)
         Ok
       }
     )

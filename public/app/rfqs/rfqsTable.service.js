@@ -45,10 +45,12 @@
                         field: 'durationInMonths'
                     },
                     {
-                        field: 'prettyDealers'
+                        field: 'prettyDealers',
+                        displayName: 'Dealers'
                     },
                     {
-                        field: 'prettyCreditEvents'
+                        field: 'prettyCreditEvents',
+                        displayName: 'Credit Events'
                     },
                     {
                         field: 'timeout',

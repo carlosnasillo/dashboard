@@ -10,12 +10,10 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
-import controllers.QuoteForm
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
@@ -26,7 +24,7 @@ import scala.util.{Failure, Success}
   */
 
 case class Quote(
-                  _id: BSONObjectID,
+                  id: String,
                   rfqId: String,
                   timestamp: String, // todo : find a better way to manage the dates
                   premium: BigDecimal,
@@ -39,11 +37,10 @@ object Quote {
   val collectionName = "quotes"
 
   implicit val quoteFormat = Json.format[Quote]
-  implicit val quoteFormFormat = Json.format[QuoteForm]
 
   val quotesTable: JSONCollection = DbUtil.db.collection(collectionName)
 
-  def store(quote: QuoteForm) {
+  def store(quote: Quote) {
     val future = quotesTable.insert(Json.toJson(quote).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e

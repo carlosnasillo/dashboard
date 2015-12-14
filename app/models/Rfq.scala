@@ -10,13 +10,11 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
-import controllers.RfqForm
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
@@ -27,7 +25,7 @@ import scala.util.{Failure, Success}
   */
 
 case class Rfq(
-                _id: BSONObjectID,
+                id: String,
                 timestamp: DateTime,
                 durationInMonths: Int,
                 client: String,
@@ -44,11 +42,10 @@ object Rfq {
   val collectionName = "rfqs"
 
   implicit val RFQFormat = Json.format[Rfq]
-  implicit val RFQFormFormat = Json.format[RfqForm]
 
   val RFQsTable: JSONCollection = DbUtil.db.collection(collectionName)
 
-  def store(rfq: RfqForm) {
+  def store(rfq: Rfq) {
     val future = RFQsTable.insert(Json.toJson(rfq).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e

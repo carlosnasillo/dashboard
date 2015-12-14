@@ -34,13 +34,40 @@
 
         vm.rfqsTable.options = RfqsTableService.options();
 
+        var onWebSocketMessage = function(evt) {
+            vm.rfqsTable.loading = false;
+
+            var rfqObject = RfqService.parseRfq(evt.data);
+
+            setUpTimeout(rfqObject);
+
+            rfqObject.dealers = prettifyList(rfqObject.dealers);
+            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
+
+            if (vm.rfqsTable.options.data) {
+                vm.rfqsTable.options.data.push(rfqObject);
+            }
+            else {
+                vm.rfqsTable.options.data = [rfqObject];
+            }
+
+            function prettifyList(uglyList) {
+                var prettyRes = "";
+                uglyList.map(function (dealer) {
+                    prettyRes += dealer + ', ';
+                });
+
+                return prettyRes.substr(0, prettyRes.length - 2);
+            }
+        };
+
+        RfqService.streamRfqForClient( onWebSocketMessage );
+
         RfqService.getRfqForClient().success(function(data) {
             vm.rfqsTable.loading = false;
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = Object.create(rfqObj);
 
-                rfq.id = rfq._id.$oid;
-                delete rfq._id;
                 rfq.prettyDealers = prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
                 setUpTimeout(rfq);
@@ -61,13 +88,13 @@
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
-
         /**
          * Bottom table
          */
 
         vm.quotesTable = { options: {} };
 
+        var selectedRfq;
         var quotesByRfqId;
 
         QuotesService.getQuotesByClient().success(function(data) {
@@ -77,23 +104,48 @@
                     quote = setUpTimeout(quote);
                     quote.loading = false;
                     quote.accepted = false;
-                    return QuotesService.setProperId(quote);
+                    return quote;
                 });
             });
             quotesByRfqId = data;
         });
+        var onNewQuote = function(evt) {
 
+            var quoteObj = QuotesService.parseQuote(evt.data);
+            quoteObj = setUpTimeout(quoteObj);
+
+            quoteObj.loading = false;
+            quoteObj.accepted = false;
+            if (quotesByRfqId[quoteObj.rfqId]) {
+                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+                updateQuoteTable(selectedRfq);
+            } else {
+                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+            }
+        };
+
+
+        QuotesService.streamQuotes(onNewQuote);
         vm.quotesTable.options = QuotesTableService.options();
 
-        var selectedRfq;
         vm.rfqsTable.options.onRegisterApi = function(gridApi) {
             vm.rfqsTable.gridApi = gridApi;
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 selectedRfq = row.entity;
+                updateQuoteTable(selectedRfq);
                 vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
             });
         };
+
+        function updateQuoteTable(currentRfq) {
+            if (quotesByRfqId[currentRfq.id]) {
+                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
+            }
+            else {
+                vm.quotesTable.options.data = [];
+            }
+        }
 
         setInterval(function() {
             vm.rfqsTable.gridApi.core.refresh();
@@ -134,8 +186,8 @@
         };
 
         $scope.$on('$destroy', function() {
-            //RfqService.closeRfqStream();
-            //QuotesService.closeQuotesStream();
+            RfqService.closeRfqStream();
+            QuotesService.closeQuotesStream();
         });
 
         function isExpired(timeout) {

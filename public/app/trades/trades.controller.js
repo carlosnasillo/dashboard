@@ -27,22 +27,43 @@
         vm.tradesTable = {};
         vm.tradesTable.options = TradesTableService.options();
 
+        vm.tradesTable.options.onRegisterApi = function(gridApi) {
+            vm.tradesTable.gridApi = gridApi;
+        };
+
+        setInterval(function() {
+            vm.tradesTable.gridApi.core.refresh();
+        }, 1000);
+
         vm.tradesTable.loading = true;
 
         TradeService.getTradesByAccount().success(function(data) {
             vm.tradesTable.loading = false;
-
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = Object.create(tradeObj);
-                trade.id = tradeObj._id.$oid;
-                delete trade._id;
+                trade.creditEvent = TradeService.prettifyList(trade.creditEvents);
 
                 return trade;
             });
         });
 
+        var onWebSocketMessage = function(evt) {
+            vm.tradesTable.loading = false;
+
+            var tradeObject = TradeService.parseTrade(evt.data);
+
+            if (vm.tradesTable.options.data) {
+                vm.tradesTable.options.data.push(tradeObject);
+            }
+            else {
+                vm.tradesTable.options.data = [tradeObject];
+            }
+        };
+
+        TradeService.streamTrades( onWebSocketMessage );
+
         $scope.$on('$destroy', function() {
-            //TradeService.closeTradesStream();
+            TradeService.closeTradesStream();
         });
     }
 })();

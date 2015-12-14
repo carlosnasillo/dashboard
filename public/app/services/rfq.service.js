@@ -24,8 +24,7 @@
     function RfqService($http, $location, AuthenticationService) {
         var websocket;
 
-        var rfqForClientPromise;
-        var rfqForDealerPromise;
+        var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
         var currentAccount = AuthenticationService.getCurrentAccount();
 
@@ -44,22 +43,39 @@
             return $http.post('/api/rfqs', element);
         };
 
+        var streamRfqForDealer = function(onMessage) {
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/dealer/' + currentAccount;
+
+            streamRfq(wsUri, onMessage);
+        };
+
+        var streamRfqForClient = function(onMessage) {
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/client/' + currentAccount;
+
+            streamRfq(wsUri, onMessage);
+        };
+
+        function streamRfq(uri, onMessage) {
+            websocket = new WebSocket(uri);
+
+            var onOpen = function() { console.log('== WebSocket Opened =='); };
+            var onClose = function() { console.log('== WebSocket Closed =='); };
+            var onError = function(evt) { console.log('WebSocket Error :', evt); };
+
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;
+            websocket.onerror = onError;
+        }
+
         var getRfqForClient = function() {
-            if (rfqForClientPromise) {
-                return rfqForClientPromise;
-            } else {
-                rfqForClientPromise = $http.get('/api/rfqs/client/' + currentAccount);
-                return rfqForClientPromise;
-            }
+             return $http.get('/api/rfqs/client/' + currentAccount);
         };
 
         var getRfqForDealer = function() {
-            if (rfqForDealerPromise) {
-                return rfqForDealerPromise;
-            } else {
-                rfqForDealerPromise = $http.get('/api/rfqs/dealer/' + currentAccount);
-                return rfqForDealerPromise;
-            }
+             return $http.get('/api/rfqs/dealer/' + currentAccount);
         };
 
         var closeRfqStream = function() {
@@ -72,9 +88,9 @@
             var rfq = JSON.parse(strRfq);
 
             return {
-                id: rfq._id.$oid,
+                id: rfq.id,
                 timestamp: rfq.timestamp,
-                duration: rfq.durationInMonths,
+                durationInMonths: rfq.durationInMonths,
                 client: rfq.client,
                 dealers: rfq.dealers,
                 creditEvents: rfq.creditEvents,
@@ -89,6 +105,8 @@
             submitRfq: submitRfq,
             getRfqForDealer: getRfqForDealer,
             getRfqForClient: getRfqForClient,
+            streamRfqForDealer: streamRfqForDealer,
+            streamRfqForClient: streamRfqForClient,
             parseRfq: parseRfq,
             closeRfqStream: closeRfqStream
         };
