@@ -38,7 +38,9 @@
         var websocket;
         var streamQuotes = function(onMessage) {
             var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentAccount;
+            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 

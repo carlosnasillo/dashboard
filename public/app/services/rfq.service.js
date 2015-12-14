@@ -41,14 +41,16 @@
 
         var streamRfqForClient = function(onMessage) {
             var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/rfqs/client/stream/' + currentAccount;
+            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/client/stream/' + currentAccount;
 
             streamRfq(wsUri, onMessage);
         };
 
         var streamRfqForDealer = function(onMessage) {
             var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/rfqs/dealer/stream/' + currentAccount;
+            var wsUri = 'wss://' + $location.host() + ':' + $location.port() + '/api/rfqs/dealer/stream/' + currentAccount;
 
             streamRfq(wsUri, onMessage);
         };
