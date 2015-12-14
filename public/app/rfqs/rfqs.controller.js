@@ -73,38 +73,34 @@
 
         vm.quotesTable = { options: {} };
 
+        var selectedRfq;
         var quotesByRfqId = {};
 
         var onNewQuote = function(evt) {
-            var quoteObj = QuotesService.parseQuote(evt.data);
 
+            var quoteObj = QuotesService.parseQuote(evt.data);
             quoteObj = setUpTimeout(quoteObj);
             quoteObj.loading = false;
-            quoteObj.accepted = false;
 
+            quoteObj.accepted = false;
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+                updateQuoteTable(selectedRfq);
+
             } else {
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
         };
 
+
         QuotesService.streamQuotes(onNewQuote);
 
         vm.quotesTable.options = QuotesTableService.options();
-
-        var selectedRfq;
         vm.rfqsTable.options.onRegisterApi = function(gridApi) {
             vm.rfqsTable.gridApi = gridApi;
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-                selectedRfq = row.entity;
-                if (quotesByRfqId[row.entity.id]) {
-                    vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
-                }
-                else {
-                    vm.quotesTable.options.data = [];
-                }
+                updateQuoteTable(row.entity);
             });
         };
 
@@ -150,6 +146,15 @@
             RfqService.closeRfqStream();
             QuotesService.closeQuotesStream();
         });
+
+        function updateQuoteTable(currentRfq) {
+            if (quotesByRfqId[currentRfq.id]) {
+                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
+            }
+            else {
+                vm.quotesTable.options.data = [];
+            }
+        }
 
         function isExpired(timeout) {
             return !isNumeric(timeout) || timeout <= 0;
