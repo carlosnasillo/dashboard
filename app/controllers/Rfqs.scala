@@ -14,9 +14,8 @@ import models.Rfq
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 import play.api.mvc._
+import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -40,13 +39,6 @@ case class RfqForm(
               )
 
 class Rfqs extends Controller {
-
-  implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
-    transform[JsObject]({ obj: JsObject => obj: JsValue }, {
-    case obj: JsObject => obj
-    case js => sys.error(s"unexpected JSON value: $js")
-  })
-
 
   def submitRFQ = HasToken { implicit request =>
     val rfqForm = Form(
@@ -75,27 +67,11 @@ class Rfqs extends Controller {
     )
   }
 
-  def streamRFQWhenDealersContainsClient(client: String) = WebSocket.using[JsObject] { request =>
-    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedDealers = (jsObj \ "dealers").getOrElse(JsArray()).as[List[String]]
-      extractedDealers contains client
-    })
-
-    val in = Iteratee.ignore[JsObject]
-    val out = Enumerator.flatten(Rfq.getRfqStream).through(clientFilter)
-
-    (in, out)
+  def getRFQWhenDealersContainsClient(client: String) = HasToken.async {
+    Rfq.getTodaysRfqWhenDealersContainsClient(client).map( rfqs => Ok( Json.toJson(rfqs) ) )
   }
 
-  def streamRFQByClient(client: String) = WebSocket.using[JsObject] { request =>
-    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
-      extractedClient == client
-    })
-
-    val in = Iteratee.ignore[JsObject]
-    val out = Enumerator.flatten(Rfq.getRfqStream).through(clientFilter)
-
-    (in, out)
+  def getRFQByClient(client: String) = HasToken.async {
+    Rfq.getTodaysRfqByClient(client).map( rfqs => Ok( Json.toJson(rfqs) ) )
   }
 }

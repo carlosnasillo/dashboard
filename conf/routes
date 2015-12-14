@@ -25,15 +25,14 @@ POST    /api/placeOrder                                                         
 GET     /api/ownedNotes/:investorId                                                 controllers.Loans.ownedNotes(investorId)
 
 POST    /api/rfqs                                                                   controllers.Rfqs.submitRFQ
-GET     /api/rfqs/dealer/stream/:client                                             controllers.Rfqs.streamRFQWhenDealersContainsClient(client)
-GET     /api/rfqs/client/stream/:client                                             controllers.Rfqs.streamRFQByClient(client)
+GET     /api/rfqs/dealer/:client                                                    controllers.Rfqs.getRFQWhenDealersContainsClient(client)
+GET     /api/rfqs/client/:client                                                    controllers.Rfqs.getRFQByClient(client)
 
 POST    /api/quotes                                                                 controllers.Quotes.submitQuote
-GET     /api/quotes/stream                                                          controllers.Quotes.streamQuoteWithClientByRfqId(client)
+GET     /api/quotes                                                                 controllers.Quotes.getQuoteWithClientByRfqId(account)
 
 POST    /api/trades                                                                 controllers.Trades.submitTrade
-GET     /api/trades/stream                                                          controllers.Trades.streamTradeWithDealerAndClient(account)
-
+GET     /api/trades/:account                                                        controllers.Trades.getTradesByAccount(account)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)

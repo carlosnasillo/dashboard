@@ -14,9 +14,8 @@ import models.Trade
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
-import play.api.libs.json.{JsArray, JsObject, JsValue}
-import play.api.mvc.{Controller, _}
+import play.api.mvc.Controller
+import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -39,28 +38,22 @@ case class TradeForm(
 
 class Trades extends Controller {
 
-  val tradeForm = Form(
-    mapping (
-      "rfqId" -> nonEmptyText,
-      "quoteId" -> nonEmptyText,
-      "timestamp" -> ignored(DateTime.now()),
-      "durationInMonths" -> number,
-      "client" -> nonEmptyText,
-      "dealer" -> nonEmptyText,
-      "creditEvents" -> list(nonEmptyText),
-      "cdsValue" -> bigDecimal,
-      "originator" -> nonEmptyText,
-      "premium" -> bigDecimal
-    )(TradeForm.apply)(TradeForm.unapply)
-  )
-
-  implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
-    transform[JsObject]({ obj: JsObject => obj: JsValue }, {
-    case obj: JsObject => obj
-    case js => sys.error(s"unexpected JSON value: $js")
-  })
-
   def submitTrade = HasToken { implicit request =>
+    val tradeForm = Form(
+      mapping (
+        "rfqId" -> nonEmptyText,
+        "quoteId" -> nonEmptyText,
+        "timestamp" -> ignored(DateTime.now()),
+        "durationInMonths" -> number,
+        "client" -> nonEmptyText,
+        "dealer" -> nonEmptyText,
+        "creditEvents" -> list(nonEmptyText),
+        "cdsValue" -> bigDecimal,
+        "originator" -> nonEmptyText,
+        "premium" -> bigDecimal
+      )(TradeForm.apply)(TradeForm.unapply)
+    )
+
     tradeForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
@@ -72,16 +65,7 @@ class Trades extends Controller {
     )
   }
 
-  def streamTradeWithDealerAndClient(account: String) = WebSocket.using[JsObject] { request =>
-    val clientAndDealerFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
-      val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
-      extractedClient == account || extractedDealer == account
-    })
-
-    val in = Iteratee.ignore[JsObject]
-    val out = Enumerator.flatten(Trade.getTradeStream).through(clientAndDealerFilter)
-
-    (in, out)
+  def getTradesByAccount(account: String) = HasToken.async {
+    Trade.getTradesByAccount(account).map( trades => Ok( Json.toJson(trades) ) )
   }
 }

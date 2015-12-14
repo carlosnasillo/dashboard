@@ -34,34 +34,29 @@
 
         vm.rfqsTable.options = RfqsTableService.options();
 
-        var onWebSocketMessage = function(evt) {
+        RfqService.getRfqForClient().success(function(data) {
             vm.rfqsTable.loading = false;
+            vm.rfqsTable.options.data = data.map(function(rfqObj) {
+                var rfq = Object.create(rfqObj);
 
-            var rfqObject = RfqService.parseRfq(evt.data);
+                rfq.id = rfq._id.$oid;
+                delete rfq._id;
+                rfq.prettyDealers = prettifyList(rfq.dealers);
+                rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
+                setUpTimeout(rfq);
 
-            setUpTimeout(rfqObject);
+                function prettifyList(uglyList) {
+                    var prettyRes = "";
+                    uglyList.map(function (dealer) {
+                        prettyRes += dealer + ', ';
+                    });
 
-            rfqObject.dealers = prettifyList(rfqObject.dealers);
-            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
+                    return prettyRes.substr(0, prettyRes.length - 2);
+                }
 
-            if (vm.rfqsTable.options.data) {
-                vm.rfqsTable.options.data.push(rfqObject);
-            }
-            else {
-                vm.rfqsTable.options.data = [rfqObject];
-            }
-
-            function prettifyList(uglyList) {
-                var prettyRes = "";
-                uglyList.map(function (dealer) {
-                    prettyRes += dealer + ', ';
-                });
-
-                return prettyRes.substr(0, prettyRes.length - 2);
-            }
-        };
-
-        RfqService.streamRfqForClient( onWebSocketMessage );
+                return rfq;
+            });
+        });
 
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
@@ -73,35 +68,30 @@
 
         vm.quotesTable = { options: {} };
 
-        var selectedRfq;
-        var quotesByRfqId = {};
+        var quotesByRfqId;
 
-        var onNewQuote = function(evt) {
-
-            var quoteObj = QuotesService.parseQuote(evt.data);
-            quoteObj = setUpTimeout(quoteObj);
-            quoteObj.loading = false;
-
-            quoteObj.accepted = false;
-            if (quotesByRfqId[quoteObj.rfqId]) {
-                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
-                updateQuoteTable(selectedRfq);
-
-            } else {
-                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
-            }
-        };
-
-
-        QuotesService.streamQuotes(onNewQuote);
+        QuotesService.getQuotesByClient().success(function(data) {
+            $.map(data, function(v, k) {
+                data[k] = v.map(function(quoteObj) {
+                    var quote = Object.create(quoteObj);
+                    quote = setUpTimeout(quote);
+                    quote.loading = false;
+                    quote.accepted = false;
+                    return QuotesService.setProperId(quote);
+                });
+            });
+            quotesByRfqId = data;
+        });
 
         vm.quotesTable.options = QuotesTableService.options();
+
+        var selectedRfq;
         vm.rfqsTable.options.onRegisterApi = function(gridApi) {
             vm.rfqsTable.gridApi = gridApi;
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 selectedRfq = row.entity;
-                updateQuoteTable(row.entity);
+                vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
             });
         };
 
@@ -135,7 +125,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.duration, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
+            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
             .then(orderSuccess(quote), orderError(quote));
         };
 
@@ -144,18 +134,9 @@
         };
 
         $scope.$on('$destroy', function() {
-            RfqService.closeRfqStream();
-            QuotesService.closeQuotesStream();
+            //RfqService.closeRfqStream();
+            //QuotesService.closeQuotesStream();
         });
-
-        function updateQuoteTable(currentRfq) {
-            if (quotesByRfqId[currentRfq.id]) {
-                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
-            }
-            else {
-                vm.quotesTable.options.data = [];
-            }
-        }
 
         function isExpired(timeout) {
             return !isNumeric(timeout) || timeout <= 0;

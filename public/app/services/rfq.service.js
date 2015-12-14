@@ -24,6 +24,11 @@
     function RfqService($http, $location, AuthenticationService) {
         var websocket;
 
+        var rfqForClientPromise;
+        var rfqForDealerPromise;
+
+        var currentAccount = AuthenticationService.getCurrentAccount();
+
         var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, loanId, originator) {
             var element = {
                 durationInMonths: duration,
@@ -39,34 +44,23 @@
             return $http.post('/api/rfqs', element);
         };
 
-        var streamRfqForClient = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
-
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/client/stream/' + currentAccount;
-
-            streamRfq(wsUri, onMessage);
+        var getRfqForClient = function() {
+            if (rfqForClientPromise) {
+                return rfqForClientPromise;
+            } else {
+                rfqForClientPromise = $http.get('/api/rfqs/client/' + currentAccount);
+                return rfqForClientPromise;
+            }
         };
 
-        var streamRfqForDealer = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = 'wss://' + $location.host() + ':' + $location.port() + '/api/rfqs/dealer/stream/' + currentAccount;
-
-            streamRfq(wsUri, onMessage);
+        var getRfqForDealer = function() {
+            if (rfqForDealerPromise) {
+                return rfqForDealerPromise;
+            } else {
+                rfqForDealerPromise = $http.get('/api/rfqs/dealer/' + currentAccount);
+                return rfqForDealerPromise;
+            }
         };
-
-        function streamRfq(uri, onMessage) {
-            websocket = new WebSocket(uri);
-
-            var onOpen = function() { console.log('== WebSocket Opened =='); };
-            var onClose = function() { console.log('== WebSocket Closed =='); };
-            var onError = function(evt) { console.log('WebSocket Error :', evt); };
-
-            websocket.onopen = onOpen;
-            websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
-            websocket.onerror = onError;
-        }
 
         var closeRfqStream = function() {
             websocket.onclose = function () {};
@@ -93,8 +87,8 @@
 
         return {
             submitRfq: submitRfq,
-            streamRfqForClient: streamRfqForClient,
-            streamRfqForDealer: streamRfqForDealer,
+            getRfqForDealer: getRfqForDealer,
+            getRfqForClient: getRfqForClient,
             parseRfq: parseRfq,
             closeRfqStream: closeRfqStream
         };

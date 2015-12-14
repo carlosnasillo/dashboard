@@ -31,21 +31,19 @@
             vm.gridApi = gridApi;
         });
 
-        var onWebSocketMessage = function(evt) {
-            var rfqObject = RfqService.parseRfq(evt.data);
+        RfqService.getRfqForDealer().success(function(data) {
+            vm.rfqTable.options.data = data.map(function(rfqObj) {
+                var rfq = Object.create(rfqObj);
 
-            setUpTimeout(rfqObject);
+                setUpTimeout(rfq);
 
-            rfqObject.dealers = prettifyList(rfqObject.dealers);
-            rfqObject.creditEvents = prettifyList(rfqObject.creditEvents);
+                rfq.id = rfq._id.$oid;
+                delete rfq._id;
+                rfq.prettyDealers = prettifyList(rfq.dealers);
+                rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
 
-            if (vm.rfqTable.options.data) {
-                vm.rfqTable.options.data.push(rfqObject);
-            }
-            else {
-                vm.rfqTable.options.data = [rfqObject];
-            }
-
+                return rfq;
+            });
             function setUpTimeout(rfqObject) {
                 var deadline = moment(rfqObject.timestamp).add(rfqObject.timeWindowInMinutes, 'minutes');
                 var diff = deadline.diff(now);
@@ -70,7 +68,7 @@
 
                 return prettyRes.substr(0, prettyRes.length - 2);
             }
-        };
+        });
 
         vm.isExpired = function(timeout) {
             return !isNumeric(timeout) || timeout <= 0;
@@ -79,12 +77,11 @@
         setInterval(function() {
             vm.gridApi.core.refresh();
         }, 1000);
-        RfqService.streamRfqForDealer( onWebSocketMessage );
 
         vm.quote = QuoteModalService.quoteModal;
 
         $scope.$on('$destroy', function() {
-            RfqService.closeRfqStream();
+            //RfqService.closeRfqStream();
         });
 
         function isNumeric(n) {

@@ -22,6 +22,10 @@
     QuotesService.$inject = ['$http', '$location', 'AuthenticationService'];
 
     function QuotesService($http, $location, AuthenticationService) {
+        var currentAccount = AuthenticationService.getCurrentAccount();
+
+        var quotesPromise;
+
         var submitQuote = function(rfqId, timestamp, premium, timeWindowInMinutes, client, dealer) {
             var element = {
                 rfqId: rfqId,
@@ -35,50 +39,25 @@
             return $http.post('/api/quotes', element);
         };
 
-        var websocket;
-        var streamQuotes = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
-
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentAccount;
-
-            websocket = new WebSocket(wsUri);
-
-            var onOpen = function() { console.log('== WebSocket Opened =='); };
-            var onClose = function() { console.log('== WebSocket Closed =='); };
-            var onError = function(evt) { console.log('WebSocket Error :', evt); };
-
-            websocket.onopen = onOpen;
-            websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
-            websocket.onerror = onError;
+        var getQuotesByClient = function() {
+            if (quotesPromise) {
+                return quotesPromise;
+            } else {
+                quotesPromise = $http.get("/api/quotes?account=" + currentAccount);
+                return quotesPromise;
+            }
         };
 
-        var parseQuote = function(strQuote) {
-            var quote = JSON.parse(strQuote);
-
-            return {
-                id: quote._id.$oid,
-                rfqId: quote.rfqId,
-                timestamp: quote.timestamp,
-                premium: quote.premium,
-                timeWindowInMinutes: quote.timeWindowInMinutes,
-                client: quote.client,
-                dealer: quote.dealer
-            };
-        };
-
-        var closeQuotesStream = function() {
-            websocket.onclose = function () {};
-            websocket.close();
-            console.log("== Quotes WebSocket Closed ==");
+        var setProperId = function(quote) {
+            quote.id = quote._id.$oid;
+            delete quote._id;
+            return quote;
         };
 
         return {
             submitQuote: submitQuote,
-            streamQuotes: streamQuotes,
-            parseQuote: parseQuote,
-            closeQuotesStream: closeQuotesStream
+            getQuotesByClient: getQuotesByClient,
+            setProperId: setProperId
         };
     }
 })();
