@@ -42,7 +42,9 @@
 
         var streamTrades = function(onMessage) {
             var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream?account=' + currentAccount;
+            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/trades/stream?account=' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 
