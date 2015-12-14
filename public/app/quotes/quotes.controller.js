@@ -79,7 +79,7 @@
         setInterval(function() {
             vm.gridApi.core.refresh();
         }, 1000);
-        RfqService.streamRfq( onWebSocketMessage );
+        RfqService.streamRfqForDealer( onWebSocketMessage );
 
         vm.quote = QuoteModalService.quoteModal;
 

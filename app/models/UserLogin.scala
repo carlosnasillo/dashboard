@@ -25,6 +25,7 @@ import scala.util.{Failure, Success}
 case class UserLogin (
                        email: String,
                        password: String,
+                       account: String,
                        token: String
                        )
 

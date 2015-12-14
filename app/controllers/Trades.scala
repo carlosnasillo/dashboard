@@ -72,11 +72,11 @@ class Trades extends Controller {
     )
   }
 
-  def streamTradeWithDealerAndClient(user: String) = WebSocket.using[JsObject] { request =>
+  def streamTradeWithDealerAndClient(account: String) = WebSocket.using[JsObject] { request =>
     val clientAndDealerFilter = Enumeratee.filter[JsObject](jsObj => {
       val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
       val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
-      extractedClient == user && extractedDealer == user
+      extractedClient == account || extractedDealer == account
     })
 
     val in = Iteratee.ignore[JsObject]

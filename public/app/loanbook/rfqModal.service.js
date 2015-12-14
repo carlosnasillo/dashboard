@@ -34,7 +34,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, $rootScope, SweetAlert) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, SweetAlert) {
             $scope.loanId = loanId;
             $scope.originator = originator;
 
@@ -76,7 +76,7 @@
 
             $scope.selectUtils = {
                 banks: {
-                    data: ["admin@admin.com", "Bank 2", "Bank 3"],
+                    data: ["Dealer1", "Dealer2", "Dealer3"],
                     clearSelect: function() {
                         $scope.form.counterparty = [];
                     },
@@ -103,7 +103,7 @@
                     $scope.form.counterparty,
                     $scope.form.quoteWindow,
                     $scope.form.cdsValue,
-                    $rootScope.globals.currentUser.username,
+                    AuthenticationService.getCurrentAccount(),
                     loanId,
                     originator
                 ).then( orderSuccess, orderError );

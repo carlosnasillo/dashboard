@@ -19,9 +19,9 @@
         .module('app')
         .factory('RfqService', RfqService);
 
-    RfqService.$inject = ['$http', '$location', '$rootScope'];
+    RfqService.$inject = ['$http', '$location', 'AuthenticationService'];
 
-    function RfqService($http, $location, $rootScope) {
+    function RfqService($http, $location, AuthenticationService) {
         var websocket;
 
         var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, loanId, originator) {
@@ -39,11 +39,22 @@
             return $http.post('/api/rfqs', element);
         };
 
-        var streamRfq = function(onMessage) {
-            var currentUser = $rootScope.globals.currentUser.username;
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream?client=' + currentUser;
+        var streamRfqForClient = function(onMessage) {
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/rfqs/client/stream/' + currentAccount;
 
-            websocket = new WebSocket(wsUri);
+            streamRfq(wsUri, onMessage);
+        };
+
+        var streamRfqForDealer = function(onMessage) {
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/rfqs/dealer/stream/' + currentAccount;
+
+            streamRfq(wsUri, onMessage);
+        };
+
+        function streamRfq(uri, onMessage) {
+            websocket = new WebSocket(uri);
 
             var onOpen = function() { console.log('== WebSocket Opened =='); };
             var onClose = function() { console.log('== WebSocket Closed =='); };
@@ -53,7 +64,7 @@
             websocket.onclose = onClose;
             websocket.onmessage = onMessage;
             websocket.onerror = onError;
-        };
+        }
 
         var closeRfqStream = function() {
             websocket.onclose = function () {};
@@ -80,7 +91,8 @@
 
         return {
             submitRfq: submitRfq,
-            streamRfq: streamRfq,
+            streamRfqForClient: streamRfqForClient,
+            streamRfqForDealer: streamRfqForDealer,
             parseRfq: parseRfq,
             closeRfqStream: closeRfqStream
         };

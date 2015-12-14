@@ -42,8 +42,8 @@ class Login extends Controller {
           case Some(user) =>
             if ( Hash.checkPassword(providedLogin.password, user.password) ) {
               val token = Hash.createToken
-              UserLogin.save(UserLogin(user.email, user.password, token))
-              Ok(Json.obj("token" -> token))
+              UserLogin.save(UserLogin(user.email, user.password, user.account, token))
+              Ok(Json.obj("token" -> token, "account" -> user.account))
             }
             else {
               BadRequest("The password is incorrect.")
