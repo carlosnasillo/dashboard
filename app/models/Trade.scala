@@ -10,17 +10,13 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
-import controllers.TradeForm
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.api.{Cursor, QueryOpts}
-import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 /**
@@ -29,7 +25,7 @@ import scala.util.{Failure, Success}
   */
 
 case class Trade(
-                  _id: BSONObjectID,
+                  id: String,
                  rfqId: String,
                  quoteId: String,
                  timestamp: DateTime,
@@ -46,26 +42,10 @@ object Trade {
   val collectionName = "trades"
 
   implicit val tradeFormat = Json.format[Trade]
-  implicit val tradeFormFormat = Json.format[TradeForm]
 
   val tradesTable: JSONCollection = DbUtil.db.collection(collectionName)
 
-  lazy val futureCollection: Future[JSONCollection] = {
-    tradesTable.stats().flatMap {
-      case stats if !stats.capped =>
-        // the collection is not capped, so we convert it
-        tradesTable.convertToCapped(1024 * 1024, None)
-      case _ => Future(tradesTable)
-    }.recover {
-      // the collection does not exist, so we create it
-      case _ =>
-        tradesTable.createCapped(1024 * 1024, None)
-    }.map { _ =>
-      tradesTable
-    }
-  }
-
-  def store(rfq: TradeForm) {
+  def store(rfq: Trade) {
     val future = tradesTable.insert(Json.toJson(rfq).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e
@@ -73,15 +53,16 @@ object Trade {
     }
   }
 
-  def getTradeStream = {
-    futureCollection.map { collection =>
-      val cursor: Cursor[JsObject] = collection
-        .find(Json.obj())
-        .options(QueryOpts().tailable.awaitData)
-        .cursor[JsObject]()
-
-      cursor.enumerate()
-    }
+  def getTradesByAccount(account: String) = {
+    tradesTable
+      .find(Json.obj(
+        "$or" -> Json.arr(
+          Json.obj("client" -> account),
+          Json.obj("dealer" -> account)
+        )
+      ))
+      .cursor[Trade]()
+      .collect[List](Int.MaxValue)
   }
 }
 

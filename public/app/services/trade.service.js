@@ -24,6 +24,7 @@
 
     function TradeService($http, $location, AuthenticationService) {
         var websocket;
+        var currentAccount = AuthenticationService.getCurrentAccount();
 
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
             var element = {
@@ -40,11 +41,13 @@
             return $http.post('/api/trades', element);
         };
 
+        var getTradesByAccount = function() {
+            return $http.get('/api/trades/' + currentAccount);
+        };
+
         var streamTrades = function(onMessage) {
             var currentAccount = AuthenticationService.getCurrentAccount();
-            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
-
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/trades/stream?account=' + currentAccount;
+            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 
@@ -62,7 +65,7 @@
             var trade = JSON.parse(strTrade);
 
             return {
-                id: trade._id.$oid,
+                id: trade.id,
                 rfqId: trade.rfqId,
                 quoteId: trade.quoteId,
                 timestamp: trade.timestamp,
@@ -82,20 +85,22 @@
             console.log("== Trades WebSocket Closed ==");
         };
 
-        function prettifyList(uglyList) {
+        var prettifyList = function(uglyList) {
             var prettyRes = "";
             uglyList.map(function (dealer) {
                 prettyRes += dealer + ', ';
             });
 
             return prettyRes.substr(0, prettyRes.length - 2);
-        }
+        };
 
         return {
             submitTrade: submitTrade,
             streamTrades: streamTrades,
+            getTradesByAccount: getTradesByAccount,
             parseTrade: parseTrade,
-            closeTradesStream: closeTradesStream
+            closeTradesStream: closeTradesStream,
+            prettifyList: prettifyList
         };
     }
 })();

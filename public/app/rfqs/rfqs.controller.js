@@ -63,10 +63,31 @@
 
         RfqService.streamRfqForClient( onWebSocketMessage );
 
+        RfqService.getRfqForClient().success(function(data) {
+            vm.rfqsTable.loading = false;
+            vm.rfqsTable.options.data = data.map(function(rfqObj) {
+                var rfq = Object.create(rfqObj);
+
+                rfq.prettyDealers = prettifyList(rfq.dealers);
+                rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
+                setUpTimeout(rfq);
+
+                function prettifyList(uglyList) {
+                    var prettyRes = "";
+                    uglyList.map(function (dealer) {
+                        prettyRes += dealer + ', ';
+                    });
+
+                    return prettyRes.substr(0, prettyRes.length - 2);
+                }
+
+                return rfq;
+            });
+        });
+
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
-
         /**
          * Bottom table
          */
@@ -74,19 +95,30 @@
         vm.quotesTable = { options: {} };
 
         var selectedRfq;
-        var quotesByRfqId = {};
+        var quotesByRfqId;
 
+        QuotesService.getQuotesByClient().success(function(data) {
+            $.map(data, function(v, k) {
+                data[k] = v.map(function(quoteObj) {
+                    var quote = Object.create(quoteObj);
+                    quote = setUpTimeout(quote);
+                    quote.loading = false;
+                    quote.accepted = false;
+                    return quote;
+                });
+            });
+            quotesByRfqId = data;
+        });
         var onNewQuote = function(evt) {
 
             var quoteObj = QuotesService.parseQuote(evt.data);
             quoteObj = setUpTimeout(quoteObj);
-            quoteObj.loading = false;
 
+            quoteObj.loading = false;
             quoteObj.accepted = false;
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
                 updateQuoteTable(selectedRfq);
-
             } else {
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
@@ -94,16 +126,26 @@
 
 
         QuotesService.streamQuotes(onNewQuote);
-
         vm.quotesTable.options = QuotesTableService.options();
+
         vm.rfqsTable.options.onRegisterApi = function(gridApi) {
             vm.rfqsTable.gridApi = gridApi;
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 selectedRfq = row.entity;
-                updateQuoteTable(row.entity);
+                updateQuoteTable(selectedRfq);
+                vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
             });
         };
+
+        function updateQuoteTable(currentRfq) {
+            if (quotesByRfqId[currentRfq.id]) {
+                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
+            }
+            else {
+                vm.quotesTable.options.data = [];
+            }
+        }
 
         setInterval(function() {
             vm.rfqsTable.gridApi.core.refresh();
@@ -135,7 +177,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.duration, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
+            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
             .then(orderSuccess(quote), orderError(quote));
         };
 
@@ -147,15 +189,6 @@
             RfqService.closeRfqStream();
             QuotesService.closeQuotesStream();
         });
-
-        function updateQuoteTable(currentRfq) {
-            if (quotesByRfqId[currentRfq.id]) {
-                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
-            }
-            else {
-                vm.quotesTable.options.data = [];
-            }
-        }
 
         function isExpired(timeout) {
             return !isNumeric(timeout) || timeout <= 0;

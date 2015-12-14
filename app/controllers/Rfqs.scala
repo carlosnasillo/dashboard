@@ -9,13 +9,15 @@
 
 package controllers
 
+import java.util.UUID
+
 import controllers.Security.HasToken
 import models.Rfq
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
+import play.api.libs.iteratee.{Enumeratee, Concurrent, Iteratee}
+import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,31 +28,40 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 
 // Todo : find a better way to not have the id for storage
-case class RfqForm(
-                timestamp: DateTime,
-                durationInMonths: Int,
-                client: String,
-                dealers: List[String],
-                creditEvents: List[String],
-                timeWindowInMinutes: Int,
-                isValid: Boolean,
-                cdsValue: BigDecimal,
-                loanId: String,
-                originator: String
-              )
-
 class Rfqs extends Controller {
 
-  implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
-    transform[JsObject]({ obj: JsObject => obj: JsValue }, {
-    case obj: JsObject => obj
-    case js => sys.error(s"unexpected JSON value: $js")
-  })
+  val (outRfq, channelRfq) = Concurrent.broadcast[JsValue]
 
+  def streamRfqToDealer(account: String) = WebSocket.using[JsValue] {
+    request =>
+      val in = Iteratee.ignore[JsValue]
+      val dealerFilter = Enumeratee.filter[JsValue](jsObj => {
+        val extractedDealers = (jsObj \ "dealers").getOrElse(JsArray()).as[List[String]]
+        extractedDealers contains account
+      })
+
+      outRfq through dealerFilter
+      (in, outRfq)
+  }
+
+  def streamRfqToClient(account: String) = WebSocket.using[JsValue] {
+    request =>
+      val in = Iteratee.ignore[JsValue]
+      val clientFilter = Enumeratee.filter[JsValue](jsObj => {
+        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[List[String]]
+        extractedClient.toString == account
+      })
+
+      outRfq through clientFilter
+      (in, outRfq)
+  }
 
   def submitRFQ = HasToken { implicit request =>
+    implicit val RFQFormFormat = Json.format[Rfq]
+
     val rfqForm = Form(
       mapping (
+        "id" -> ignored(UUID.randomUUID().toString),
         "timestamp" -> ignored(DateTime.now()),
         "durationInMonths" -> number,
         "client" -> nonEmptyText,
@@ -61,7 +72,7 @@ class Rfqs extends Controller {
         "cdsValue" -> bigDecimal,
         "loanId" -> nonEmptyText,
         "originator" -> nonEmptyText
-      )(RfqForm.apply)(RfqForm.unapply)
+      )(Rfq.apply)(Rfq.unapply)
     )
 
     rfqForm.bindFromRequest.fold(
@@ -70,32 +81,17 @@ class Rfqs extends Controller {
       },
       submittedRfq => {
         Rfq.store(submittedRfq)
+        channelRfq push Json.toJson(submittedRfq)
         Ok
       }
     )
   }
 
-  def streamRFQWhenDealersContainsClient(client: String) = WebSocket.using[JsObject] { request =>
-    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedDealers = (jsObj \ "dealers").getOrElse(JsArray()).as[List[String]]
-      extractedDealers contains client
-    })
-
-    val in = Iteratee.ignore[JsObject]
-    val out = Enumerator.flatten(Rfq.getRfqStream).through(clientFilter)
-
-    (in, out)
+  def getRFQWhenDealersContainsClient(client: String) = HasToken.async {
+    Rfq.getTodaysRfqWhenDealersContainsClient(client).map( rfqs => Ok( Json.toJson(rfqs) ) )
   }
 
-  def streamRFQByClient(client: String) = WebSocket.using[JsObject] { request =>
-    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
-      extractedClient == client
-    })
-
-    val in = Iteratee.ignore[JsObject]
-    val out = Enumerator.flatten(Rfq.getRfqStream).through(clientFilter)
-
-    (in, out)
+  def getRFQByClient(client: String) = HasToken.async {
+    Rfq.getTodaysRfqByClient(client).map( rfqs => Ok( Json.toJson(rfqs) ) )
   }
 }

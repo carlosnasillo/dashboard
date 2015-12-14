@@ -9,13 +9,15 @@
 
 package controllers
 
+import java.util.UUID
+
 import controllers.Security.HasToken
 import models.Quote
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
-import play.api.libs.json.{JsValue, JsArray, JsObject}
-import play.api.mvc.{Controller, _}
+import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
+import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.mvc._
 import utils.Formatters.mapStringListQuote
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,34 +27,32 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * Created on 11/12/2015
   */
 
-case class QuoteForm(
-                  rfqId: String,
-                  timestamp: String, // todo : find a better way to manage the dates
-                  premium: BigDecimal,
-                  timeWindowInMinutes: Int,
-                  client: String,
-                  dealer: String
-                )
-
 class Quotes extends Controller {
+  val (outQuotes, channelQuotes) = Concurrent.broadcast[JsValue]
 
+  def streamQuotes(account: String) = WebSocket.using[JsValue] {
+    request =>
+      val in = Iteratee.ignore[JsValue]
+      val accountFilter = Enumeratee.filter[JsValue](jsObj => {
+        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
+        extractedClient == account
+      })
+
+      outQuotes through accountFilter
+      (in, outQuotes)
+  }
 
   val quoteForm = Form(
     mapping (
+      "id" -> ignored(UUID.randomUUID().toString),
       "rfqId" -> nonEmptyText,
       "timestamp" -> nonEmptyText,
       "premium" -> bigDecimal,
       "timeWindowInMinutes" -> number,
       "client" -> nonEmptyText,
       "dealer" -> nonEmptyText
-    )(QuoteForm.apply)(QuoteForm.unapply)
+    )(Quote.apply)(Quote.unapply)
   )
-
-  implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
-    transform[JsObject]({ obj: JsObject => obj: JsValue }, {
-    case obj: JsObject => obj
-    case js => sys.error(s"unexpected JSON value: $js")
-  })
 
   def submitQuote = HasToken { implicit request =>
     quoteForm.bindFromRequest.fold(
@@ -67,21 +67,14 @@ class Quotes extends Controller {
 //        }
 //        else {
           Quote.store(submittedQuote)
-          Ok
+        channelQuotes push Json.toJson(submittedQuote)
+        Ok
 //        }
       }
     )
   }
 
-  def streamQuoteWithClientByRfqId(client: String) = WebSocket.using[JsObject] { request =>
-    val clientFilter = Enumeratee.filter[JsObject](jsObj => {
-      val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
-      extractedClient == client
-    })
-
-    val in = Iteratee.ignore[JsObject]
-    val out = Enumerator.flatten(Quote.getQuoteStream).through(clientFilter)
-
-    (in, out)
+  def getQuoteWithClientByRfqId(account: String) = HasToken.async {
+    Quote.getQuotesByClient(account).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
   }
 }

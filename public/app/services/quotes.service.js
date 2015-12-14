@@ -22,6 +22,12 @@
     QuotesService.$inject = ['$http', '$location', 'AuthenticationService'];
 
     function QuotesService($http, $location, AuthenticationService) {
+        var currentAccount = AuthenticationService.getCurrentAccount();
+
+        var websocket;
+
+        var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+
         var submitQuote = function(rfqId, timestamp, premium, timeWindowInMinutes, client, dealer) {
             var element = {
                 rfqId: rfqId,
@@ -35,12 +41,12 @@
             return $http.post('/api/quotes', element);
         };
 
-        var websocket;
-        var streamQuotes = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+        var getQuotesByClient = function() {
+            return $http.get("/api/quotes/" + currentAccount);
+        };
 
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream?client=' + currentAccount;
+        var streamQuotes = function(onMessage) {
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 
@@ -58,7 +64,7 @@
             var quote = JSON.parse(strQuote);
 
             return {
-                id: quote._id.$oid,
+                id: quote.id,
                 rfqId: quote.rfqId,
                 timestamp: quote.timestamp,
                 premium: quote.premium,
@@ -76,8 +82,9 @@
 
         return {
             submitQuote: submitQuote,
-            streamQuotes: streamQuotes,
+            getQuotesByClient: getQuotesByClient,
             parseQuote: parseQuote,
+            streamQuotes: streamQuotes,
             closeQuotesStream: closeQuotesStream
         };
     }

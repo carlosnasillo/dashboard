@@ -25,15 +25,18 @@ POST    /api/placeOrder                                                         
 GET     /api/ownedNotes/:investorId                                                 controllers.Loans.ownedNotes(investorId)
 
 POST    /api/rfqs                                                                   controllers.Rfqs.submitRFQ
-GET     /api/rfqs/dealer/stream/:client                                             controllers.Rfqs.streamRFQWhenDealersContainsClient(client)
-GET     /api/rfqs/client/stream/:client                                             controllers.Rfqs.streamRFQByClient(client)
+GET     /api/rfqs/dealer/:client                                                    controllers.Rfqs.getRFQWhenDealersContainsClient(client)
+GET     /api/rfqs/client/:client                                                    controllers.Rfqs.getRFQByClient(client)
+GET     /api/rfqs/stream/dealer/:account                                            controllers.Rfqs.streamRfqToDealer(account)
+GET     /api/rfqs/stream/client/:account                                            controllers.Rfqs.streamRfqToClient(account)
 
 POST    /api/quotes                                                                 controllers.Quotes.submitQuote
-GET     /api/quotes/stream                                                          controllers.Quotes.streamQuoteWithClientByRfqId(client)
+GET     /api/quotes/:account                                                        controllers.Quotes.getQuoteWithClientByRfqId(account)
+GET     /api/quotes/stream/:account                                                 controllers.Quotes.streamQuotes(account)
 
 POST    /api/trades                                                                 controllers.Trades.submitTrade
-GET     /api/trades/stream                                                          controllers.Trades.streamTradeWithDealerAndClient(account)
-
+GET     /api/trades/:account                                                        controllers.Trades.getTradesByAccount(account)
+GET     /api/trades/stream/:account                                                 controllers.Trades.streamTrades(account)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)

@@ -37,6 +37,16 @@
 
         vm.tradesTable.loading = true;
 
+        TradeService.getTradesByAccount().success(function(data) {
+            vm.tradesTable.loading = false;
+            vm.tradesTable.options.data = data.map(function(tradeObj) {
+                var trade = Object.create(tradeObj);
+                trade.creditEvent = TradeService.prettifyList(trade.creditEvents);
+
+                return trade;
+            });
+        });
+
         var onWebSocketMessage = function(evt) {
             vm.tradesTable.loading = false;
 
@@ -51,10 +61,6 @@
         };
 
         TradeService.streamTrades( onWebSocketMessage );
-
-        setInterval(function() {
-            vm.tradesTable.gridApi.core.refresh();
-        }, 1000);
 
         $scope.$on('$destroy', function() {
             TradeService.closeTradesStream();

@@ -42,14 +42,15 @@
                         field: 'client'
                     },
                     {
-                        field: 'duration',
-                        displayName: 'Duration in Months'
+                        field: 'durationInMonths'
                     },
                     {
-                        field: 'dealers'
+                        field: 'prettyDealers',
+                        displayName: 'Dealers'
                     },
                     {
-                        field: 'prettyCreditEvents'
+                        field: 'prettyCreditEvents',
+                        displayName: 'Credit Events'
                     },
                     {
                         field: 'timeout',
