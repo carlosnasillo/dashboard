@@ -25,6 +25,7 @@
     function TradeService($http, $location, AuthenticationService) {
         var websocket;
         var currentAccount = AuthenticationService.getCurrentAccount();
+        var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
             var element = {
@@ -47,7 +48,7 @@
 
         var streamTrades = function(onMessage) {
             var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = 'ws://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
+            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
 
             websocket = new WebSocket(wsUri);
 
