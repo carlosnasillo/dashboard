@@ -41,28 +41,29 @@ case class RfqForm(
 
 class Rfqs extends Controller {
 
-  val rfqForm = Form(
-    mapping (
-      "timestamp" -> ignored(DateTime.now()),
-      "durationInMonths" -> number,
-      "client" -> nonEmptyText,
-      "dealers" -> list(nonEmptyText),
-      "creditEvents" -> list(nonEmptyText),
-      "timeWindowInMinutes" -> number,
-      "isValid" -> boolean,
-      "cdsValue" -> bigDecimal,
-      "loanId" -> nonEmptyText,
-      "originator" -> nonEmptyText
-    )(RfqForm.apply)(RfqForm.unapply)
-  )
-
   implicit val jsObjFrame = WebSocket.FrameFormatter.jsonFrame.
     transform[JsObject]({ obj: JsObject => obj: JsValue }, {
     case obj: JsObject => obj
     case js => sys.error(s"unexpected JSON value: $js")
   })
 
+
   def submitRFQ = HasToken { implicit request =>
+    val rfqForm = Form(
+      mapping (
+        "timestamp" -> ignored(DateTime.now()),
+        "durationInMonths" -> number,
+        "client" -> nonEmptyText,
+        "dealers" -> list(nonEmptyText),
+        "creditEvents" -> list(nonEmptyText),
+        "timeWindowInMinutes" -> number,
+        "isValid" -> boolean,
+        "cdsValue" -> bigDecimal,
+        "loanId" -> nonEmptyText,
+        "originator" -> nonEmptyText
+      )(RfqForm.apply)(RfqForm.unapply)
+    )
+
     rfqForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
