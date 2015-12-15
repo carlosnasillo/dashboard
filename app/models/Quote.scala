@@ -10,6 +10,7 @@
 package models
 
 import com.lattice.lib.utils.DbUtil
+import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.json._
@@ -26,7 +27,7 @@ import scala.util.{Failure, Success}
 case class Quote(
                   id: String,
                   rfqId: String,
-                  timestamp: String, // todo : find a better way to manage the dates
+                  timestamp: DateTime,
                   premium: BigDecimal,
                   timeWindowInMinutes: Int,
                   client: String,

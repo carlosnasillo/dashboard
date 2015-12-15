@@ -25,10 +25,9 @@
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
-        var submitQuote = function(rfqId, timestamp, premium, timeWindowInMinutes, client, dealer) {
+        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer) {
             var element = {
                 rfqId: rfqId,
-                timestamp: timestamp,
                 premium: premium,
                 timeWindowInMinutes: timeWindowInMinutes,
                 client: client,
