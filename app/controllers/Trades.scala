@@ -37,11 +37,10 @@ class Trades extends Controller {
       val clientAndDealerFilter = Enumeratee.filter[JsValue](jsObj => {
         val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
         val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
-        extractedClient == account && extractedDealer == account
+        extractedClient == account || extractedDealer == account
       })
 
-      outTrades through clientAndDealerFilter
-      (in, outTrades)
+      (in, outTrades through clientAndDealerFilter)
   }
 
   def submitTrade = HasToken { implicit request =>
