@@ -24,6 +24,8 @@
     function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert) {
         var vm = this;
 
+        var quotesByRfqId = [];
+
         /**
          * Top table
          */
@@ -38,6 +40,7 @@
             vm.rfqsTable.loading = false;
 
             var rfqObject = RfqService.parseRfq(evt.data);
+            rfqObject.expired = false;
 
             setUpTimeout(rfqObject);
 
@@ -50,6 +53,8 @@
             else {
                 vm.rfqsTable.options.data = [rfqObject];
             }
+
+            quotesByRfqId[rfqObject.id] = [];
 
             function prettifyList(uglyList) {
                 var prettyRes = "";
@@ -70,7 +75,10 @@
 
                 rfq.prettyDealers = prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
+                rfq.expired = false;
                 setUpTimeout(rfq);
+
+                quotesByRfqId[rfq.id] = [];
 
                 function prettifyList(uglyList) {
                     var prettyRes = "";
@@ -95,13 +103,13 @@
         vm.quotesTable = { options: {} };
 
         var selectedRfq;
-        var quotesByRfqId;
 
         QuotesService.getQuotesByClient().success(function(data) {
             $.map(data, function(v, k) {
                 data[k] = v.map(function(quoteObj) {
                     var quote = Object.create(quoteObj);
                     quote = setUpTimeout(quote);
+                    quote.rfqExpired = false;
                     quote.loading = false;
                     quote.accepted = false;
                     return quote;
@@ -110,10 +118,10 @@
             quotesByRfqId = data;
         });
         var onNewQuote = function(evt) {
-
             var quoteObj = QuotesService.parseQuote(evt.data);
             quoteObj = setUpTimeout(quoteObj);
 
+            quoteObj.rfqExpired = false;
             quoteObj.loading = false;
             quoteObj.accepted = false;
             if (quotesByRfqId[quoteObj.rfqId]) {
@@ -133,14 +141,25 @@
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 selectedRfq = row.entity;
-                updateQuoteTable(selectedRfq);
-                vm.quotesTable.options.data = quotesByRfqId[row.entity.id];
+                updateQuoteTable(row.entity);
             });
         };
 
+        function disableButtons(quotes) {
+            return quotes.map(function(quote) {
+                quote.rfqExpired = true;
+                return quote;
+            });
+        }
+
         function updateQuoteTable(currentRfq) {
-            if (quotesByRfqId[currentRfq.id]) {
-                vm.quotesTable.options.data = quotesByRfqId[currentRfq.id];
+            var relatedQuotes = quotesByRfqId[currentRfq.id];
+
+            if (relatedQuotes) {
+                if (currentRfq.expired) {
+                    relatedQuotes = disableButtons(relatedQuotes);
+                }
+                vm.quotesTable.options.data = relatedQuotes;
             }
             else {
                 vm.quotesTable.options.data = [];
@@ -182,7 +201,7 @@
         };
 
         vm.disableButton = function(quote) {
-            return isExpired(quote.timeout) || quote.accepted;
+            return isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
         };
 
         $scope.$on('$destroy', function() {
@@ -209,6 +228,7 @@
                     }
                     else {
                         object.timeout = "Expired";
+                        object.expired = true;
                         clearInterval(counter);
                     }
                 }
