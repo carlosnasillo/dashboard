@@ -47,9 +47,9 @@
         </div>
         <div class="modal-footer row">
             <div class="col-md-6">
-                <div class="text-danger" data-ng-show="conditions.durationNotNumeric()">Duration should be a number.</div>
-                <div class="text-danger" data-ng-show="conditions.quoteWindowNotNumeric()">Quote window should be a number.</div>
-                <div class="text-danger" data-ng-show="conditions.cdsValueNotNumeric()">CDS Value should be a number.</div>
+                <div class="text-danger" data-ng-show="conditions.durationNotNumericNatural()">Duration should be a number greater than 0.</div>
+                <div class="text-danger" data-ng-show="conditions.quoteWindowNotNumericNatural()">Quote window should be a number greater than 0.</div>
+                <div class="text-danger" data-ng-show="conditions.cdsValueNotNumericNatural()">CDS Value should be a number greater than 0.</div>
             </div>
             <div class="col-md-6">
                 <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>

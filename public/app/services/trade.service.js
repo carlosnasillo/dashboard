@@ -24,7 +24,6 @@
 
     function TradeService($http, $location, AuthenticationService) {
         var websocket;
-        var currentAccount = AuthenticationService.getCurrentAccount();
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
@@ -43,6 +42,7 @@
         };
 
         var getTradesByAccount = function() {
+            var currentAccount = AuthenticationService.getCurrentAccount();
             return $http.get('/api/trades/' + currentAccount);
         };
 

@@ -61,6 +61,7 @@ object Trade {
           Json.obj("dealer" -> account)
         )
       ))
+      .sort(Json.obj("timestamp" -> 1))
       .cursor[Trade]()
       .collect[List](Int.MaxValue)
   }

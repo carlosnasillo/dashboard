@@ -41,42 +41,57 @@
             $scope.loading = false;
 
             $scope.form = {
-                duration: 0,
+                duration: null,
                 creditEvent: [],
                 counterparty: [],
-                quoteWindow: 0,
-                cdsValue: 0
+                quoteWindow: null,
+                cdsValue: null
             };
 
             $scope.conditions = {
-                durationNotNumeric: function() {
-                    return !isNumeric($scope.form.duration);
+                durationNotNumericNatural: function() {
+                    var duration = $scope.form.duration;
+                    return ( !isNumeric(duration) || duration <= 0 ) && duration !== null;
                 },
-                quoteWindowNotNumeric: function() {
-                    return !isNumeric($scope.form.quoteWindow);
+                quoteWindowNotNumericNatural: function() {
+                    var quoteWindow = $scope.form.quoteWindow;
+                    return ( !isNumeric(quoteWindow) || quoteWindow <= 0 ) && quoteWindow !== null;
                 },
-                cdsValueNotNumeric: function() {
-                    return !isNumeric($scope.form.cdsValue);
+                cdsValueNotNumericNatural: function() {
+                    var cdsValue = $scope.form.cdsValue;
+                    return ( !isNumeric(cdsValue) || cdsValue <= 0 ) && cdsValue !== null;
                 },
-                creditEventNotEmpty: function() {
+                creditEventIsEmpty: function() {
                     return $scope.form.creditEvent.length === 0;
                 },
-                counterpartyNotEmpty: function() {
+                counterpartyIsEmpty: function() {
                     return $scope.form.counterparty.length === 0;
+                },
+                durationIsNull: function() {
+                    return $scope.form.duration === null;
+                },
+                quoteWindowIsNull: function() {
+                    return $scope.form.quoteWindow === null;
+                },
+                cdsValueIsNull: function() {
+                    return $scope.form.cdsValue === null;
                 }
             };
 
             $scope.submitButtonDisabled = function() {
-                return $scope.conditions.durationNotNumeric() ||
-                    $scope.conditions.quoteWindowNotNumeric() ||
-                    $scope.conditions.cdsValueNotNumeric() ||
-                    $scope.conditions.creditEventNotEmpty() ||
-                    $scope.conditions.counterpartyNotEmpty();
+                return $scope.conditions.durationNotNumericNatural() ||
+                    $scope.conditions.durationIsNull() ||
+                    $scope.conditions.quoteWindowNotNumericNatural() ||
+                    $scope.conditions.quoteWindowIsNull() ||
+                    $scope.conditions.cdsValueNotNumericNatural() ||
+                    $scope.conditions.cdsValueIsNull() ||
+                    $scope.conditions.creditEventIsEmpty() ||
+                    $scope.conditions.counterpartyIsEmpty();
             };
 
             $scope.selectUtils = {
                 banks: {
-                    data: ["Dealer1", "Dealer2", "Dealer3"],
+                    data: ["Dealer1", "Dealer2", "Dealer3"].filter(function(dealer) { return dealer != AuthenticationService.getCurrentAccount(); }),
                     clearSelect: function() {
                         $scope.form.counterparty = [];
                     },
@@ -114,7 +129,7 @@
             };
 
             function isNumeric(n) {
-                return !isNaN(parseFloat(n)) && isFinite(n);
+                return (!isNaN(parseFloat(n)) && isFinite(n)) || n === null;
             }
 
             function closeModal() {

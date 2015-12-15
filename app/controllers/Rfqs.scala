@@ -87,8 +87,8 @@ class Rfqs extends Controller {
     )
   }
 
-  def getRFQWhenDealersContainsClient(client: String) = HasToken.async {
-    Rfq.getTodaysRfqWhenDealersContainsClient(client).map( rfqs => Ok( Json.toJson(rfqs) ) )
+  def getRFQWhenDealersContainsAccount(account: String) = HasToken.async {
+    Rfq.getTodaysRfqWhenDealersContainsAccount(account).map( rfqs => Ok( Json.toJson(rfqs) ) )
   }
 
   def getRFQByClient(client: String) = HasToken.async {

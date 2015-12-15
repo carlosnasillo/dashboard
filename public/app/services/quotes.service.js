@@ -22,10 +22,7 @@
     QuotesService.$inject = ['$http', '$location', 'AuthenticationService'];
 
     function QuotesService($http, $location, AuthenticationService) {
-        var currentAccount = AuthenticationService.getCurrentAccount();
-
         var websocket;
-
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
         var submitQuote = function(rfqId, timestamp, premium, timeWindowInMinutes, client, dealer) {
@@ -42,10 +39,12 @@
         };
 
         var getQuotesByClient = function() {
+            var currentAccount = AuthenticationService.getCurrentAccount();
             return $http.get("/api/quotes/" + currentAccount);
         };
 
         var streamQuotes = function(onMessage) {
+            var currentAccount = AuthenticationService.getCurrentAccount();
             var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/' + currentAccount;
 
             websocket = new WebSocket(wsUri);

@@ -26,8 +26,6 @@
 
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
-        var currentAccount = AuthenticationService.getCurrentAccount();
-
         var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, loanId, originator) {
             var element = {
                 durationInMonths: duration,
@@ -71,11 +69,13 @@
         }
 
         var getRfqForClient = function() {
-             return $http.get('/api/rfqs/client/' + currentAccount);
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            return $http.get('/api/rfqs/client/' + currentAccount);
         };
 
         var getRfqForDealer = function() {
-             return $http.get('/api/rfqs/dealer/' + currentAccount);
+            var currentAccount = AuthenticationService.getCurrentAccount();
+            return $http.get('/api/rfqs/dealer/' + currentAccount);
         };
 
         var closeRfqStream = function() {

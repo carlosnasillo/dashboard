@@ -29,43 +29,57 @@
             enableFiltering: true,
             columnDefs: [
                 {
-                    field: 'originator'
+                    field: 'originator',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'status'
+                    field: 'status',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'grade'
+                    field: 'grade',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'purpose'
+                    field: 'purpose',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'sector'
+                    field: 'sector',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'type'
+                    field: 'type',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'region'
+                    field: 'region',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'amount'
+                    field: 'amount',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'interest'
+                    field: 'interest',
+                    headerCellClass: 'text-center',
+                    cellFilter: 'percentage:2'
                 },
                 {
-                    field: 'term'
+                    field: 'term',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'loanDate'
+                    field: 'loanDate',
+                    headerCellClass: 'text-center'
                 },
                 {
-                    field: 'security'
+                    field: 'security',
+                    headerCellClass: 'text-center'
                 },
                 {
                     field: 'id',
+                    headerCellClass: 'text-center',
                     displayName: 'RFQ',
                     cellTemplate: "<div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.originator)'>RFQ</span></div>",
                     enableFiltering: false

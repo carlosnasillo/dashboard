@@ -17,15 +17,14 @@
 
     angular
         .module('app')
-        .controller('QuotesController', QuotesController);
+        .controller('IncomingRfqsController', IncomingRfqsController);
 
-    QuotesController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope'];
 
-    function QuotesController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope) {
         var vm = this;
 
         var now = moment();
-        // todo : rename quotesTAble -> rfqsTable
         vm.rfqTable = {};
         vm.rfqTable.options = RfqsTableForDealerService.options(function( gridApi ) {
             vm.gridApi = gridApi;
@@ -33,7 +32,6 @@
 
         var onWebSocketMessage = function(evt) {
             var rfqObject = RfqService.parseRfq(evt.data);
-            console.log(rfqObject);
             setUpTimeout(rfqObject);
             rfqObject.prettyDealers = prettifyList(rfqObject.dealers);
             rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);

@@ -51,6 +51,7 @@ object Quote {
   def getQuotesByClient(client: String) =
     quotesTable
       .find(Json.obj("client" -> client))
+      .sort(Json.obj("timestamp" -> 1))
       .cursor[Quote]()
       .collect[List](Int.MaxValue)
 }

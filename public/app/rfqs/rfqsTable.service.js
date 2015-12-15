@@ -36,29 +36,37 @@
                     {
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
+                        visible: false,
+                        headerCellClass: 'text-center'
+                    },
+                    {
+                        field: 'client',
+                        headerCellClass: 'text-center',
                         visible: false
                     },
                     {
-                        field: 'client'
-                    },
-                    {
-                        field: 'durationInMonths'
+                        field: 'durationInMonths',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'prettyDealers',
-                        displayName: 'Dealers'
+                        displayName: 'Dealers',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'prettyCreditEvents',
-                        displayName: 'Credit Events'
+                        displayName: 'Credit Events',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
-                        type: 'text'
+                        type: 'text',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'cdsValue'
+                        field: 'cdsValue',
+                        headerCellClass: 'text-center'
                     }
                 ]
             };
