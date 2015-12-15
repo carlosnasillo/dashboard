@@ -62,7 +62,8 @@
                 },
                 {
                     field: 'interest',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    cellFilter: 'percentage:2'
                 },
                 {
                     field: 'term',
