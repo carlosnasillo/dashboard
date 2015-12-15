@@ -54,8 +54,8 @@
                 controllerAs: 'vm'
             })
             .when('/quotes', {
-                templateUrl: "assets/app/quotes/quotes.html",
-                controller: "QuotesController",
+                templateUrl: "assets/app/incomingRfqs/incomingRfqs.html",
+                controller: "IncomingRfqsController",
                 controllerAs: 'vm'
             })
             .when('/trades', {
