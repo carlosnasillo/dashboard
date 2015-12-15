@@ -41,7 +41,7 @@
             vm.tradesTable.loading = false;
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = Object.create(tradeObj);
-                trade.creditEvent = TradeService.prettifyList(trade.creditEvents);
+                trade.creditEvents = TradeService.prettifyList(tradeObj.creditEvents);
 
                 return trade;
             });
