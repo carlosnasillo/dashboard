@@ -33,7 +33,6 @@
 
         var onWebSocketMessage = function(evt) {
             var rfqObject = RfqService.parseRfq(evt.data);
-            console.log(rfqObject);
             setUpTimeout(rfqObject);
             rfqObject.prettyDealers = prettifyList(rfqObject.dealers);
             rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
