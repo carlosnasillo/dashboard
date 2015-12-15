@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'SweetAlert'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'SweetAlert', '$timeout'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert, $timeout) {
         var vm = this;
 
         var quotesByRfqId = [];
@@ -90,6 +90,12 @@
                 }
 
                 return rfq;
+            });
+
+            $timeout(function() {
+                if (vm.rfqsTable.gridApi.selection.selectRow) {
+                    vm.rfqsTable.gridApi.selection.selectRow(vm.rfqsTable.options.data[vm.rfqsTable.options.data.length - 1]);
+                }
             });
         });
 

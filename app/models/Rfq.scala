@@ -60,6 +60,7 @@ object Rfq {
         "timestamp" -> Json.obj("$gte" -> today),
         "dealers" -> account
       ))
+      .sort(Json.obj("timestamp" -> 1))
       .cursor[Rfq]()
       .collect[List](Int.MaxValue)
   }
@@ -71,6 +72,7 @@ object Rfq {
         "timestamp" -> Json.obj("$gte" -> today),
         "client" -> account
       ))
+      .sort(Json.obj("timestamp" -> 1))
       .cursor[Rfq]()
       .collect[List](Int.MaxValue)
   }
