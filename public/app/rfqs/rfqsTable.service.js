@@ -41,7 +41,8 @@
                     },
                     {
                         field: 'client',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        visible: false
                     },
                     {
                         field: 'durationInMonths',
