@@ -44,12 +44,11 @@ class LendingClubAnalytics(lc: LendingClubConnection, db: LendingClubDb) extends
     Logger.info("loading loans from LendingClub")
     val availableLoans = lc.availableLoans
     Logger.info(s"Loaded loans from LendingClub (${availableLoans.asOfDate}): \n ${availableLoans.loans mkString "\n"}")
-    reconcileAvailableLoans(availableLoans.loans)
+    reconcileAvailableLoans(availableLoans)
   }
 
-  private[impl] def reconcileAvailableLoans(availableLoans: Seq[LendingClubLoan]) {
+  private[impl] def reconcileAvailableLoans(availableLoans: LoanListing) {
     Logger.info("reconciling available loans")
-    val availableLoans = lc.availableLoans
     Logger.info(s"Persisting loans from LendingClub (${availableLoans.asOfDate}): \n ${availableLoans.loans mkString "\n"}")
     val future = db.persistLoans(availableLoans)
 
