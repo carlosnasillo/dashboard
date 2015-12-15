@@ -90,12 +90,16 @@ object LendingClubConnectionImpl extends LendingClubConnection {
    * Get the currently available loans listing
    */
   override def availableLoans: LoanListing = {
+
     Logger.info("requesting available loans from LendingClub")
     val loansString = Http(LendingClubConfig.LoanListingUrl)
       .headers((AuthorisationHeader, Authorisation),
         (ApiKeyHeader, ApiKey)).asString.body
-    val loansJson = Json.parse(loansString)
-    val loans = Json.fromJson[LoanListing](loansJson).asOpt.getOrElse(LoanListing(ZonedDateTime.now, Seq()))
+
+    val loans = if (loansString == "") LoanListing(ZonedDateTime.now, Seq()) else {
+      val loansJson = Json.parse(loansString)
+      Json.fromJson[LoanListing](loansJson).asOpt.getOrElse(LoanListing(ZonedDateTime.now, Seq()))
+    }
 
     Logger.info(s"found loans [${loans.asOfDate}:\n${loans.loans mkString "\n"}")
     loans
