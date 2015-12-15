@@ -25,8 +25,8 @@ POST    /api/placeOrder                                                         
 GET     /api/ownedNotes/:investorId                                                 controllers.Loans.ownedNotes(investorId)
 
 POST    /api/rfqs                                                                   controllers.Rfqs.submitRFQ
-GET     /api/rfqs/dealer/:client                                                    controllers.Rfqs.getRFQWhenDealersContainsClient(client)
-GET     /api/rfqs/client/:client                                                    controllers.Rfqs.getRFQByClient(client)
+GET     /api/rfqs/dealer/:account                                                   controllers.Rfqs.getRFQWhenDealersContainsAccount(account)
+GET     /api/rfqs/client/:account                                                   controllers.Rfqs.getRFQByClient(account)
 GET     /api/rfqs/stream/dealer/:account                                            controllers.Rfqs.streamRfqToDealer(account)
 GET     /api/rfqs/stream/client/:account                                            controllers.Rfqs.streamRfqToClient(account)
 

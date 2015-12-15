@@ -53,23 +53,23 @@ object Rfq {
     }
   }
 
-  def getTodaysRfqWhenDealersContainsClient(client: String) = {
+  def getTodaysRfqWhenDealersContainsAccount(account: String) = {
     val today = DateTime.now().withHourOfDay(0).getMillis
     RFQsTable
       .find(Json.obj(
         "timestamp" -> Json.obj("$gte" -> today),
-        "dealers" -> client
+        "dealers" -> account
       ))
       .cursor[Rfq]()
       .collect[List](Int.MaxValue)
   }
 
-  def getTodaysRfqByClient(client: String) = {
+  def getTodaysRfqByClient(account: String) = {
     val today = DateTime.now().withHourOfDay(0).getMillis
     RFQsTable
       .find(Json.obj(
         "timestamp" -> Json.obj("$gte" -> today),
-        "client" -> client
+        "client" -> account
       ))
       .cursor[Rfq]()
       .collect[List](Int.MaxValue)
