@@ -39,8 +39,7 @@ class Quotes extends Controller {
         extractedClient == account
       })
 
-      outQuotes through accountFilter
-      (in, outQuotes)
+      (in, outQuotes through accountFilter)
   }
 
 

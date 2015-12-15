@@ -40,8 +40,7 @@ class Rfqs extends Controller {
         extractedDealers contains account
       })
 
-      outRfq through dealerFilter
-      (in, outRfq)
+      (in, outRfq through dealerFilter)
   }
 
   def streamRfqToClient(account: String) = WebSocket.using[JsValue] {
@@ -52,8 +51,7 @@ class Rfqs extends Controller {
         extractedClient.toString == account
       })
 
-      outRfq through clientFilter
-      (in, outRfq)
+      (in, outRfq through clientFilter)
   }
 
   def submitRFQ = HasToken { implicit request =>
