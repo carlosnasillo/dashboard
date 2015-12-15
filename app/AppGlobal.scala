@@ -11,7 +11,7 @@ class AppGlobal extends GlobalSettings {
 
   override def onStart(app: play.api.Application) {
     Logger.info("Application has started")
-    start
+//    start
   }
   
   def start() {
