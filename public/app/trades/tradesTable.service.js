@@ -30,7 +30,16 @@
                 enableFiltering: true,
                 columnDefs: [
                     {
-                       field: 'id',
+                        field: 'id',
+                        headerCellClass: 'text-center',
+                        visible: false
+                    },
+                    {
+                        field: 'client',
+                        headerCellClass: 'text-center'
+                    },
+                    {
+                        field: 'dealer',
                         headerCellClass: 'text-center'
                     },
                     {
