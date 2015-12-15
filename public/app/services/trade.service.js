@@ -61,8 +61,7 @@
                 websocket.onclose = onClose;
                 websocket.onmessage = function(evt) {
                     $.map(wsCallbackPool, function(callback) {
-                        var tradeObj = parseTrade(evt.data);
-                        callback(tradeObj);
+                        callback(evt);
                     });
                 };
                 websocket.onerror = onError;
@@ -78,6 +77,24 @@
                 websocket.close();
                 console.log("== Trades WebSocket Closed ==");
             }
+        };
+
+        var parseTrade = function(strTrade) {
+            var trade = JSON.parse(strTrade);
+
+            return {
+                id: trade.id,
+                rfqId: trade.rfqId,
+                quoteId: trade.quoteId,
+                timestamp: trade.timestamp,
+                durationInMonths: trade.durationInMonths,
+                client: trade.client,
+                dealer: trade.dealer,
+                creditEvents: prettifyList(trade.creditEvents),
+                cdsValue: trade.cdsValue,
+                originator: trade.originator,
+                premium: trade.premium
+            };
         };
 
         var prettifyList = function(uglyList) {
@@ -96,23 +113,5 @@
             webSocket: webSocket,
             prettifyList: prettifyList
         };
-
-        function parseTrade(strTrade) {
-            var trade = JSON.parse(strTrade);
-
-            return {
-                id: trade.id,
-                rfqId: trade.rfqId,
-                quoteId: trade.quoteId,
-                timestamp: trade.timestamp,
-                durationInMonths: trade.durationInMonths,
-                client: trade.client,
-                dealer: trade.dealer,
-                creditEvents: prettifyList(trade.creditEvents),
-                cdsValue: trade.cdsValue,
-                originator: trade.originator,
-                premium: trade.premium
-            };
-        }
     }
 })();

@@ -107,6 +107,33 @@
             }
         };
 
+        var clientsWs = {
+            openStream: function(currentAccount) {
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/client/' + currentAccount;
+
+                clientsWebSocket = new WebSocket(wsUri);
+                var onOpen = function() { console.log('== RFQs for clients WebSocket Opened =='); };
+                var onClose = function() { console.log('== RFQs for clients WebSocket Closed =='); };
+                var onError = function(evt) { console.log('RFQs for clients WebSocket Error :', evt); };
+
+                clientsWebSocket.onopen = onOpen;
+                clientsWebSocket.onclose = onClose;
+                clientsWebSocket.onmessage = getMyCallback(wsClientsCallbacksPool);
+                clientsWebSocket.onerror = onError;
+            },
+            addCallback: function(name, callback) {
+                wsClientsCallbacksPool[name] = callback;
+            },
+            removeCallback: function(name) {
+                delete wsClientsCallbacksPool[name];
+            },
+            closeStream: function() {
+                clientsWebSocket.onclose = function () {};
+                clientsWebSocket.close();
+                console.log("== RFQs for clients WebSocket Closed ==");
+            }
+        };
+
         return {
             submitRfq: submitRfq,
             getRfqForDealer: getRfqForDealer,
@@ -115,15 +142,6 @@
             clientWs: clientsWs,
             dealerWs: dealersWs
         };
-
-        function getMyCallback(callbacksPool) {
-            return function(evt) {
-                $.map(callbacksPool, function(callback) {
-                    var rfqObject = parseRfq(evt.data);
-                    callback(rfqObject);
-                });
-            };
-        }
 
         function parseRfq(strRfq) {
             var rfq = JSON.parse(strRfq);
@@ -139,6 +157,14 @@
                 cdsValue: rfq.cdsValue,
                 loanId: rfq.loanId,
                 originator: rfq.originator
+            };
+        }
+
+        function getMyCallback(callbacksPool) {
+            return function(evt) {
+                $.map(callbacksPool, function(callback) {
+                    callback(evt);
+                });
             };
         }
     }

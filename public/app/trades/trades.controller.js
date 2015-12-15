@@ -51,7 +51,7 @@
             });
         });
 
-        TradeService.webSocket.addCallback(callbackName, function(tradeObject) {
+        TradeService.webSocket.addCallback(callbackName, function(evt) {
             vm.tradesTable.loading = false;
 
             tradeObject.side = getSide(currentAccount, tradeObject.client);
