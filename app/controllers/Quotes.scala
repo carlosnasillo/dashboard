@@ -13,6 +13,7 @@ import java.util.UUID
 
 import controllers.Security.HasToken
 import models.Quote
+import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
@@ -42,19 +43,20 @@ class Quotes extends Controller {
       (in, outQuotes)
   }
 
-  val quoteForm = Form(
-    mapping (
-      "id" -> ignored(UUID.randomUUID().toString),
-      "rfqId" -> nonEmptyText,
-      "timestamp" -> nonEmptyText,
-      "premium" -> bigDecimal,
-      "timeWindowInMinutes" -> number,
-      "client" -> nonEmptyText,
-      "dealer" -> nonEmptyText
-    )(Quote.apply)(Quote.unapply)
-  )
 
   def submitQuote = HasToken { implicit request =>
+    val quoteForm = Form(
+      mapping (
+        "id" -> ignored(UUID.randomUUID().toString),
+        "rfqId" -> nonEmptyText,
+        "timestamp" -> ignored(DateTime.now()),
+        "premium" -> bigDecimal,
+        "timeWindowInMinutes" -> number,
+        "client" -> nonEmptyText,
+        "dealer" -> nonEmptyText
+      )(Quote.apply)(Quote.unapply)
+    )
+
     quoteForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
