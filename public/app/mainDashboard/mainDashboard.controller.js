@@ -42,10 +42,21 @@
          * LendingClub data
          */
         vm.analytics.lendingClub = {};
-        lendingClubAnalytics.analytics().success(function(analytics) {
-            vm.analytics.lendingClub = Object.create(analytics);
-            vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(analytics.liquidityByGrade);
-        });
+
+        vm.analytics.lendingClub.numLoans = 740;
+        vm.analytics.lendingClub.liquidity = 11094975;
+
+        vm.analytics.lendingClub.dailyChangeInNumLoans = 7;
+        vm.analytics.lendingClub.dailyChangeInLiquidity = 113000;
+
+        var LCLiquidityByGrade = { C: 1, E: 739 };
+
+        vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(LCLiquidityByGrade);
+
+        //lendingClubAnalytics.analytics().success(function(analytics) {
+        //    vm.analytics.lendingClub = Object.create(analytics);
+        //    vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(analytics.liquidityByGrade);
+        //});
 
         /**
          * Prosper (mocked) data
