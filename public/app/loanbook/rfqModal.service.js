@@ -91,7 +91,7 @@
 
             $scope.selectUtils = {
                 banks: {
-                    data: ["Dealer1", "Dealer2", "Dealer3"],
+                    data: ["Dealer1", "Dealer2", "Dealer3"].filter(function(dealer) { return dealer != AuthenticationService.getCurrentAccount(); }),
                     clearSelect: function() {
                         $scope.form.counterparty = [];
                     },
