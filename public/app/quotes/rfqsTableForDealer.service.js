@@ -33,35 +33,43 @@
                     {
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
-                        visible: false
+                        visible: false,
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'client'
+                        field: 'client',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'durationInMonths'
+                        field: 'durationInMonths',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'prettyDealers',
-                        displayName: 'Dealers'
+                        displayName: 'Dealers',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'prettyCreditEvents',
-                        displayName: 'Credit Events'
+                        displayName: 'Credit Events',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
-                        type: 'text'
+                        type: 'text',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'cdsValue'
+                        field: 'cdsValue',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'id',
                         displayName: 'Quote',
                         cellTemplate: "<div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.loanId, row.entity.originator, row.entity.id, row.entity.timestamp, row.entity.client, row.entity.timeout)'>Quote</button></div>",
-                        enableFiltering: false
+                        enableFiltering: false,
+                        headerCellClass: 'text-center'
                     }
                 ]
             };

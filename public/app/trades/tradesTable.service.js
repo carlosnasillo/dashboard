@@ -30,34 +30,43 @@
                 enableFiltering: true,
                 columnDefs: [
                     {
-                       field: 'id'
+                       field: 'id',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'rfqId'
+                        field: 'rfqId',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'quoteId'
+                        field: 'quoteId',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'timestamp',
                         displayName: 'Created on',
                         cellFilter: 'date:"dd/MM/yyyy"',
-                        sort: { direction: uiGridConstants.DESC, priority: 0 }
+                        sort: { direction: uiGridConstants.DESC, priority: 0 },
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'durationInMonths'
+                        field: 'durationInMonths',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'creditEvents'
+                        field: 'creditEvents',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'cdsValue'
+                        field: 'cdsValue',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'originator'
+                        field: 'originator',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'premium'
+                        field: 'premium',
+                        headerCellClass: 'text-center'
                     }
                 ]
             };

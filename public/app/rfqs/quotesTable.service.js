@@ -32,28 +32,34 @@
                     {
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
-                        visible: false
+                        visible: false,
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'id'
+                        field: 'id',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'dealer',
-                        displayName: 'Counterparty'
+                        displayName: 'Counterparty',
+                        headerCellClass: 'text-center'
                     },
                     {
-                        field: 'premium'
+                        field: 'premium',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
-                        type: 'text'
+                        type: 'text',
+                        headerCellClass: 'text-center'
                     },
                     {
                         field: 'id',
                         displayName: 'Accept',
                         cellTemplate: "<div class='text-center'><button data-ng-hide='row.entity.loading' class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.disableButton(row.entity)' data-ng-click='row.grid.appScope.vm.accept(row.entity)'>Accept</button><div data-ng-show='row.entity.loading' class='sk-spinner sk-spinner-wave'> <div class='sk-rect1'></div> <div class='sk-rect2'></div> <div class='sk-rect3'></div> <div class='sk-rect4'></div> <div class='sk-rect5'></div> </div></div>",
-                        enableFiltering: false
+                        enableFiltering: false,
+                        headerCellClass: 'text-center'
                     }
                 ]
             };
