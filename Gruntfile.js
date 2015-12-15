@@ -119,7 +119,8 @@ grunt.initConfig({
                 "bower_components/bootstrap-daterangepicker/daterangepicker.css",
                 "bower_components/c3/c3.min.css",
                 "public/stylesheets/popover-custom.css",
-                "bower_components/chosen/chosen.min.css"
+                "bower_components/chosen/chosen.min.css",
+                "bower_components/angular-ui-notification/dist/angular-ui-notification.min.css"
             ],
             dest: "public/dist/styles.css"
         }

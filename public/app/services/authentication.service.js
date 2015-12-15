@@ -18,25 +18,26 @@
         .module('app')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope'];
-    function AuthenticationService($http, $cookieStore, $rootScope) {
+    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', 'WebSocketsManager'];
+    function AuthenticationService($http, $cookieStore, $rootScope, WebSocketsManager) {
         var service = {};
 
-        service.Login = Login;
-        service.SetCredentials = SetCredentials;
-        service.ClearCredentials = ClearCredentials;
-        service.GetCurrentUsername = GetCurrentUsername;
+        service.login = login;
+        service.setCredentials = setCredentials;
+        service.clearCredentials = clearCredentials;
+        service.getCurrentUsername = getCurrentUsername;
         service.getCurrentAccount = getCurrentAccount;
+        service.logout = logout;
 
         return service;
 
-        function Login(username, password, successCallback, errorCallback) {
+        function login(username, password, successCallback, errorCallback) {
             $http
                 .post('/api/authenticate', { email: username, password: password })
                 .then(successCallback, errorCallback);
         }
 
-        function SetCredentials(username, token, account) {
+        function setCredentials(username, token, account) {
             $rootScope.globals = {
                 currentUser: {
                     username: username,
@@ -47,15 +48,22 @@
 
             $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
             $cookieStore.put('globals', $rootScope.globals);
+
+            WebSocketsManager.startAllWS($rootScope.globals.currentUser.account);
         }
 
-        function ClearCredentials() {
+        function logout() {
+            clearCredentials();
+            WebSocketsManager.closeAllWS();
+        }
+
+        function clearCredentials() {
             $rootScope.globals = {};
             $http.defaults.headers.common['X-TOKEN'] = "";
             $cookieStore.remove('globals');
         }
 
-        function GetCurrentUsername() {
+        function getCurrentUsername() {
             return $rootScope.globals.currentUser.username;
         }
 

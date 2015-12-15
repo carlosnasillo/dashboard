@@ -19,19 +19,22 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService) {
         var vm = this;
 
         var now = moment();
+        var callbackName = 'incomingRfqsTable';
+
+        var currentAccount = AuthenticationService.getCurrentAccount();
+
         vm.rfqTable = {};
         vm.rfqTable.options = RfqsTableForDealerService.options(function( gridApi ) {
             vm.gridApi = gridApi;
         });
 
-        var onWebSocketMessage = function(evt) {
-            var rfqObject = RfqService.parseRfq(evt.data);
+        var onWebSocketMessage = function(rfqObject) {
             setUpTimeout(rfqObject);
             rfqObject.prettyDealers = prettifyList(rfqObject.dealers);
             rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
@@ -44,7 +47,9 @@
             }
         };
 
-        RfqService.getRfqForDealer().success(function(data) {
+        RfqService.dealerWs.addCallback(callbackName, onWebSocketMessage);
+
+        RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
                 var rfq = Object.create(rfqObj);
 
@@ -90,12 +95,10 @@
             vm.gridApi.core.refresh();
         }, 1000);
 
-        RfqService.streamRfqForDealer( onWebSocketMessage );
-
         vm.quote = QuoteModalService.quoteModal;
 
         $scope.$on('$destroy', function() {
-            RfqService.closeRfqStream();
+            RfqService.dealerWs.removeCallback(callbackName);
         });
 
         function isNumeric(n) {

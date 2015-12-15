@@ -19,10 +19,11 @@
         .module('app')
         .factory('RfqService', RfqService);
 
-    RfqService.$inject = ['$http', '$location', 'AuthenticationService'];
+    RfqService.$inject = ['$http', '$location'];
 
-    function RfqService($http, $location, AuthenticationService) {
-        var websocket;
+    function RfqService($http, $location) {
+        var dealersWebSocket;
+        var clientsWebSocket;
 
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
@@ -41,50 +42,90 @@
             return $http.post('/api/rfqs', element);
         };
 
-        var streamRfqForDealer = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/dealer/' + currentAccount;
+        var wsDealersCallbacksPool = {};
+        var wsClientsCallbacksPool = {};
 
-            streamRfq(wsUri, onMessage);
-        };
-
-        var streamRfqForClient = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/client/' + currentAccount;
-
-            streamRfq(wsUri, onMessage);
-        };
-
-        function streamRfq(uri, onMessage) {
-            websocket = new WebSocket(uri);
-
-            var onOpen = function() { console.log('== WebSocket Opened =='); };
-            var onClose = function() { console.log('== WebSocket Closed =='); };
-            var onError = function(evt) { console.log('WebSocket Error :', evt); };
-
-            websocket.onopen = onOpen;
-            websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
-            websocket.onerror = onError;
-        }
-
-        var getRfqForClient = function() {
-            var currentAccount = AuthenticationService.getCurrentAccount();
+        var getRfqForClient = function(currentAccount) {
             return $http.get('/api/rfqs/client/' + currentAccount);
         };
 
-        var getRfqForDealer = function() {
-            var currentAccount = AuthenticationService.getCurrentAccount();
+        var getRfqForDealer = function(currentAccount) {
             return $http.get('/api/rfqs/dealer/' + currentAccount);
         };
 
-        var closeRfqStream = function() {
-            websocket.onclose = function () {};
-            websocket.close();
-            console.log("== RFQs WebSocket Closed ==");
+        var dealersWs = {
+            openStream: function(currentAccount) {
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/dealer/' + currentAccount;
+
+                dealersWebSocket = new WebSocket(wsUri);
+                var onOpen = function() { console.log('== RFQs for dealers WebSocket Opened =='); };
+                var onClose = function() { console.log('== RFQs for dealers WebSocket Closed =='); };
+                var onError = function(evt) { console.log('RFQs for dealers WebSocket Error :', evt); };
+
+                dealersWebSocket.onopen = onOpen;
+                dealersWebSocket.onclose = onClose;
+                dealersWebSocket.onmessage = getMyCallback(wsDealersCallbacksPool);
+                dealersWebSocket.onerror = onError;
+            },
+            addCallback: function(name, callback) {
+                wsDealersCallbacksPool[name] = callback;
+            },
+            removeCallback: function(name) {
+                delete wsDealersCallbacksPool[name];
+            },
+            closeStream: function() {
+                dealersWebSocket.onclose = function () {};
+                dealersWebSocket.close();
+                console.log("== RFQs for dealers WebSocket Closed ==");
+            }
         };
 
-        var parseRfq = function(strRfq) {
+        var clientsWs = {
+            openStream: function(currentAccount) {
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/client/' + currentAccount;
+
+                clientsWebSocket = new WebSocket(wsUri);
+                var onOpen = function() { console.log('== RFQs for clients WebSocket Opened =='); };
+                var onClose = function() { console.log('== RFQs for clients WebSocket Closed =='); };
+                var onError = function(evt) { console.log('RFQs for clients WebSocket Error :', evt); };
+
+                clientsWebSocket.onopen = onOpen;
+                clientsWebSocket.onclose = onClose;
+                clientsWebSocket.onmessage = getMyCallback(wsClientsCallbacksPool);
+                clientsWebSocket.onerror = onError;
+            },
+            addCallback: function(name, callback) {
+                wsClientsCallbacksPool[name] = callback;
+            },
+            removeCallback: function(name) {
+                delete wsClientsCallbacksPool[name];
+            },
+            closeStream: function() {
+                clientsWebSocket.onclose = function () {};
+                clientsWebSocket.close();
+                console.log("== RFQs for clients WebSocket Closed ==");
+            }
+        };
+
+        return {
+            submitRfq: submitRfq,
+            getRfqForDealer: getRfqForDealer,
+            getRfqForClient: getRfqForClient,
+            parseRfq: parseRfq,
+            clientWs: clientsWs,
+            dealerWs: dealersWs
+        };
+
+        function getMyCallback(callbacksPool) {
+            return function(evt) {
+                $.map(callbacksPool, function(callback) {
+                    var rfqObject = parseRfq(evt.data);
+                    callback(rfqObject);
+                });
+            };
+        }
+
+        function parseRfq(strRfq) {
             var rfq = JSON.parse(strRfq);
 
             return {
@@ -99,16 +140,6 @@
                 loanId: rfq.loanId,
                 originator: rfq.originator
             };
-        };
-
-        return {
-            submitRfq: submitRfq,
-            getRfqForDealer: getRfqForDealer,
-            getRfqForClient: getRfqForClient,
-            streamRfqForDealer: streamRfqForDealer,
-            streamRfqForClient: streamRfqForClient,
-            parseRfq: parseRfq,
-            closeRfqStream: closeRfqStream
-        };
+        }
     }
 })();

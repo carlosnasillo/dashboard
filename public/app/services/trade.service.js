@@ -20,9 +20,9 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', '$location', 'AuthenticationService'];
+    TradeService.$inject = ['$http', '$location'];
 
-    function TradeService($http, $location, AuthenticationService) {
+    function TradeService($http, $location) {
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
@@ -41,28 +41,63 @@
             return $http.post('/api/trades', element);
         };
 
-        var getTradesByAccount = function() {
-            var currentAccount = AuthenticationService.getCurrentAccount();
+        var getTradesByAccount = function(currentAccount) {
             return $http.get('/api/trades/' + currentAccount);
         };
 
-        var streamTrades = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
+        var wsCallbackPool = {};
 
-            websocket = new WebSocket(wsUri);
+        var webSocket = {
+            openStream: function(currentAccount) {
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
 
-            var onOpen = function() { console.log('== WebSocket Opened =='); };
-            var onClose = function() { console.log('== WebSocket Closed =='); };
-            var onError = function(evt) { console.log('WebSocket Error :', evt); };
+                websocket = new WebSocket(wsUri);
 
-            websocket.onopen = onOpen;
-            websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
-            websocket.onerror = onError;
+                var onOpen = function() { console.log('== Trades WebSocket Opened =='); };
+                var onClose = function() { console.log('== Trades WebSocket Closed =='); };
+                var onError = function(evt) { console.log('Trades WebSocket Error :', evt); };
+
+                websocket.onopen = onOpen;
+                websocket.onclose = onClose;
+                websocket.onmessage = function(evt) {
+                    $.map(wsCallbackPool, function(callback) {
+                        var tradeObj = parseTrade(evt.data);
+                        callback(tradeObj);
+                    });
+                };
+                websocket.onerror = onError;
+            },
+            addCallback: function(name, callback) {
+                wsCallbackPool[name] = callback;
+            },
+            removeCallback: function(name) {
+                delete wsCallbackPool[name];
+            },
+            closeStream: function() {
+                websocket.onclose = function () {};
+                websocket.close();
+                console.log("== Trades WebSocket Closed ==");
+            }
         };
 
-        var parseTrade = function(strTrade) {
+        var prettifyList = function(uglyList) {
+            var prettyRes = "";
+            uglyList.map(function (dealer) {
+                prettyRes += dealer + ', ';
+            });
+
+            return prettyRes.substr(0, prettyRes.length - 2);
+        };
+
+        return {
+            submitTrade: submitTrade,
+            getTradesByAccount: getTradesByAccount,
+            parseTrade: parseTrade,
+            webSocket: webSocket,
+            prettifyList: prettifyList
+        };
+
+        function parseTrade(strTrade) {
             var trade = JSON.parse(strTrade);
 
             return {
@@ -78,30 +113,6 @@
                 originator: trade.originator,
                 premium: trade.premium
             };
-        };
-
-        var closeTradesStream = function() {
-            websocket.onclose = function () {};
-            websocket.close();
-            console.log("== Trades WebSocket Closed ==");
-        };
-
-        var prettifyList = function(uglyList) {
-            var prettyRes = "";
-            uglyList.map(function (dealer) {
-                prettyRes += dealer + ', ';
-            });
-
-            return prettyRes.substr(0, prettyRes.length - 2);
-        };
-
-        return {
-            submitTrade: submitTrade,
-            streamTrades: streamTrades,
-            getTradesByAccount: getTradesByAccount,
-            parseTrade: parseTrade,
-            closeTradesStream: closeTradesStream,
-            prettifyList: prettifyList
-        };
+        }
     }
 })();

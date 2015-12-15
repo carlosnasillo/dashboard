@@ -19,10 +19,13 @@
         .module('app')
         .controller('TradesController', TradesController);
 
-    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope'];
+    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope', 'AuthenticationService'];
 
-    function TradesController(TradeService, TradesTableService, $scope) {
+    function TradesController(TradeService, TradesTableService, $scope, AuthenticationService) {
         var vm = this;
+
+        var currentAccount = AuthenticationService.getCurrentAccount();
+        var callbackName = 'tradesTable';
 
         vm.tradesTable = {};
         vm.tradesTable.options = TradesTableService.options();
@@ -37,7 +40,7 @@
 
         vm.tradesTable.loading = true;
 
-        TradeService.getTradesByAccount().success(function(data) {
+        TradeService.getTradesByAccount(currentAccount).success(function(data) {
             vm.tradesTable.loading = false;
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = Object.create(tradeObj);
@@ -47,10 +50,8 @@
             });
         });
 
-        var onWebSocketMessage = function(evt) {
+        TradeService.webSocket.addCallback(callbackName, function(tradeObject) {
             vm.tradesTable.loading = false;
-
-            var tradeObject = TradeService.parseTrade(evt.data);
 
             if (vm.tradesTable.options.data) {
                 vm.tradesTable.options.data.push(tradeObject);
@@ -58,12 +59,10 @@
             else {
                 vm.tradesTable.options.data = [tradeObject];
             }
-        };
-
-        TradeService.streamTrades( onWebSocketMessage );
+        });
 
         $scope.$on('$destroy', function() {
-            TradeService.closeTradesStream();
+            TradeService.webSocket.removeCallback(callbackName);
         });
     }
 })();

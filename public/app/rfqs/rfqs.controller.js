@@ -19,12 +19,14 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'SweetAlert', '$timeout'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'SweetAlert', '$timeout', 'AuthenticationService'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert, $timeout) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert, $timeout, AuthenticationService) {
         var vm = this;
 
         var quotesByRfqId = [];
+
+        var currentAccount = AuthenticationService.getCurrentAccount();
 
         /**
          * Top table
@@ -35,11 +37,11 @@
         vm.rfqsTable.loading = true;
 
         vm.rfqsTable.options = RfqsTableService.options();
+        var rfqCallbackName = 'clientRfqTable';
 
-        var onWebSocketMessage = function(evt) {
+        var onWebSocketMessage = function(rfqObject) {
             vm.rfqsTable.loading = false;
 
-            var rfqObject = RfqService.parseRfq(evt.data);
             rfqObject.expired = false;
 
             setUpTimeout(rfqObject);
@@ -66,9 +68,9 @@
             }
         };
 
-        RfqService.streamRfqForClient( onWebSocketMessage );
+        RfqService.clientWs.addCallback(rfqCallbackName, onWebSocketMessage);
 
-        RfqService.getRfqForClient().success(function(data) {
+        RfqService.getRfqForClient(currentAccount).success(function(data) {
             vm.rfqsTable.loading = false;
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = Object.create(rfqObj);
@@ -108,9 +110,10 @@
 
         vm.quotesTable = { options: {} };
 
+        var quoteCallbackName = 'quotesTable';
         var selectedRfq;
 
-        QuotesService.getQuotesByClient().success(function(data) {
+        QuotesService.getQuotesByClient(currentAccount).success(function(data) {
             $.map(data, function(v, k) {
                 data[k] = v.map(function(quoteObj) {
                     var quote = Object.create(quoteObj);
@@ -123,23 +126,24 @@
             });
             quotesByRfqId = data;
         });
-        var onNewQuote = function(evt) {
-            var quoteObj = QuotesService.parseQuote(evt.data);
+
+        var onNewQuote = function(quoteObj) {
             quoteObj = setUpTimeout(quoteObj);
 
             quoteObj.rfqExpired = false;
             quoteObj.loading = false;
             quoteObj.accepted = false;
+
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
-                updateQuoteTable(selectedRfq);
             } else {
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
+            updateQuoteTable(selectedRfq);
         };
 
+        QuotesService.webSocket.addCallback(quoteCallbackName, onNewQuote);
 
-        QuotesService.streamQuotes(onNewQuote);
         vm.quotesTable.options = QuotesTableService.options();
 
         vm.rfqsTable.options.onRegisterApi = function(gridApi) {
@@ -211,8 +215,8 @@
         };
 
         $scope.$on('$destroy', function() {
-            RfqService.closeRfqStream();
-            QuotesService.closeQuotesStream();
+            RfqService.clientWs.removeCallback(rfqCallbackName);
+            QuotesService.webSocket.removeCallback(quoteCallbackName);
         });
 
         function isExpired(timeout) {
