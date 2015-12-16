@@ -44,16 +44,24 @@
             $scope.loading = false;
 
             $scope.form = {
-                premium: 0,
-                windowInMinutes: 0
+                premium: null,
+                windowInMinutes: null
             };
 
             $scope.conditions = {
-                premiumNotNumeric: function() {
-                    return !isNumeric($scope.form.premium);
+                premiumNotNumericNatural: function() {
+                    var premium = $scope.form.premium;
+                    return ( !isNumeric(premium) || premium <= 0 ) && premium !== null;
                 },
-                windowInMinutesNotNumeric: function() {
-                    return !isNumeric($scope.form.windowInMinutes);
+                windowInMinutesNotNumericNatural: function() {
+                    var windowInMinutes = $scope.form.windowInMinutes;
+                    return ( !isNumeric(windowInMinutes) || windowInMinutes <= 0 ) && windowInMinutes !== null;
+                },
+                premiumIsNull: function() {
+                    return $scope.form.premium === null;
+                },
+                windowInMinutesIsNull: function() {
+                    return $scope.form.windowInMinutes === null;
                 }
             };
 
@@ -69,7 +77,10 @@
             }, 1000);
 
             $scope.submitButtonDisabled = function() {
-                return $scope.conditions.premiumNotNumeric();
+                return $scope.conditions.premiumNotNumericNatural() ||
+                    $scope.conditions.windowInMinutesNotNumericNatural() ||
+                    $scope.conditions.premiumIsNull() ||
+                    $scope.conditions.windowInMinutesIsNull();
             };
 
             $scope.ok = function () {
@@ -88,7 +99,7 @@
             };
 
             function isNumeric(n) {
-                return !isNaN(parseFloat(n)) && isFinite(n);
+                return !isNaN(parseFloat(n)) && isFinite(n) || n === null;
             }
 
             function closeModal() {
