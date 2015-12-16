@@ -19,9 +19,9 @@
         .module('app')
         .factory('QuotesService', QuotesService);
 
-    QuotesService.$inject = ['$http', '$location', 'AuthenticationService'];
+    QuotesService.$inject = ['$http', '$location'];
 
-    function QuotesService($http, $location, AuthenticationService) {
+    function QuotesService($http, $location) {
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
@@ -37,28 +37,46 @@
             return $http.post('/api/quotes', element);
         };
 
-        var getQuotesByClient = function() {
-            var currentAccount = AuthenticationService.getCurrentAccount();
+        var getQuotesByClient = function(currentAccount) {
             return $http.get("/api/quotes/" + currentAccount);
         };
 
-        var streamQuotes = function(onMessage) {
-            var currentAccount = AuthenticationService.getCurrentAccount();
-            var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/' + currentAccount;
+        var wsCallbackPool = {};
 
-            websocket = new WebSocket(wsUri);
+        var webSocket = {
+            openStream: function(currentAccount) {
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/' + currentAccount;
 
-            var onOpen = function() { console.log('== WebSocket Opened =='); };
-            var onClose = function() { console.log('== WebSocket Closed =='); };
-            var onError = function(evt) { console.log('WebSocket Error :', evt); };
+                websocket = new WebSocket(wsUri);
 
-            websocket.onopen = onOpen;
-            websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
-            websocket.onerror = onError;
+                var onOpen = function() { console.log('== Quotes WebSocket Opened =='); };
+                var onClose = function() { console.log('== Quotes WebSocket Closed =='); };
+                var onError = function(evt) { console.log('Quotes WebSocket Error :', evt); };
+
+                websocket.onopen = onOpen;
+                websocket.onclose = onClose;
+                websocket.onmessage = function(evt) {
+                    $.map(wsCallbackPool, function(callback) {
+                        var quoteObj = parseQuote(evt.data);
+                        callback(quoteObj);
+                    });
+                };
+                websocket.onerror = onError;
+            },
+            addCallback: function(name, callback) {
+                wsCallbackPool[name] = callback;
+            },
+            removeCallback: function(name) {
+                delete wsCallbackPool[name];
+            },
+            closeStream: function() {
+                websocket.onclose = function () {};
+                websocket.close();
+                console.log("== Quotes WebSocket Closed ==");
+            }
         };
 
-        var parseQuote = function(strQuote) {
+        function parseQuote(strQuote) {
             var quote = JSON.parse(strQuote);
 
             return {
@@ -70,20 +88,12 @@
                 client: quote.client,
                 dealer: quote.dealer
             };
-        };
-
-        var closeQuotesStream = function() {
-            websocket.onclose = function () {};
-            websocket.close();
-            console.log("== Quotes WebSocket Closed ==");
-        };
+        }
 
         return {
             submitQuote: submitQuote,
             getQuotesByClient: getQuotesByClient,
-            parseQuote: parseQuote,
-            streamQuotes: streamQuotes,
-            closeQuotesStream: closeQuotesStream
+            webSocket: webSocket
         };
     }
 })();

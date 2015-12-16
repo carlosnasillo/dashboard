@@ -27,16 +27,16 @@
 
         (function initController() {
             // reset login status
-            AuthenticationService.ClearCredentials();
+            AuthenticationService.clearCredentials();
         })();
 
         function login() {
             vm.dataLoading = true;
-            AuthenticationService.Login(
+            AuthenticationService.login(
                 vm.username,
                 vm.password,
                 function (response) {
-                    AuthenticationService.SetCredentials(vm.username, response.data.token, response.data.account);
+                    AuthenticationService.setCredentials(vm.username, response.data.token, response.data.account);
                     $location.path('/dashboard');
                 },
                 function (errorResponse) {
