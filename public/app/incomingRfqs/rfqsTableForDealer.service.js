@@ -45,11 +45,6 @@
                         headerCellClass: 'text-center'
                     },
                     {
-                        field: 'prettyDealers',
-                        displayName: 'Dealers',
-                        headerCellClass: 'text-center'
-                    },
-                    {
                         field: 'prettyCreditEvents',
                         displayName: 'Credit Events',
                         headerCellClass: 'text-center'

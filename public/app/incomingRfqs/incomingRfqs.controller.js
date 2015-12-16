@@ -36,7 +36,6 @@
 
         var onWebSocketMessage = function(rfqObject) {
             setUpTimeout(rfqObject);
-            rfqObject.prettyDealers = prettifyList(rfqObject.dealers);
             rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
 
             if (vm.rfqTable.options.data) {
@@ -55,7 +54,6 @@
 
                 setUpTimeout(rfq);
 
-                rfq.prettyDealers = prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
 
                 return rfq;
