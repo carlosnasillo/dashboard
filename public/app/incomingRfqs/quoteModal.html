@@ -32,10 +32,8 @@
         </div>
         <div class="modal-footer row">
             <div class="col-md-6">
-                <div class="text-danger" data-ng-show="conditions.premiumNotNumeric()">Premium should be a number.</div>
-            </div>
-            <div class="col-md-6">
-                <div class="text-danger" data-ng-show="conditions.windowInMinutesNotNumeric()">The window should be a number.</div>
+                <div class="text-danger" data-ng-show="conditions.premiumNotNumericNatural()">Premium should be a number greater than 0.</div>
+                <div class="text-danger" data-ng-show="conditions.windowInMinutesNotNumericNatural()">The window should be a number greater than 0.</div>
             </div>
             <div class="col-md-6">
                 <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
