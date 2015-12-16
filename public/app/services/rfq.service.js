@@ -45,6 +45,10 @@
         var wsDealersCallbacksPool = {};
         var wsClientsCallbacksPool = {};
 
+        var getRfqById = function(id) {
+            return $http.get('/api/rfqs/' + id);
+        };
+
         var getRfqForClient = function(currentAccount) {
             return $http.get('/api/rfqs/client/' + currentAccount);
         };
@@ -107,43 +111,7 @@
             }
         };
 
-        var clientsWs = {
-            openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/client/' + currentAccount;
-
-                clientsWebSocket = new WebSocket(wsUri);
-                var onOpen = function() { console.log('== RFQs for clients WebSocket Opened =='); };
-                var onClose = function() { console.log('== RFQs for clients WebSocket Closed =='); };
-                var onError = function(evt) { console.log('RFQs for clients WebSocket Error :', evt); };
-
-                clientsWebSocket.onopen = onOpen;
-                clientsWebSocket.onclose = onClose;
-                clientsWebSocket.onmessage = getMyCallback(wsClientsCallbacksPool);
-                clientsWebSocket.onerror = onError;
-            },
-            addCallback: function(name, callback) {
-                wsClientsCallbacksPool[name] = callback;
-            },
-            removeCallback: function(name) {
-                delete wsClientsCallbacksPool[name];
-            },
-            closeStream: function() {
-                clientsWebSocket.onclose = function () {};
-                clientsWebSocket.close();
-                console.log("== RFQs for clients WebSocket Closed ==");
-            }
-        };
-
-        return {
-            submitRfq: submitRfq,
-            getRfqForDealer: getRfqForDealer,
-            getRfqForClient: getRfqForClient,
-            parseRfq: parseRfq,
-            clientWs: clientsWs,
-            dealerWs: dealersWs
-        };
-
-        function parseRfq(strRfq) {
+        var parseRfq = function(strRfq) {
             var rfq = JSON.parse(strRfq);
 
             return {
@@ -158,7 +126,17 @@
                 loanId: rfq.loanId,
                 originator: rfq.originator
             };
-        }
+        };
+
+        return {
+            submitRfq: submitRfq,
+            getRfqForDealer: getRfqForDealer,
+            getRfqForClient: getRfqForClient,
+            parseRfq: parseRfq,
+            clientWs: clientsWs,
+            dealerWs: dealersWs,
+            getRfqById: getRfqById
+        };
 
         function getMyCallback(callbacksPool) {
             return function(evt) {

@@ -51,12 +51,12 @@
             });
         });
 
-        TradeService.webSocket.addCallback(callbackName, function(evt) {
+        TradeService.webSocket.addCallback(callbackName, function(tradeObject) {
             vm.tradesTable.loading = false;
-
             tradeObject.side = getSide(currentAccount, tradeObject.client);
 
             if (vm.tradesTable.options.data) {
+
                 vm.tradesTable.options.data.push(tradeObject);
             }
             else {

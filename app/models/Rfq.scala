@@ -76,4 +76,6 @@ object Rfq {
       .cursor[Rfq]()
       .collect[List](Int.MaxValue)
   }
+
+  def getById(id: String) = RFQsTable.find(Json.obj("id" -> id)).one[Rfq]
 }

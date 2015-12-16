@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'SweetAlert', '$timeout', 'AuthenticationService'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert, $timeout, AuthenticationService) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService) {
         var vm = this;
 
         var quotesByRfqId = {};
@@ -177,34 +177,19 @@
             vm.rfqsTable.gridApi.core.refresh();
         }, 1000);
 
-        var orderSuccess = function(quote) {
-            return function() {
-                SweetAlert.swal(
-                    "Done !",
-                    "Quote accepted !",
-                    "success"
-                );
-                quote.loading = false;
-                quote.accepted = true;
-                quote.timeout = "Accepted";
-            };
-        };
-
-        var orderError = function(quote) {
-            return function() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-                quote.loading = false;
-            };
-        };
-
         vm.accept = function(quote) {
             quote.loading = true;
             TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
-            .then(orderSuccess(quote), orderError(quote));
+            .then(
+                AlertsService.accept.success(quote, function(quote) {
+                    quote.loading = false;
+                    quote.accepted = true;
+                    quote.timeout = "Accepted";
+                }),
+                AlertsService.accept.error(quote, function(quote) {
+                    quote.loading = false;
+                })
+            );
         };
 
         vm.disableButton = function(quote) {
