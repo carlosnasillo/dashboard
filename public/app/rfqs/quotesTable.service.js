@@ -33,7 +33,7 @@
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',
-                        cellFilter: 'date:"hh:mm:ss"'
+                        cellFilter: 'date:"HH:mm:ss"'
                     },
                     {
                         field: 'id',
