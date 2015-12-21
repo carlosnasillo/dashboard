@@ -23,12 +23,18 @@
 
     function RfqsTableForDealerService(uiGridConstants) {
 
-        var tableOptions = function(onRegisterApi) {
+        var tableOptions = function() {
             return {
                 enableColumnMenus: false,
-                    enableSorting: true,
+                enableSorting: true,
                 enableFiltering: true,
-                onRegisterApi: onRegisterApi,
+
+                enableRowSelection: true,
+                multiSelect: false,
+                modifierKeysToMultiSelect: false,
+                noUnselect: true,
+                enableRowHeaderSelection: false,
+
                 columnDefs: [
                     {
                         field: 'timestamp',

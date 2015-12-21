@@ -31,8 +31,10 @@ GET     /api/rfqs/stream/dealer/:account                                        
 GET     /api/rfqs/stream/client/:account                                            controllers.Rfqs.streamRfqToClient(account)
 
 POST    /api/quotes                                                                 controllers.Quotes.submitQuote
-GET     /api/quotes/:account                                                        controllers.Quotes.getQuoteWithClientByRfqId(account)
-GET     /api/quotes/stream/:account                                                 controllers.Quotes.streamQuotes(account)
+GET     /api/quotes/client/:account                                                 controllers.Quotes.getQuoteByClientGroupByRfqId(account)
+GET     /api/quotes/dealer/:account                                                 controllers.Quotes.getQuoteByDealerGroupByRfqId(account)
+GET     /api/quotes/stream/client/:account                                          controllers.Quotes.streamQuotesToClient(account)
+GET     /api/quotes/stream/dealer/:account                                          controllers.Quotes.streamQuotesToDealer(account)
 
 POST    /api/trades                                                                 controllers.Trades.submitTrade
 GET     /api/trades/:account                                                        controllers.Trades.getTradesByAccount(account)
