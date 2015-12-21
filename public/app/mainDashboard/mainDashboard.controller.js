@@ -54,7 +54,7 @@
         vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(LCLiquidityByGrade);
 
         //lendingClubAnalytics.analytics().success(function(analytics) {
-        //    vm.analytics.lendingClub = Object.create(analytics);
+        //    vm.analytics.lendingClub = $.extend(true,{},analytics);
         //    vm.analytics.lendingClub.liquidityByGrade = chartUtilsService.fromMapToC3StyleData(analytics.liquidityByGrade);
         //});
 
