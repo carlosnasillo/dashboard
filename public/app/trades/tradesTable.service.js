@@ -35,6 +35,10 @@
                         visible: false
                     },
                     {
+                        field: 'side',
+                        headerCellClass: 'text-center'
+                    },
+                    {
                         field: 'client',
                         headerCellClass: 'text-center'
                     },
