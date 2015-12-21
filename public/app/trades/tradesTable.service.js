@@ -40,7 +40,8 @@
                     },
                     {
                         field: 'dealer',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        displayName: 'Counterparty'
                     },
                     {
                         field: 'rfqId',
