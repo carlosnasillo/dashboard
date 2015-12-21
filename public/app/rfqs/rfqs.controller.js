@@ -113,7 +113,7 @@
         var quoteCallbackName = 'quotesTable';
         var selectedRfq;
 
-        QuotesService.getQuotesByClient(currentAccount).success(function(data) {
+        QuotesService.getQuotesByClientGroupByRfqId(currentAccount).success(function(data) {
             $.map(data, function(v, k) {
                 data[k] = v.map(function(quoteObj) {
                     var quote = Object.create(quoteObj);
@@ -142,7 +142,7 @@
             updateQuoteTable(selectedRfq);
         };
 
-        QuotesService.webSocket.addCallback(quoteCallbackName, onNewQuote);
+        QuotesService.clientWs.addCallback(quoteCallbackName, onNewQuote);
 
         vm.quotesTable.options = QuotesTableService.options();
 
@@ -216,7 +216,7 @@
 
         $scope.$on('$destroy', function() {
             RfqService.clientWs.removeCallback(rfqCallbackName);
-            QuotesService.webSocket.removeCallback(quoteCallbackName);
+            QuotesService.clientWs.removeCallback(quoteCallbackName);
         });
 
         function isExpired(timeout) {

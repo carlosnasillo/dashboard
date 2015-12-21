@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class Quotes extends Controller {
   val (outQuotes, channelQuotes) = Concurrent.broadcast[JsValue]
 
-  def streamQuotes(account: String) = WebSocket.using[JsValue] {
+  def streamQuotesToClient(account: String) = WebSocket.using[JsValue] {
     request =>
       val in = Iteratee.ignore[JsValue]
       val accountFilter = Enumeratee.filter[JsValue](jsObj => {
@@ -42,6 +42,16 @@ class Quotes extends Controller {
       (in, outQuotes through accountFilter)
   }
 
+  def streamQuotesToDealer(account: String) = WebSocket.using[JsValue] {
+    request =>
+      val in = Iteratee.ignore[JsValue]
+      val accountFilter = Enumeratee.filter[JsValue](jsObj => {
+        val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
+        extractedDealer == account
+      })
+
+      (in, outQuotes through accountFilter)
+  }
 
   def submitQuote = HasToken { implicit request =>
     val quoteForm = Form(
@@ -75,7 +85,11 @@ class Quotes extends Controller {
     )
   }
 
-  def getQuoteWithClientByRfqId(account: String) = HasToken.async {
+  def getQuoteByClientGroupByRfqId(account: String) = HasToken.async {
     Quote.getQuotesByClient(account).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
+  }
+
+  def getQuoteByDealerGroupByRfqId(account: String) = HasToken.async {
+    Quote.getQuotesByDealer(account).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
   }
 }

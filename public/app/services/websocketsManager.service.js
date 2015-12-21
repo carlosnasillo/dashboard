@@ -26,14 +26,16 @@
         var startAllWS = function(account) {
             RfqService.dealerWs.openStream(account);
             RfqService.clientWs.openStream(account);
-            QuotesService.webSocket.openStream(account);
+            QuotesService.dealerWs.openStream(account);
+            QuotesService.clientWs.openStream(account);
             TradeService.webSocket.openStream(account);
         };
 
         var closeAllWS = function() {
             RfqService.dealerWs.closeStream();
             RfqService.clientWs.closeStream();
-            QuotesService.webSocket.closeStream();
+            QuotesService.dealerWs.closeStream();
+            QuotesService.clientWs.closeStream();
             TradeService.webSocket.closeStream();
         };
 
@@ -42,7 +44,10 @@
                 dealer: RfqService.dealerWs,
                 client: RfqService.clientWs
             },
-            quotes: QuotesService.webSocket,
+            quotes: {
+                dealer: QuotesService.dealerWs,
+                client: QuotesService.clientWs
+            },
             trades: TradeService.webSocket
         };
 

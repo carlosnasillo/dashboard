@@ -55,4 +55,11 @@ object Quote {
       .sort(Json.obj("timestamp" -> 1))
       .cursor[Quote]()
       .collect[List](Int.MaxValue)
+
+  def getQuotesByDealer(dealer: String) =
+    quotesTable
+      .find(Json.obj("dealer" -> dealer))
+      .sort(Json.obj("timestamp" -> 1))
+      .cursor[Quote]()
+      .collect[List](Int.MaxValue)
 }

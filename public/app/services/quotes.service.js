@@ -37,42 +37,70 @@
             return $http.post('/api/quotes', element);
         };
 
-        var getQuotesByClient = function(currentAccount) {
-            return $http.get("/api/quotes/" + currentAccount);
+        var getQuotesByClientGroupByRfqId = function(currentAccount) {
+            return $http.get("/api/quotes/client/" + currentAccount);
         };
 
-        var wsCallbackPool = {};
+        var getQuotesByDealerGroupByRfqId = function(currentAccount) {
+            return $http.get('/api/quotes/dealer/' + currentAccount);
+        };
 
-        var webSocket = {
+        var wsClientCallbackPool = {};
+        var wsDealerCallbackPool = {};
+
+        var clientWs = {
             openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/' + currentAccount;
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/client/' + currentAccount;
 
                 websocket = new WebSocket(wsUri);
 
-                var onOpen = function() { console.log('== Quotes WebSocket Opened =='); };
-                var onClose = function() { console.log('== Quotes WebSocket Closed =='); };
-                var onError = function(evt) { console.log('Quotes WebSocket Error :', evt); };
+                var onOpen = function() { console.log('== Quotes for client WebSocket Opened =='); };
+                var onClose = function() { console.log('== Quotes for client WebSocket Closed =='); };
+                var onError = function(evt) { console.log('Quotes for client WebSocket Error :', evt); };
 
                 websocket.onopen = onOpen;
                 websocket.onclose = onClose;
-                websocket.onmessage = function(evt) {
-                    $.map(wsCallbackPool, function(callback) {
-                        var quoteObj = parseQuote(evt.data);
-                        callback(quoteObj);
-                    });
-                };
+                websocket.onmessage = getMyCallback(wsClientCallbackPool);
                 websocket.onerror = onError;
             },
             addCallback: function(name, callback) {
-                wsCallbackPool[name] = callback;
+                wsClientCallbackPool[name] = callback;
             },
             removeCallback: function(name) {
-                delete wsCallbackPool[name];
+                delete wsClientCallbackPool[name];
             },
             closeStream: function() {
                 websocket.onclose = function () {};
                 websocket.close();
-                console.log("== Quotes WebSocket Closed ==");
+                console.log("== Quotes for client WebSocket Closed ==");
+            }
+        };
+
+        var dealerWs = {
+            openStream: function(currentAccount) {
+                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/dealer/' + currentAccount;
+
+                websocket = new WebSocket(wsUri);
+
+                var onOpen = function() { console.log('== Quotes for dealer WebSocket Opened =='); };
+                var onClose = function() { console.log('== Quotes for dealer WebSocket Closed =='); };
+                var onError = function(evt) { console.log('Quotes for dealer WebSocket Error :', evt); };
+
+                websocket.onopen = onOpen;
+                websocket.onclose = onClose;
+                websocket.onmessage = getMyCallback(wsDealerCallbackPool);
+                websocket.onerror = onError;
+            },
+            addCallback: function(name, callback) {
+                wsDealerCallbackPool[name] = callback;
+            },
+            removeCallback: function(name) {
+                delete wsDealerCallbackPool[name];
+            },
+            closeStream: function() {
+                websocket.onclose = function () {};
+                websocket.close();
+                console.log("== Quotes for dealer WebSocket Closed ==");
             }
         };
 
@@ -92,8 +120,19 @@
 
         return {
             submitQuote: submitQuote,
-            getQuotesByClient: getQuotesByClient,
-            webSocket: webSocket
+            getQuotesByClientGroupByRfqId: getQuotesByClientGroupByRfqId,
+            getQuotesByDealerGroupByRfqId: getQuotesByDealerGroupByRfqId,
+            clientWs: clientWs,
+            dealerWs: dealerWs
         };
+
+        function getMyCallback(callbacksPool) {
+            return function(evt) {
+                $.map(callbacksPool, function(callback) {
+                    var rfqObject = parseQuote(evt.data);
+                    callback(rfqObject);
+                });
+            };
+        }
     }
 })();
