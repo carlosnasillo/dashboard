@@ -80,8 +80,6 @@
                 rfq.expired = false;
                 setUpTimeout(rfq);
 
-                quotesByRfqId[rfq.id] = [];
-
                 function prettifyList(uglyList) {
                     var prettyRes = "";
                     uglyList.map(function (dealer) {
@@ -114,7 +112,6 @@
         var selectedRfq;
 
         QuotesService.getQuotesByClientGroupByRfqId(currentAccount).success(function(data) {
-            console.log(data);
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
