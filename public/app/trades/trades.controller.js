@@ -45,6 +45,7 @@
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = Object.create(tradeObj);
                 trade.creditEvents = TradeService.prettifyList(tradeObj.creditEvents);
+                trade.side = getSide(currentAccount, tradeObj.client);
 
                 return trade;
             });
@@ -52,6 +53,8 @@
 
         TradeService.webSocket.addCallback(callbackName, function(tradeObject) {
             vm.tradesTable.loading = false;
+
+            tradeObject.side = getSide(currentAccount, tradeObject.client);
 
             if (vm.tradesTable.options.data) {
                 vm.tradesTable.options.data.push(tradeObject);
@@ -64,5 +67,9 @@
         $scope.$on('$destroy', function() {
             TradeService.webSocket.removeCallback(callbackName);
         });
+
+        function getSide(currentAccount, client) {
+            return client == currentAccount ? 'Buy' : 'Sell';
+        }
     }
 })();

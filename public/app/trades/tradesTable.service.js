@@ -35,12 +35,17 @@
                         visible: false
                     },
                     {
+                        field: 'side',
+                        headerCellClass: 'text-center'
+                    },
+                    {
                         field: 'client',
                         headerCellClass: 'text-center'
                     },
                     {
                         field: 'dealer',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        displayName: 'Counterparty'
                     },
                     {
                         field: 'rfqId',
