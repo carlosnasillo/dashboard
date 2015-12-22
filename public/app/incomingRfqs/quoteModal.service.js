@@ -19,9 +19,9 @@
         .module('app')
         .factory('QuoteModalService', QuoteModalService);
 
-    QuoteModalService.$inject = ['$uibModal', 'FormUtilsService'];
+    QuoteModalService.$inject = ['$uibModal'];
 
-    function QuoteModalService($uibModal, FormUtilsService) {
+    function QuoteModalService($uibModal) {
         var quoteModal = function(loanId, originator, rfqId, client, timeout) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'assets/app/incomingRfqs/quoteModal.html',
@@ -76,12 +76,7 @@
                 }
             }, 1000);
 
-            $scope.submitButtonDisabled = function() {
-                return $scope.conditions.premiumNotNumericNatural() ||
-                    $scope.conditions.windowInMinutesNotNumericNatural() ||
-                    $scope.conditions.premiumIsNull() ||
-                    $scope.conditions.windowInMinutesIsNull();
-            };
+            $scope.submitButtonDisabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.ok = function () {
                 $scope.loading = true;

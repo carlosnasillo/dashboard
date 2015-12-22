@@ -26,8 +26,16 @@
             return !isNaN(parseFloat(n)) && isFinite(n) || n === null;
         };
 
+        var isAtLeastOneTrue = function(conditions) {
+            return $.map(conditions, function(v) {
+                    return v();
+                })
+                .reduce(function(nl1, n) { return nl1 || n; });
+        };
+
         return {
-            isNumeric: isNumeric
+            isNumeric: isNumeric,
+            isAtLeastOneTrue: isAtLeastOneTrue
         };
     }
 })();

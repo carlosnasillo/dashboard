@@ -78,16 +78,7 @@
                 }
             };
 
-            $scope.submitButtonDisabled = function() {
-                return $scope.conditions.durationNotNumericNatural() ||
-                    $scope.conditions.durationIsNull() ||
-                    $scope.conditions.quoteWindowNotNumericNatural() ||
-                    $scope.conditions.quoteWindowIsNull() ||
-                    $scope.conditions.cdsValueNotNumericNatural() ||
-                    $scope.conditions.cdsValueIsNull() ||
-                    $scope.conditions.creditEventIsEmpty() ||
-                    $scope.conditions.counterpartyIsEmpty();
-            };
+            $scope.submitButtonDisabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.selectUtils = {
                 banks: {

@@ -19,9 +19,9 @@
         .module('app')
         .factory('OrderLoansModalService', OrderLoansModalService);
 
-    OrderLoansModalService.$inject = ['$uibModal', 'FormUtilsService'];
+    OrderLoansModalService.$inject = ['$uibModal'];
 
-    function OrderLoansModalService($uibModal, FormUtilsService) {
+    function OrderLoansModalService($uibModal) {
 
         return {
            orderModal: orderModal
@@ -71,11 +71,7 @@
                 }
             };
 
-            $scope.disabled = function() {
-                return $scope.conditions.valueGtRemaining() ||
-                    $scope.conditions.valueLtMin() ||
-                    $scope.conditions.notNumeric();
-            };
+            $scope.disabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.ok = function () {
                 $scope.loading = true;
