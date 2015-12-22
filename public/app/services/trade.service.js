@@ -20,9 +20,9 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', '$location'];
+    TradeService.$inject = ['$http', '$location', 'RfqService'];
 
-    function TradeService($http, $location) {
+    function TradeService($http, $location, RfqService) {
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 

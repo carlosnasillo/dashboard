@@ -1,0 +1,33 @@
+<div class="cg-notify-message ibox-content" ng-class="[$classes,
+    $position === 'center' ? 'cg-notify-message-center' : '',
+    $position === 'left' ? 'cg-notify-message-left' : '',
+    $position === 'right' ? 'cg-notify-message-right' : '']"
+     ng-style="{'margin-left': $centerMargin}">
+
+    <div class="cg-notify-message-template">
+        <h2>
+            New quote !
+        </h2>
+        <ul class="list-unstyled m-t-md">
+            <li>
+                <span class="fa fa-user m-r-xs"></span>
+                <label>Dealer:</label>
+                {{quote.dealer}}
+            </li>
+            <li>
+                <span class="fa fa-dollar m-r-xs"></span>
+                <label>Premium:</label>
+                {{quote.premium | currency}}
+            </li>
+            <li>
+                <span class="fa fa-clock-o m-r-xs"></span>
+                <label>Timeout:</label>
+                {{quote.timeout}}
+            </li>
+        </ul>
+        <div class="text-center">
+            <button type="button" class="btn btn-w-m btn-success" ng-click="accept(quote, $close)">Accept</button>
+            <button type="button" class="btn btn-w-m btn-danger" ng-click="$close()">Ignore</button>
+        </div>
+    </div>
+</div>

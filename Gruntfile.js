@@ -120,7 +120,7 @@ grunt.initConfig({
                 "bower_components/c3/c3.min.css",
                 "public/stylesheets/popover-custom.css",
                 "bower_components/chosen/chosen.min.css",
-                "bower_components/angular-ui-notification/dist/angular-ui-notification.min.css"
+                "bower_components/angular-notify/dist/angular-notify.css"
             ],
             dest: "public/dist/styles.css"
         }

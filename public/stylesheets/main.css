@@ -30,3 +30,7 @@ h1.with-space-before {
 .chosen-choices {
     max-height: 150px;
 }
+
+.cg-notify-message {
+    text-align: left;
+}

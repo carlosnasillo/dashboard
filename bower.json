@@ -40,7 +40,7 @@
     "c3": "~0.4.10",
     "nsPopover": "~0.6.8",
     "chosen": "~1.4.2",
-    "angular-ui-notification": "~0.1.0"
+    "angular-notify": "~2.5.0"
   },
   "resolutions": {
     "jquery": "~2.1.4",

@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.grid', 'ui.grid.selection', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'daterangepicker', 'nsPopover', 'ui-notification'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.grid', 'ui.grid.selection', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'daterangepicker', 'nsPopover', 'cgNotify'])
         .config(config)
         .run(run);
 
@@ -66,13 +66,14 @@
             .otherwise({ redirectTo: '/' });
     }
 
-    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager'];
-    function run($rootScope, $location, $cookieStore, $http, WebSocketsManager) {
+    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager', 'PopupService'];
+    function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
             WebSocketsManager.startAllWS($rootScope.globals.currentUser.account);
+            WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.wsDealerCallback($rootScope));
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {

@@ -45,6 +45,10 @@
         var wsDealersCallbacksPool = {};
         var wsClientsCallbacksPool = {};
 
+        var getRfqById = function(id) {
+            return $http.get('/api/rfqs/' + id);
+        };
+
         var getRfqForClient = function(currentAccount) {
             return $http.get('/api/rfqs/client/' + currentAccount);
         };
@@ -107,25 +111,7 @@
             }
         };
 
-        return {
-            submitRfq: submitRfq,
-            getRfqForDealer: getRfqForDealer,
-            getRfqForClient: getRfqForClient,
-            parseRfq: parseRfq,
-            clientWs: clientsWs,
-            dealerWs: dealersWs
-        };
-
-        function getMyCallback(callbacksPool) {
-            return function(evt) {
-                $.map(callbacksPool, function(callback) {
-                    var rfqObject = parseRfq(evt.data);
-                    callback(rfqObject);
-                });
-            };
-        }
-
-        function parseRfq(strRfq) {
+        var parseRfq = function(strRfq) {
             var rfq = JSON.parse(strRfq);
 
             return {
@@ -139,6 +125,24 @@
                 cdsValue: rfq.cdsValue,
                 loanId: rfq.loanId,
                 originator: rfq.originator
+            };
+        };
+
+        return {
+            submitRfq: submitRfq,
+            getRfqForDealer: getRfqForDealer,
+            getRfqForClient: getRfqForClient,
+            parseRfq: parseRfq,
+            clientWs: clientsWs,
+            dealerWs: dealersWs,
+            getRfqById: getRfqById
+        };
+
+        function getMyCallback(callbacksPool) {
+            return function(evt) {
+                $.map(callbacksPool, function(callback) {
+                    callback(evt);
+                });
             };
         }
     }
