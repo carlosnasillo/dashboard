@@ -19,12 +19,11 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService) {
         var vm = this;
 
-        var now = moment();
         var currentAccount = AuthenticationService.getCurrentAccount();
 
         var selectedRfq;
@@ -40,7 +39,7 @@
         vm.rfqTable.options = RfqsTableForDealerService.options();
 
         RfqService.dealerWs.addCallback(rfqsCallbackName, function(rfqObject) {
-            rfqObject = setUpTimeout(rfqObject);
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
 
             if (vm.rfqTable.options.data) {
                 vm.rfqTable.options.data.push(rfqObject);
@@ -52,7 +51,7 @@
 
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
-                var rfq = setUpTimeout(rfqObj);
+                var rfq = TimeoutManagerService.setUpTimeout(rfqObj);
                 rfq.prettyCreditEvents = RfqService.prettifyList(rfq.creditEvents);
 
                 return rfq;
@@ -87,7 +86,7 @@
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
-                    quote = setUpTimeout(quote);
+                    quote = TimeoutManagerService.setUpTimeout(quote);
 
                     return quote;
                 });
@@ -95,7 +94,7 @@
         });
 
         QuotesService.dealerWs.addCallback(quoteCallbackName, function(quoteObj) {
-            quoteObj = setUpTimeout(quoteObj);
+            quoteObj = TimeoutManagerService.setUpTimeout(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
@@ -129,25 +128,6 @@
             else {
                 vm.quotesTable.options.data = [];
             }
-        }
-
-        function setUpTimeout(object) {
-            var newObj = $.extend({},object);
-            var deadline = moment(object.timestamp).add(object.timeWindowInMinutes, 'minutes');
-            var diff = deadline.diff(now);
-            var duration = Math.round(moment.duration(diff).asSeconds());
-            var counter = setInterval(function () {
-                if (duration > 0) {
-                    duration = duration - 1;
-                    newObj.timeout = duration;
-                }
-                else {
-                    newObj.timeout = "Expired";
-                    clearInterval(counter);
-                }
-            }, 1000);
-
-            return newObj;
         }
     }
 })();
