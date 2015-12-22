@@ -158,17 +158,13 @@
         };
 
         vm.disableButton = function(quote) {
-            return isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
+            return FormUtilsService.isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
         };
 
         $scope.$on('$destroy', function() {
             RfqService.clientWs.removeCallback(rfqCallbackName);
             QuotesService.clientWs.removeCallback(quoteCallbackName);
         });
-
-        function isExpired(timeout) {
-            return !FormUtilsService.isNumeric(timeout) || timeout <= 0;
-        }
 
         function prepareQuote(quote) {
             quote = setUpTimeout(quote);

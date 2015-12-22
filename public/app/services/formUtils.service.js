@@ -33,9 +33,14 @@
                 .reduce(function(nl1, n) { return nl1 || n; });
         };
 
+        var isExpired = function(timeout) {
+            return !isNumeric(timeout) || timeout <= 0;
+        };
+
         return {
             isNumeric: isNumeric,
-            isAtLeastOneTrue: isAtLeastOneTrue
+            isAtLeastOneTrue: isAtLeastOneTrue,
+            isExpired: isExpired
         };
     }
 })();

@@ -64,9 +64,7 @@
             });
         });
 
-        vm.isExpired = function(timeout) {
-            return !FormUtilsService.isNumeric(timeout) || timeout <= 0;
-        };
+        vm.isExpired = FormUtilsService.isExpired;
 
         vm.quote = QuoteModalService.quoteModal;
 
