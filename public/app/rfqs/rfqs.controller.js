@@ -39,7 +39,7 @@
         vm.rfqsTable.options = RfqsTableService.options();
         var rfqCallbackName = 'clientRfqTable';
 
-        var onWebSocketMessage = function(rfqObject) {
+        RfqService.clientWs.addCallback(rfqCallbackName, function(rfqObject) {
             vm.rfqsTable.loading = false;
 
             rfqObject.expired = false;
@@ -66,9 +66,7 @@
 
                 return prettyRes.substr(0, prettyRes.length - 2);
             }
-        };
-
-        RfqService.clientWs.addCallback(rfqCallbackName, onWebSocketMessage);
+        });
 
         RfqService.getRfqForClient(currentAccount).success(function(data) {
             vm.rfqsTable.loading = false;
@@ -121,7 +119,7 @@
             });
         });
 
-        var onNewQuote = function(quoteObj) {
+        QuotesService.clientWs.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = setUpTimeout(quoteObj);
 
             quoteObj.rfqExpired = false;
@@ -134,9 +132,7 @@
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
             updateQuoteTable(selectedRfq);
-        };
-
-        QuotesService.clientWs.addCallback(quoteCallbackName, onNewQuote);
+        });
 
         vm.quotesTable.options = QuotesTableService.options();
 

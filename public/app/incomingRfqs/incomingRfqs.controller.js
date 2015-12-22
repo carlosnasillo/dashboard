@@ -39,7 +39,7 @@
         vm.rfqTable = {};
         vm.rfqTable.options = RfqsTableForDealerService.options();
 
-        var onWebSocketMessage = function(rfqObject) {
+        RfqService.dealerWs.addCallback(rfqsCallbackName, function(rfqObject) {
             rfqObject = setUpTimeout(rfqObject);
 
             if (vm.rfqTable.options.data) {
@@ -48,9 +48,7 @@
             else {
                 vm.rfqTable.options.data = [rfqObject];
             }
-        };
-
-        RfqService.dealerWs.addCallback(rfqsCallbackName, onWebSocketMessage);
+        });
 
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
@@ -96,7 +94,7 @@
             });
         });
 
-        var onNewQuote = function(quoteObj) {
+        QuotesService.dealerWs.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = setUpTimeout(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
@@ -105,9 +103,7 @@
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
             updateQuoteTable(selectedRfq);
-        };
-
-        QuotesService.dealerWs.addCallback(quoteCallbackName, onNewQuote);
+        });
 
         vm.quotesTable.options = QuotesByRfqTableService.options();
 
