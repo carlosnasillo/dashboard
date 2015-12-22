@@ -19,9 +19,9 @@
         .module('app')
         .factory('RfqService', RfqService);
 
-    RfqService.$inject = ['$http', '$location'];
+    RfqService.$inject = ['$http', '$location', 'ParseUtilsService'];
 
-    function RfqService($http, $location) {
+    function RfqService($http, $location, ParseUtilsService) {
         var dealersWebSocket;
         var clientsWebSocket;
 
@@ -120,22 +120,14 @@
                 durationInMonths: rfq.durationInMonths,
                 client: rfq.client,
                 dealers: rfq.dealers,
+                prettyDealers: ParseUtilsService.prettifyList(rfq.dealers),
                 creditEvents: rfq.creditEvents,
-                prettyCreditEvents: prettifyList(rfq.creditEvents),
+                prettyCreditEvents: ParseUtilsService.prettifyList(rfq.creditEvents),
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
                 cdsValue: rfq.cdsValue,
                 referenceEntity: rfq.referenceEntity,
                 originator: rfq.originator
             };
-        };
-
-        var prettifyList = function(uglyList) {
-            var prettyRes = "";
-            uglyList.map(function (dealer) {
-                prettyRes += dealer + ', ';
-            });
-
-            return prettyRes.substr(0, prettyRes.length - 2);
         };
 
         return {
@@ -145,14 +137,20 @@
             parseRfq: parseRfq,
             clientWs: clientsWs,
             dealerWs: dealersWs,
-            getRfqById: getRfqById,
-            prettifyList: prettifyList
+            getRfqById: getRfqById
         };
+
+        function prepareObject(evt) {
+            var rfqObj = parseRfq(evt.data);
+            rfqObj.dealers = ParseUtilsService.prettifyList(rfqObj.dealers);
+            rfqObj.prettyCreditEvents = ParseUtilsService.prettifyList(rfqObj.creditEvents);
+            return rfqObj;
+        }
 
         function getMyCallback(callbacksPool) {
             return function(evt) {
                 $.map(callbacksPool, function(callback) {
-                    var rfqObj = parseRfq(evt.data);
+                    var rfqObj = prepareObject(evt);
                     callback(rfqObj);
                 });
             };

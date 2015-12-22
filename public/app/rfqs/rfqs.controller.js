@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'ParseUtilsService'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, ParseUtilsService) {
         var vm = this;
 
         var quotesByRfqId = {};
@@ -46,9 +46,6 @@
 
             setUpTimeout(rfqObject);
 
-            rfqObject.dealers = prettifyList(rfqObject.dealers);
-            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
-
             if (vm.rfqsTable.options.data) {
                 vm.rfqsTable.options.data.push(rfqObject);
             }
@@ -57,15 +54,6 @@
             }
 
             quotesByRfqId[rfqObject.id] = [];
-
-            function prettifyList(uglyList) {
-                var prettyRes = "";
-                uglyList.map(function (dealer) {
-                    prettyRes += dealer + ', ';
-                });
-
-                return prettyRes.substr(0, prettyRes.length - 2);
-            }
         });
 
         RfqService.getRfqForClient(currentAccount).success(function(data) {
@@ -73,19 +61,10 @@
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = $.extend(true,{},rfqObj);
 
-                rfq.prettyDealers = prettifyList(rfq.dealers);
-                rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
+                rfq.prettyDealers = ParseUtilsService.prettifyList(rfq.dealers);
+                rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.expired = false;
                 setUpTimeout(rfq);
-
-                function prettifyList(uglyList) {
-                    var prettyRes = "";
-                    uglyList.map(function (dealer) {
-                        prettyRes += dealer + ', ';
-                    });
-
-                    return prettyRes.substr(0, prettyRes.length - 2);
-                }
 
                 return rfq;
             });

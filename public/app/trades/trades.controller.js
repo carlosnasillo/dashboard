@@ -19,9 +19,9 @@
         .module('app')
         .controller('TradesController', TradesController);
 
-    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope', 'AuthenticationService'];
+    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope', 'AuthenticationService', 'ParseUtilsService'];
 
-    function TradesController(TradeService, TradesTableService, $scope, AuthenticationService) {
+    function TradesController(TradeService, TradesTableService, $scope, AuthenticationService, ParseUtilsService) {
         var vm = this;
 
         var currentAccount = AuthenticationService.getCurrentAccount();
@@ -44,7 +44,7 @@
             vm.tradesTable.loading = false;
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = $.extend(true,{},tradeObj);
-                trade.creditEvents = TradeService.prettifyList(tradeObj.creditEvents);
+                trade.creditEvents = ParseUtilsService.prettifyList(tradeObj.creditEvents);
                 trade.side = getSide(currentAccount, tradeObj.client);
 
                 return trade;

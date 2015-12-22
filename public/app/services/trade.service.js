@@ -20,9 +20,9 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', '$location'];
+    TradeService.$inject = ['$http', '$location', 'ParseUtilsService'];
 
-    function TradeService($http, $location) {
+    function TradeService($http, $location, ParseUtilsService) {
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
@@ -81,21 +81,11 @@
             }
         };
 
-        var prettifyList = function(uglyList) {
-            var prettyRes = "";
-            uglyList.map(function (dealer) {
-                prettyRes += dealer + ', ';
-            });
-
-            return prettyRes.substr(0, prettyRes.length - 2);
-        };
-
         return {
             submitTrade: submitTrade,
             getTradesByAccount: getTradesByAccount,
             parseTrade: parseTrade,
-            webSocket: webSocket,
-            prettifyList: prettifyList
+            webSocket: webSocket
         };
 
         function parseTrade(strTrade) {
@@ -109,7 +99,7 @@
                 durationInMonths: trade.durationInMonths,
                 client: trade.client,
                 dealer: trade.dealer,
-                creditEvents: prettifyList(trade.creditEvents),
+                creditEvents: ParseUtilsService.prettifyList(trade.creditEvents),
                 cdsValue: trade.cdsValue,
                 originator: trade.originator,
                 premium: trade.premium,
