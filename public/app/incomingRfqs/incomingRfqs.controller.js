@@ -19,9 +19,9 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService) {
         var vm = this;
 
         var now = moment();
@@ -68,7 +68,7 @@
         });
 
         vm.isExpired = function(timeout) {
-            return !isNumeric(timeout) || timeout <= 0;
+            return !FormUtilsService.isNumeric(timeout) || timeout <= 0;
         };
 
         vm.quote = QuoteModalService.quoteModal;
@@ -133,10 +133,6 @@
             else {
                 vm.quotesTable.options.data = [];
             }
-        }
-
-        function isNumeric(n) {
-            return !isNaN(parseFloat(n)) && isFinite(n);
         }
 
         function setUpTimeout(object) {

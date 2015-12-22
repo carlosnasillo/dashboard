@@ -19,10 +19,10 @@
         .module('app')
         .factory('QuoteModalService', QuoteModalService);
 
-    QuoteModalService.$inject = ['$uibModal'];
+    QuoteModalService.$inject = ['$uibModal', 'FormUtilsService'];
 
-    function QuoteModalService($uibModal) {
-        var quoteModal = function(referenceEntity, originator, rfqId, client, timeout) {
+    function QuoteModalService($uibModal, FormUtilsService) {
+        var quoteModal = function(loanId, originator, rfqId, client, timeout) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'assets/app/incomingRfqs/quoteModal.html',
                 controller: OrderModalInstanceCtrl,
@@ -36,8 +36,8 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, referenceEntity, originator, rfqId, client, timeout, QuotesService, AuthenticationService, SweetAlert) {
-            $scope.referenceEntity = referenceEntity;
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, rfqId, client, timeout, QuotesService, AuthenticationService, SweetAlert, FormUtilsService) {
+            $scope.loanId = loanId;
             $scope.originator = originator;
             $scope.timeout = timeout;
 
@@ -51,11 +51,11 @@
             $scope.conditions = {
                 premiumNotNumericNatural: function() {
                     var premium = $scope.form.premium;
-                    return ( !isNumeric(premium) || premium <= 0 ) && premium !== null;
+                    return ( !FormUtilsService.isNumeric(premium) || premium <= 0 ) && premium !== null;
                 },
                 windowInMinutesNotNumericNatural: function() {
                     var windowInMinutes = $scope.form.windowInMinutes;
-                    return ( !isNumeric(windowInMinutes) || windowInMinutes <= 0 ) && windowInMinutes !== null;
+                    return ( !FormUtilsService.isNumeric(windowInMinutes) || windowInMinutes <= 0 ) && windowInMinutes !== null;
                 },
                 premiumIsNull: function() {
                     return $scope.form.premium === null;
@@ -98,10 +98,6 @@
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
-
-            function isNumeric(n) {
-                return !isNaN(parseFloat(n)) && isFinite(n) || n === null;
-            }
 
             function closeModal() {
                 $scope.loading = false;

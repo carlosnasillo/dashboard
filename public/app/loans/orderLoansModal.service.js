@@ -19,9 +19,9 @@
         .module('app')
         .factory('OrderLoansModalService', OrderLoansModalService);
 
-    OrderLoansModalService.$inject = ['$uibModal'];
+    OrderLoansModalService.$inject = ['$uibModal', 'FormUtilsService'];
 
-    function OrderLoansModalService($uibModal) {
+    function OrderLoansModalService($uibModal, FormUtilsService) {
 
         return {
            orderModal: orderModal
@@ -41,7 +41,7 @@
             });
         }
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService, minInvestByOriginator, investorId) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService, minInvestByOriginator, investorId, FormUtilsService) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
@@ -67,7 +67,7 @@
                     return $scope.slider.value <= originatorMinInvest;
                 },
                 notNumeric: function() {
-                    return !isNumeric($scope.slider.value);
+                    return !FormUtilsService.isNumeric($scope.slider.value);
                 }
             };
 
@@ -109,10 +109,6 @@
                 );
 
                 closeModal();
-            }
-
-            function isNumeric(n) {
-                return !isNaN(parseFloat(n)) && isFinite(n);
             }
 
             function toCamelCase(str) {
