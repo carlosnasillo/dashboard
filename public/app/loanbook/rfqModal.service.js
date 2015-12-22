@@ -34,7 +34,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, SweetAlert, FormUtilsService) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, AlertsService, FormUtilsService) {
             $scope.loanId = loanId;
             $scope.originator = originator;
 
@@ -112,7 +112,14 @@
                     AuthenticationService.getCurrentAccount(),
                     loanId,
                     originator
-                ).then( orderSuccess, orderError );
+                ).then(
+                    AlertsService.rfq.success(function() {
+                        closeModal();
+                    }),
+                    AlertsService.rfq.error(function() {
+                        closeModal();
+                    })
+                );
             };
 
             $scope.cancel = function () {
@@ -122,26 +129,6 @@
             function closeModal() {
                 $scope.loading = false;
                 $modalInstance.close();
-            }
-
-            function orderSuccess() {
-                SweetAlert.swal(
-                    "Done !",
-                    "RFQ submitted !",
-                    "success"
-                );
-                closeModal();
-
-            }
-
-            function orderError() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-                closeModal();
-
             }
         }
 

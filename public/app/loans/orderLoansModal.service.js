@@ -41,7 +41,7 @@
             });
         }
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService, minInvestByOriginator, investorId, FormUtilsService) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, AlertsService, LoansService, minInvestByOriginator, investorId, FormUtilsService) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
@@ -75,7 +75,15 @@
 
             $scope.ok = function () {
                 $scope.loading = true;
-                LoansService.submitOrder($scope.investorId, loanId, $scope.slider.value).then( orderSuccess, orderError );
+                LoansService.submitOrder($scope.investorId, loanId, $scope.slider.value)
+                    .then(
+                        AlertsService.order.success(function() {
+                            closeModal();
+                        }),
+                        AlertsService.order.error(function() {
+                            closeModal();
+                        })
+                    );
             };
 
             $scope.cancel = function () {
@@ -87,26 +95,6 @@
                 $modalInstance.close();
             }
 
-            function orderSuccess() {
-                SweetAlert.swal(
-                    "Done !",
-                    "Your order has been placed !",
-                    "success"
-                );
-
-                closeModal();
-            }
-
-            function orderError() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-
-                closeModal();
-            }
-
             function toCamelCase(str) {
                 return str
                     .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
@@ -115,6 +103,4 @@
             }
         }
     }
-
-
 })();

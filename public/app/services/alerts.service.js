@@ -22,6 +22,17 @@
     AlertsService.$inject = ['SweetAlert'];
 
     function AlertsService(SweetAlert) {
+        var genericError = function(quote, callback) {
+            return function() {
+                SweetAlert.swal(
+                    "Oops...",
+                    "Something went wrong !",
+                    "error"
+                );
+                callback(quote);
+            };
+        };
+
         var acceptSuccess = function(quote, callback) {
             return function() {
                 SweetAlert.swal(
@@ -33,21 +44,50 @@
             };
         };
 
-        var acceptError = function(quote, callback) {
-            return function() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-                callback(quote);
-            };
+        var orderSuccess = function(callback) {
+            SweetAlert.swal(
+                "Done !",
+                "Your order has been placed !",
+                "success"
+            );
+
+            callback();
+        };
+
+        var submitQuoteSuccess = function(callback) {
+            SweetAlert.swal(
+                "Done !",
+                "Quote submitted !",
+                "success"
+            );
+            callback();
+        };
+
+        var rfqSuccess = function(callback) {
+            SweetAlert.swal(
+                "Done !",
+                "RFQ submitted !",
+                "success"
+            );
+            callback();
         };
 
         return {
             accept: {
                 success: acceptSuccess,
-                error: acceptError
+                error: genericError
+            },
+            order: {
+                success: orderSuccess,
+                error: genericError
+            },
+            quote: {
+                success: submitQuoteSuccess,
+                error: genericError
+            },
+            rfq: {
+                success: rfqSuccess,
+                error: genericError
             }
         };
     }
