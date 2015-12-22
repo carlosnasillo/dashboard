@@ -121,11 +121,21 @@
                 client: rfq.client,
                 dealers: rfq.dealers,
                 creditEvents: rfq.creditEvents,
+                prettyCreditEvents: prettifyList(rfq.creditEvents),
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
                 cdsValue: rfq.cdsValue,
                 loanId: rfq.loanId,
                 originator: rfq.originator
             };
+        };
+
+        var prettifyList = function(uglyList) {
+            var prettyRes = "";
+            uglyList.map(function (dealer) {
+                prettyRes += dealer + ', ';
+            });
+
+            return prettyRes.substr(0, prettyRes.length - 2);
         };
 
         return {
@@ -135,13 +145,15 @@
             parseRfq: parseRfq,
             clientWs: clientsWs,
             dealerWs: dealersWs,
-            getRfqById: getRfqById
+            getRfqById: getRfqById,
+            prettifyList: prettifyList
         };
 
         function getMyCallback(callbacksPool) {
             return function(evt) {
                 $.map(callbacksPool, function(callback) {
-                    callback(evt);
+                    var rfqObj = parseRfq(evt.data);
+                    callback(rfqObj);
                 });
             };
         }

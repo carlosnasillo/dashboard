@@ -19,13 +19,13 @@
         .module('app')
         .factory('PopupService', PopupService);
 
-    PopupService.$inject = ['notify', 'TradeService', 'RfqService', 'AlertsService'];
+    PopupService.$inject = ['notify', 'TradeService', 'RfqService', 'AlertsService', 'QuoteModalService'];
 
-    function PopupService(notify, TradeService, RfqService, AlertsService) {
-        var wsDealerCallback = function(childScope) {
+    function PopupService(notify, TradeService, RfqService, AlertsService, QuoteModalService) {
+        var newQuoteCallback = function(childScope) {
             return function(quoteObject) {
                 childScope.quote = setUpTimeout(quoteObject);
-                childScope.accept = function(quote, closeMethod) {
+                childScope.accept = function(quote, closeNotification) {
                     quote.loading = true;
 
                     RfqService.getRfqById(quote.rfqId).success(function(rfq) {
@@ -33,22 +33,35 @@
                             .then(
                                 AlertsService.accept.success(quote, function(quote) {
                                     quote.loading = false;
-                                    closeMethod();
+                                    closeNotification();
                                 }),
                                 AlertsService.accept.error(quote, function(quote) {
                                     quote.loading = false;
-                                    closeMethod();
+                                    closeNotification();
                                 })
                             );
                     });
                 };
 
-                notify({scope: childScope, templateUrl: 'assets/app/popup/popup.html', position: 'right', duration: '10000'});
+                notify({scope: childScope, templateUrl: 'assets/app/popup/newQuotePopup.html', position: 'right', duration: '10000'});
+            };
+        };
+
+        var newRfqCallback = function(childScope) {
+            return function(rfqObject) {
+                childScope.rfq = setUpTimeout(rfqObject);
+                childScope.quote = function(rfq, closeNotification) {
+                    QuoteModalService.quoteModal(rfq.loanId, rfq.originator, rfq.id, rfq.client, rfq.timeout);
+                    closeNotification();
+                };
+
+                notify({scope: childScope, templateUrl: 'assets/app/popup/newRfqPopup.html', position: 'right', duration: '10000'});
             };
         };
 
         return {
-            wsDealerCallback: wsDealerCallback
+            newQuoteCallback: newQuoteCallback,
+            newRfqCallback: newRfqCallback
         };
 
         function setUpTimeout(object) {

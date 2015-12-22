@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright (c) 2015 Lattice Markets, All rights reserved.
+  ~
+  ~ Unpublished copyright. All rights reserved. This material contains
+  ~ proprietary information that shall be used or copied only with
+  ~ Lattice Markets, except with written permission of Lattice Markets.
+  ~
+  -->
+
+<div class="cg-notify-message ibox-content" ng-class="[$classes,
+    $position === 'center' ? 'cg-notify-message-center' : '',
+    $position === 'left' ? 'cg-notify-message-left' : '',
+    $position === 'right' ? 'cg-notify-message-right' : '']"
+     ng-style="{'margin-left': $centerMargin}">
+
+    <div class="cg-notify-message-template">
+        <h2>
+            New RFQ !
+        </h2>
+        <ul class="list-unstyled m-t-md">
+            <li>
+                <span class="fa fa-calendar m-r-xs"></span>
+                <label>Timestamp:</label>
+                {{rfq.timestamp | date : 'dd/MM/yyyy HH:mm'}}
+            </li>
+            <li>
+                <span class="fa fa-arrows-h m-r-xs"></span>
+                <label>Duration in months:</label>
+                {{rfq.durationInMonths}}
+            </li>
+            <li>
+                <span class="fa fa-bars m-r-xs"></span>
+                <label>Credit Events:</label>
+                {{rfq.prettyCreditEvents}}
+            </li>
+            <li>
+                <span class="fa fa-clock-o m-r-xs"></span>
+                <label>Timeout:</label>
+                {{rfq.timeout}}
+            </li>
+            <li>
+                <span class="fa fa-dollar m-r-xs"></span>
+                <label>CDS Value:</label>
+                {{rfq.cdsValue | currency}}
+            </li>
+        </ul>
+        <div class="text-center">
+            <button type="button" class="btn btn-w-m btn-success" ng-click="quote(rfq, $close)">Quote</button>
+            <button type="button" class="btn btn-w-m btn-danger" ng-click="$close()">Ignore</button>
+        </div>
+    </div>
+</div>
