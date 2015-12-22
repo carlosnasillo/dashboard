@@ -20,11 +20,9 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', '$location', 'ParseUtilsService'];
+    TradeService.$inject = ['$http', 'ParseUtilsService'];
 
-    function TradeService($http, $location, ParseUtilsService) {
-        var websocket;
-        var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+    function TradeService($http, ParseUtilsService) {
 
         var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium, referenceEntity) {
             var element = {
@@ -46,39 +44,10 @@
             return $http.get('/api/trades/' + currentAccount);
         };
 
-        var wsCallbackPool = {};
-
         var webSocket = {
-            openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/trades/stream/' + currentAccount;
-
-                websocket = new WebSocket(wsUri);
-
-                var onOpen = function() { console.log('== Trades WebSocket Opened =='); };
-                var onClose = function() { console.log('== Trades WebSocket Closed =='); };
-                var onError = function(evt) { console.log('Trades WebSocket Error :', evt); };
-
-                websocket.onopen = onOpen;
-                websocket.onclose = onClose;
-                websocket.onmessage = function(evt) {
-                    $.map(wsCallbackPool, function(callback) {
-                        var tradeObj = parseTrade(evt.data);
-                        callback(tradeObj);
-                    });
-                };
-                websocket.onerror = onError;
-            },
-            addCallback: function(name, callback) {
-                wsCallbackPool[name] = callback;
-            },
-            removeCallback: function(name) {
-                delete wsCallbackPool[name];
-            },
-            closeStream: function() {
-                websocket.onclose = function () {};
-                websocket.close();
-                console.log("== Trades WebSocket Closed ==");
-            }
+            uri: '/api/trades/stream/',
+            name: 'Trades',
+            parsingFunction: parseTrade
         };
 
         return {

@@ -19,13 +19,9 @@
         .module('app')
         .factory('RfqService', RfqService);
 
-    RfqService.$inject = ['$http', '$location', 'ParseUtilsService'];
+    RfqService.$inject = ['$http', 'ParseUtilsService'];
 
-    function RfqService($http, $location, ParseUtilsService) {
-        var dealersWebSocket;
-        var clientsWebSocket;
-
-        var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+    function RfqService($http, ParseUtilsService) {
 
         var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntity, originator) {
             var element = {
@@ -42,9 +38,6 @@
             return $http.post('/api/rfqs', element);
         };
 
-        var wsDealersCallbacksPool = {};
-        var wsClientsCallbacksPool = {};
-
         var getRfqById = function(id) {
             return $http.get('/api/rfqs/' + id);
         };
@@ -55,60 +48,6 @@
 
         var getRfqForDealer = function(currentAccount) {
             return $http.get('/api/rfqs/dealer/' + currentAccount);
-        };
-
-        var dealersWs = {
-            openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/dealer/' + currentAccount;
-
-                dealersWebSocket = new WebSocket(wsUri);
-                var onOpen = function() { console.log('== RFQs for dealers WebSocket Opened =='); };
-                var onClose = function() { console.log('== RFQs for dealers WebSocket Closed =='); };
-                var onError = function(evt) { console.log('RFQs for dealers WebSocket Error :', evt); };
-
-                dealersWebSocket.onopen = onOpen;
-                dealersWebSocket.onclose = onClose;
-                dealersWebSocket.onmessage = getMyCallback(wsDealersCallbacksPool);
-                dealersWebSocket.onerror = onError;
-            },
-            addCallback: function(name, callback) {
-                wsDealersCallbacksPool[name] = callback;
-            },
-            removeCallback: function(name) {
-                delete wsDealersCallbacksPool[name];
-            },
-            closeStream: function() {
-                dealersWebSocket.onclose = function () {};
-                dealersWebSocket.close();
-                console.log("== RFQs for dealers WebSocket Closed ==");
-            }
-        };
-
-        var clientsWs = {
-            openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/rfqs/stream/client/' + currentAccount;
-
-                clientsWebSocket = new WebSocket(wsUri);
-                var onOpen = function() { console.log('== RFQs for clients WebSocket Opened =='); };
-                var onClose = function() { console.log('== RFQs for clients WebSocket Closed =='); };
-                var onError = function(evt) { console.log('RFQs for clients WebSocket Error :', evt); };
-
-                clientsWebSocket.onopen = onOpen;
-                clientsWebSocket.onclose = onClose;
-                clientsWebSocket.onmessage = getMyCallback(wsClientsCallbacksPool);
-                clientsWebSocket.onerror = onError;
-            },
-            addCallback: function(name, callback) {
-                wsClientsCallbacksPool[name] = callback;
-            },
-            removeCallback: function(name) {
-                delete wsClientsCallbacksPool[name];
-            },
-            closeStream: function() {
-                clientsWebSocket.onclose = function () {};
-                clientsWebSocket.close();
-                console.log("== RFQs for clients WebSocket Closed ==");
-            }
         };
 
         var parseRfq = function(strRfq) {
@@ -130,6 +69,18 @@
             };
         };
 
+        var dealersWs = {
+            uri: '/api/rfqs/stream/dealer/',
+            name: 'RFQs for dealers',
+            parsingFunction: parseRfq
+        };
+
+        var clientsWs = {
+            uri: '/api/rfqs/stream/client/',
+            name: 'RFQs for clients',
+            parsingFunction: parseRfq
+        };
+
         return {
             submitRfq: submitRfq,
             getRfqForDealer: getRfqForDealer,
@@ -139,21 +90,5 @@
             dealerWs: dealersWs,
             getRfqById: getRfqById
         };
-
-        function prepareObject(evt) {
-            var rfqObj = parseRfq(evt.data);
-            rfqObj.dealers = ParseUtilsService.prettifyList(rfqObj.dealers);
-            rfqObj.prettyCreditEvents = ParseUtilsService.prettifyList(rfqObj.creditEvents);
-            return rfqObj;
-        }
-
-        function getMyCallback(callbacksPool) {
-            return function(evt) {
-                $.map(callbacksPool, function(callback) {
-                    var rfqObj = prepareObject(evt);
-                    callback(rfqObj);
-                });
-            };
-        }
     }
 })();

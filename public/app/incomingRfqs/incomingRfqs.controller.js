@@ -19,9 +19,9 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'ParseUtilsService'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, ParseUtilsService) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
         var vm = this;
 
         var currentAccount = AuthenticationService.getCurrentAccount();
@@ -38,7 +38,7 @@
         vm.rfqTable = {};
         vm.rfqTable.options = RfqsTableForDealerService.options();
 
-        RfqService.dealerWs.addCallback(rfqsCallbackName, function(rfqObject) {
+        WebSocketsManager.webSockets.rfq.dealer.addCallback(rfqsCallbackName, function(rfqObject) {
             rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
 
             if (vm.rfqTable.options.data) {
@@ -69,7 +69,8 @@
         vm.quote = QuoteModalService.quoteModal;
 
         $scope.$on('$destroy', function() {
-            RfqService.dealerWs.removeCallback(rfqsCallbackName);
+            WebSocketsManager.webSockets.rfq.dealer.removeCallback(rfqsCallbackName);
+            WebSocketsManager.webSockets.quotes.dealer.removeCallback(quoteCallbackName);
         });
 
         /**
@@ -91,7 +92,7 @@
             });
         });
 
-        QuotesService.dealerWs.addCallback(quoteCallbackName, function(quoteObj) {
+        WebSocketsManager.webSockets.quotes.dealer.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = TimeoutManagerService.setUpTimeout(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {

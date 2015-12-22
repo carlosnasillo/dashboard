@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'ParseUtilsService'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, ParseUtilsService) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
         var vm = this;
 
         var quotesByRfqId = {};
@@ -37,7 +37,7 @@
         vm.rfqsTable.options = RfqsTableService.options();
         var rfqCallbackName = 'clientRfqTable';
 
-        RfqService.clientWs.addCallback(rfqCallbackName, function(rfqObject) {
+        WebSocketsManager.webSockets.quotes.client.addCallback(rfqCallbackName, function(rfqObject) {
             vm.rfqsTable.loading = false;
 
             rfqObject.expired = false;
@@ -93,7 +93,7 @@
             });
         });
 
-        QuotesService.clientWs.addCallback(quoteCallbackName, function(quoteObj) {
+        WebSocketsManager.webSockets.quotes.client.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = prepareQuote(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
@@ -160,8 +160,8 @@
         };
 
         $scope.$on('$destroy', function() {
-            RfqService.clientWs.removeCallback(rfqCallbackName);
-            QuotesService.clientWs.removeCallback(quoteCallbackName);
+            WebSocketsManager.webSockets.rfq.client.removeCallback(rfqCallbackName);
+            WebSocketsManager.webSockets.quotes.client.removeCallback(quoteCallbackName);
         });
 
         function prepareQuote(quote) {
