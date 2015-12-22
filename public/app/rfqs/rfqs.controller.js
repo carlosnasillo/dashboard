@@ -31,8 +31,6 @@
         /**
          * Top table
          */
-        var now = moment();
-
         vm.rfqsTable = { options: {} };
         vm.rfqsTable.loading = true;
 
@@ -44,7 +42,7 @@
 
             rfqObject.expired = false;
 
-            setUpTimeout(rfqObject);
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
 
             if (vm.rfqsTable.options.data) {
                 vm.rfqsTable.options.data.push(rfqObject);
@@ -64,7 +62,7 @@
                 rfq.prettyDealers = ParseUtilsService.prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.expired = false;
-                setUpTimeout(rfq);
+                rfq = TimeoutManagerService.setUpTimeout(rfq);
 
                 return rfq;
             });
@@ -167,35 +165,11 @@
         });
 
         function prepareQuote(quote) {
-            quote = setUpTimeout(quote);
+            quote = TimeoutManagerService.setUpTimeout(quote);
             quote.rfqExpired = false;
             quote.loading = false;
             quote.accepted = false;
             return quote;
-        }
-
-        function setUpTimeout(object) {
-            var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
-            var diff = deadline.diff(now);
-            var duration = Math.round(moment.duration(diff).asSeconds());
-            var counter = setInterval(function () {
-                if (object.timeout == "Accepted") {
-                    clearInterval(counter);
-                }
-                else {
-                    if (duration > 0) {
-                        duration = duration - 1;
-                        object.timeout = duration;
-                    }
-                    else {
-                        object.timeout = "Expired";
-                        object.expired = true;
-                        clearInterval(counter);
-                    }
-                }
-            }, 1000);
-
-            return object;
         }
     }
 })();

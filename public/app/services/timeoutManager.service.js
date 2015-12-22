@@ -22,25 +22,31 @@
     TimeoutManagerService.$inject = [];
 
     function TimeoutManagerService() {
-        var setUpTimeout = function(object) {
+        function setUpTimeout(object) {
             var now = moment();
             var newObj = $.extend({},object);
-            var deadline = moment(object.timestamp).add(object.timeWindowInMinutes, 'minutes');
+            var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());
             var counter = setInterval(function () {
-                if (duration > 0) {
-                    duration = duration - 1;
-                    newObj.timeout = duration;
+                if (newObj.timeout == "Accepted") {
+                    clearInterval(counter);
                 }
                 else {
-                    newObj.timeout = "Expired";
-                    clearInterval(counter);
+                    if (duration > 0) {
+                        duration = duration - 1;
+                        newObj.timeout = duration;
+                    }
+                    else {
+                        newObj.timeout = "Expired";
+                        newObj.expired = true;
+                        clearInterval(counter);
+                    }
                 }
             }, 1000);
 
             return newObj;
-        };
+        }
 
         return {
             setUpTimeout: setUpTimeout
