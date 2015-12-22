@@ -89,7 +89,7 @@
         QuotesService.getQuotesByDealerGroupByRfqId(currentAccount).success(function(data) {
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
-                    var quote = Object.create(quoteObj);
+                    var quote = $.extend(true,{},quoteObj);
                     quote = setUpTimeout(quote);
 
                     return quote;
@@ -141,7 +141,7 @@
         }
 
         function setUpTimeout(object) {
-            var newObj = Object.create(object);
+            var newObj = $.extend(true,{},object);
             var deadline = moment(object.timestamp).add(object.timeWindowInMinutes, 'minutes');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());

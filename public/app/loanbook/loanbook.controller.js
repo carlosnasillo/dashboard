@@ -28,7 +28,7 @@
         vm.loanBookTable.options = LoanBookTableService.options;
 
         LoanBookService.loanBookData().then(function(data) {
-            vm.loanBookTable.options.data = Object.create(data);
+            vm.loanBookTable.options.data = $.extend(true,{},data);
         });
 
         vm.order = RfqModalService.orderModal;

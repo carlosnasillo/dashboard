@@ -43,7 +43,7 @@
         TradeService.getTradesByAccount(currentAccount).success(function(data) {
             vm.tradesTable.loading = false;
             vm.tradesTable.options.data = data.map(function(tradeObj) {
-                var trade = Object.create(tradeObj);
+                var trade = $.extend(true,{},tradeObj);
                 trade.creditEvents = TradeService.prettifyList(tradeObj.creditEvents);
                 trade.side = getSide(currentAccount, tradeObj.client);
 

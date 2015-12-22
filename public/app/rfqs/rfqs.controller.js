@@ -24,7 +24,7 @@
     function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, SweetAlert, $timeout, AuthenticationService) {
         var vm = this;
 
-        var quotesByRfqId = [];
+        var quotesByRfqId = {};
 
         var currentAccount = AuthenticationService.getCurrentAccount();
 
@@ -73,14 +73,12 @@
         RfqService.getRfqForClient(currentAccount).success(function(data) {
             vm.rfqsTable.loading = false;
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
-                var rfq = Object.create(rfqObj);
+                var rfq = $.extend(true,{},rfqObj);
 
                 rfq.prettyDealers = prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
                 rfq.expired = false;
                 setUpTimeout(rfq);
-
-                quotesByRfqId[rfq.id] = [];
 
                 function prettifyList(uglyList) {
                     var prettyRes = "";
@@ -115,8 +113,8 @@
 
         QuotesService.getQuotesByClientGroupByRfqId(currentAccount).success(function(data) {
             $.map(data, function(v, k) {
-                data[k] = v.map(function(quoteObj) {
-                    var quote = Object.create(quoteObj);
+                quotesByRfqId[k] = v.map(function(quoteObj) {
+                    var quote = $.extend(true,{},quoteObj);
                     quote = setUpTimeout(quote);
                     quote.rfqExpired = false;
                     quote.loading = false;
@@ -124,7 +122,6 @@
                     return quote;
                 });
             });
-            quotesByRfqId = data;
         });
 
         var onNewQuote = function(quoteObj) {
