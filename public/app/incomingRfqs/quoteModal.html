@@ -18,12 +18,12 @@
                 <label for="premium">Premium</label>
                 <div class="input-group m-b">
                     <span class="input-group-addon">$</span>
-                    <input id="premium" type="text" class="form-control" data-ng-model="form.premium">
+                    <input id="premium" type="text" class="form-control" data-ng-model="form.premium" ng-enter="ok()" >
                 </div>
             </div>
             <div class="form-group">
                 <label for="windowInMinutes">Time window (in minutes)</label>
-                <input id="windowInMinutes" type="text" class="form-control" data-ng-model="form.windowInMinutes">
+                <input id="windowInMinutes" type="text" class="form-control" data-ng-model="form.windowInMinutes" ng-enter="ok()" >
             </div>
             <div data-ng-show="loading" class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
