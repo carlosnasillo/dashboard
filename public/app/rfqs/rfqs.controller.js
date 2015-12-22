@@ -89,21 +89,14 @@
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
-                    quote = setUpTimeout(quote);
-                    quote.rfqExpired = false;
-                    quote.loading = false;
-                    quote.accepted = false;
+                    quote = prepareQuote(quote);
                     return quote;
                 });
             });
         });
 
         QuotesService.clientWs.addCallback(quoteCallbackName, function(quoteObj) {
-            quoteObj = setUpTimeout(quoteObj);
-
-            quoteObj.rfqExpired = false;
-            quoteObj.loading = false;
-            quoteObj.accepted = false;
+            quoteObj = prepareQuote(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
@@ -175,6 +168,14 @@
 
         function isExpired(timeout) {
             return !FormUtilsService.isNumeric(timeout) || timeout <= 0;
+        }
+
+        function prepareQuote(quote) {
+            quote = setUpTimeout(quote);
+            quote.rfqExpired = false;
+            quote.loading = false;
+            quote.accepted = false;
+            return quote;
         }
 
         function setUpTimeout(object) {
