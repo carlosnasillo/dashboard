@@ -41,7 +41,6 @@
 
         var onWebSocketMessage = function(rfqObject) {
             rfqObject = setUpTimeout(rfqObject);
-            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
 
             if (vm.rfqTable.options.data) {
                 vm.rfqTable.options.data.push(rfqObject);
@@ -56,7 +55,7 @@
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
                 var rfq = setUpTimeout(rfqObj);
-                rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
+                rfq.prettyCreditEvents = RfqService.prettifyList(rfq.creditEvents);
 
                 return rfq;
             });
@@ -141,7 +140,7 @@
         }
 
         function setUpTimeout(object) {
-            var newObj = $.extend(true,{},object);
+            var newObj = $.extend({},object);
             var deadline = moment(object.timestamp).add(object.timeWindowInMinutes, 'minutes');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());
@@ -157,15 +156,6 @@
             }, 1000);
 
             return newObj;
-        }
-
-        function prettifyList(uglyList) {
-            var prettyRes = "";
-            uglyList.map(function (dealer) {
-                prettyRes += dealer + ', ';
-            });
-
-            return prettyRes.substr(0, prettyRes.length - 2);
         }
     }
 })();
