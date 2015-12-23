@@ -86,6 +86,10 @@
                     console.log(name + ' WebSocket Error :', evt);
                 };
 
+                setInterval(function() {
+                    webSocketService.webSocket.send(JSON.stringify("Keep alive !"));
+                }, 30000);
+
                 webSocketService.webSocket.onopen = onOpen;
                 webSocketService.webSocket.onclose = onClose;
                 webSocketService.webSocket.onmessage = callAllCallbacks(webSocketService.callbacksPool, parsingFunction);
