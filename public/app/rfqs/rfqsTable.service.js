@@ -35,7 +35,8 @@
                 columnDefs: [
                     {
                         field: 'referenceEntity',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
                     },
                     {
                         field: 'timestamp',
