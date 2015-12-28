@@ -73,7 +73,7 @@
                     {
                         field: 'id',
                         displayName: 'Quote',
-                        cellTemplate: "<div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.referenceEntity, row.entity.originator, row.entity.id, row.entity.client, row.entity.timeout)'>Quote</button></div>",
+                        cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.referenceEntity, row.entity.originator, row.entity.id, row.entity.client, row.entity.timeout)'>Quote</button></div></div>",
                         enableFiltering: false,
                         headerCellClass: 'text-center'
                     }

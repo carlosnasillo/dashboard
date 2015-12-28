@@ -86,7 +86,7 @@
                     field: 'id',
                     headerCellClass: 'text-center',
                     displayName: 'RFQ',
-                    cellTemplate: "<div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.originator)'>RFQ</span></div>",
+                    cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.originator)'>RFQ</span></div></div>",
                     enableFiltering: false
                 }
             ]
