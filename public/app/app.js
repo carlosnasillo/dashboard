@@ -48,7 +48,7 @@
                 controller: "RFQsController",
                 controllerAs: 'vm'
             })
-            .when('/loanbook', {
+            .when('/loanbook/:loanId?', {
                 templateUrl: "assets/app/loanbook/loanbook.html",
                 controller: "LoanBookController",
                 controllerAs: 'vm'
