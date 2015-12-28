@@ -31,7 +31,8 @@ case class Quote(
                   premium: BigDecimal,
                   timeWindowInMinutes: Int,
                   client: String,
-                  dealer: String
+                  dealer: String,
+                  referenceEntity: String
                 )
 
 object Quote {

@@ -27,6 +27,11 @@
             enableColumnMenus: false,
             enableSorting: true,
             enableFiltering: true,
+            enableRowSelection: true,
+            multiSelect: false,
+            modifierKeysToMultiSelect: false,
+            noUnselect: true,
+            enableRowHeaderSelection: false,
             columnDefs: [
                 {
                     field: 'originator',

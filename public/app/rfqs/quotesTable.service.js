@@ -36,6 +36,11 @@
                         cellFilter: 'date:"HH:mm:ss"'
                     },
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center',
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
+                    },
+                    {
                         field: 'id',
                         headerCellClass: 'text-center'
                     },

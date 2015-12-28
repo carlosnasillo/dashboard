@@ -56,7 +56,8 @@ class Trades extends Controller {
         "creditEvents" -> list(nonEmptyText),
         "cdsValue" -> bigDecimal,
         "originator" -> nonEmptyText,
-        "premium" -> bigDecimal
+        "premium" -> bigDecimal,
+        "referenceEntity" -> nonEmptyText
       )(Trade.apply)(Trade.unapply)
     )
 

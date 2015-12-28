@@ -34,6 +34,11 @@
                 enableRowHeaderSelection: false,
                 columnDefs: [
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center',
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
+                    },
+                    {
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',

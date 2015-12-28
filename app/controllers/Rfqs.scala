@@ -68,7 +68,7 @@ class Rfqs extends Controller {
         "timeWindowInMinutes" -> number,
         "isValid" -> boolean,
         "cdsValue" -> bigDecimal,
-        "loanId" -> nonEmptyText,
+        "referenceEntity" -> nonEmptyText,
         "originator" -> nonEmptyText
       )(Rfq.apply)(Rfq.unapply)
     )

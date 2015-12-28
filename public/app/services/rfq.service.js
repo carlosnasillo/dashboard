@@ -27,7 +27,7 @@
 
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
-        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, loanId, originator) {
+        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntity, originator) {
             var element = {
                 durationInMonths: duration,
                 creditEvents: creditEvents,
@@ -36,7 +36,7 @@
                 cdsValue: cdsValue,
                 client: client,
                 isValid: true,
-                loanId: loanId,
+                referenceEntity: referenceEntity,
                 originator: originator
             };
             return $http.post('/api/rfqs', element);
@@ -124,7 +124,7 @@
                 prettyCreditEvents: prettifyList(rfq.creditEvents),
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
                 cdsValue: rfq.cdsValue,
-                loanId: rfq.loanId,
+                referenceEntity: rfq.referenceEntity,
                 originator: rfq.originator
             };
         };

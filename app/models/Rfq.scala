@@ -34,7 +34,7 @@ case class Rfq(
                 timeWindowInMinutes: Int,
                 isValid: Boolean,
                 cdsValue: BigDecimal,
-                loanId: String,
+                referenceEntity: String,
                 originator: String
               )
 

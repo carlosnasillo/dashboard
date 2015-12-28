@@ -20,13 +20,13 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', '$location', 'RfqService'];
+    TradeService.$inject = ['$http', '$location'];
 
-    function TradeService($http, $location, RfqService) {
+    function TradeService($http, $location) {
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
-        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium) {
+        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium, referenceEntity) {
             var element = {
                 rfqId: rfqId,
                 quoteId: quoteId,
@@ -36,7 +36,8 @@
                 creditEvents: creditEvents,
                 cdsValue: cdsValue,
                 originator: originator,
-                premium: premium
+                premium: premium,
+                referenceEntity: referenceEntity
             };
             return $http.post('/api/trades', element);
         };
@@ -111,7 +112,8 @@
                 creditEvents: prettifyList(trade.creditEvents),
                 cdsValue: trade.cdsValue,
                 originator: trade.originator,
-                premium: trade.premium
+                premium: trade.premium,
+                referenceEntity: trade.referenceEntity
             };
         }
     }

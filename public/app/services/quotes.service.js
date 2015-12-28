@@ -25,14 +25,15 @@
         var websocket;
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
-        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer) {
+        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer, referenceEntity) {
             var element = {
                 rfqId: rfqId,
                 premium: premium,
                 timeWindowInMinutes: timeWindowInMinutes,
                 client: client,
-                dealer: dealer
-           };
+                dealer: dealer,
+                referenceEntity: referenceEntity
+            };
 
             return $http.post('/api/quotes', element);
         };
@@ -114,7 +115,8 @@
                 premium: quote.premium,
                 timeWindowInMinutes: quote.timeWindowInMinutes,
                 client: quote.client,
-                dealer: quote.dealer
+                dealer: quote.dealer,
+                referenceEntity: referenceEntity
             };
         }
 

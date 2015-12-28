@@ -43,6 +43,11 @@
                         cellFilter: 'date:"HH:mm:ss"'
                     },
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center',
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
+                    },
+                    {
                         field: 'client',
                         headerCellClass: 'text-center'
                     },
@@ -68,7 +73,7 @@
                     {
                         field: 'id',
                         displayName: 'Quote',
-                        cellTemplate: "<div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.loanId, row.entity.originator, row.entity.id, row.entity.client, row.entity.timeout)'>Quote</button></div>",
+                        cellTemplate: "<div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.referenceEntity, row.entity.originator, row.entity.id, row.entity.client, row.entity.timeout)'>Quote</button></div>",
                         enableFiltering: false,
                         headerCellClass: 'text-center'
                     }
