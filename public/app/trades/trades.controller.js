@@ -19,9 +19,9 @@
         .module('app')
         .controller('TradesController', TradesController);
 
-    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope', 'AuthenticationService'];
+    TradesController.$inject = ['TradeService', 'TradesTableService', '$scope', 'AuthenticationService', 'WebSocketsManager', 'ParseUtilsService'];
 
-    function TradesController(TradeService, TradesTableService, $scope, AuthenticationService) {
+    function TradesController(TradeService, TradesTableService, $scope, AuthenticationService, WebSocketsManager, ParseUtilsService) {
         var vm = this;
 
         var currentAccount = AuthenticationService.getCurrentAccount();
@@ -44,14 +44,14 @@
             vm.tradesTable.loading = false;
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = $.extend(true,{},tradeObj);
-                trade.creditEvents = TradeService.prettifyList(tradeObj.creditEvents);
+                trade.creditEvents = ParseUtilsService.prettifyList(tradeObj.creditEvents);
                 trade.side = getSide(currentAccount, tradeObj.client);
 
                 return trade;
             });
         });
 
-        TradeService.webSocket.addCallback(callbackName, function(tradeObject) {
+        WebSocketsManager.webSockets.trades.addCallback(callbackName, function(tradeObject) {
             vm.tradesTable.loading = false;
             tradeObject.side = getSide(currentAccount, tradeObject.client);
 
@@ -65,7 +65,7 @@
         });
 
         $scope.$on('$destroy', function() {
-            TradeService.webSocket.removeCallback(callbackName);
+            WebSocketsManager.webSockets.trades.removeCallback(callbackName);
         });
 
         function getSide(currentAccount, client) {

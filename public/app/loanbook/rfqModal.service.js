@@ -34,7 +34,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, SweetAlert) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, AlertsService, FormUtilsService) {
             $scope.loanId = loanId;
             $scope.originator = originator;
 
@@ -51,15 +51,15 @@
             $scope.conditions = {
                 durationNotNumericNatural: function() {
                     var duration = $scope.form.duration;
-                    return ( !isNumeric(duration) || duration <= 0 ) && duration !== null;
+                    return ( !FormUtilsService.isNumeric(duration) || duration <= 0 ) && duration !== null;
                 },
                 quoteWindowNotNumericNatural: function() {
                     var quoteWindow = $scope.form.quoteWindow;
-                    return ( !isNumeric(quoteWindow) || quoteWindow <= 0 ) && quoteWindow !== null;
+                    return ( !FormUtilsService.isNumeric(quoteWindow) || quoteWindow <= 0 ) && quoteWindow !== null;
                 },
                 cdsValueNotNumericNatural: function() {
                     var cdsValue = $scope.form.cdsValue;
-                    return ( !isNumeric(cdsValue) || cdsValue <= 0 ) && cdsValue !== null;
+                    return ( !FormUtilsService.isNumeric(cdsValue) || cdsValue <= 0 ) && cdsValue !== null;
                 },
                 creditEventIsEmpty: function() {
                     return $scope.form.creditEvent.length === 0;
@@ -78,16 +78,7 @@
                 }
             };
 
-            $scope.submitButtonDisabled = function() {
-                return $scope.conditions.durationNotNumericNatural() ||
-                    $scope.conditions.durationIsNull() ||
-                    $scope.conditions.quoteWindowNotNumericNatural() ||
-                    $scope.conditions.quoteWindowIsNull() ||
-                    $scope.conditions.cdsValueNotNumericNatural() ||
-                    $scope.conditions.cdsValueIsNull() ||
-                    $scope.conditions.creditEventIsEmpty() ||
-                    $scope.conditions.counterpartyIsEmpty();
-            };
+            $scope.submitButtonDisabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.selectUtils = {
                 banks: {
@@ -121,40 +112,23 @@
                     AuthenticationService.getCurrentAccount(),
                     loanId,
                     originator
-                ).then( orderSuccess, orderError );
+                ).then(
+                    AlertsService.rfq.success(function() {
+                        closeModal();
+                    }),
+                    AlertsService.rfq.error(function() {
+                        closeModal();
+                    })
+                );
             };
 
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
 
-            function isNumeric(n) {
-                return (!isNaN(parseFloat(n)) && isFinite(n)) || n === null;
-            }
-
             function closeModal() {
                 $scope.loading = false;
                 $modalInstance.close();
-            }
-
-            function orderSuccess() {
-                SweetAlert.swal(
-                    "Done !",
-                    "RFQ submitted !",
-                    "success"
-                );
-                closeModal();
-
-            }
-
-            function orderError() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-                closeModal();
-
             }
         }
 

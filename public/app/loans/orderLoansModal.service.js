@@ -41,7 +41,7 @@
             });
         }
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, SweetAlert, LoansService, minInvestByOriginator, investorId) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, loanAmount, fundedAmount, originator, AlertsService, LoansService, minInvestByOriginator, investorId, FormUtilsService) {
             $scope.loanId = loanId;
             $scope.loanAmount = loanAmount;
             $scope.fundedAmount = fundedAmount;
@@ -67,19 +67,23 @@
                     return $scope.slider.value <= originatorMinInvest;
                 },
                 notNumeric: function() {
-                    return !isNumeric($scope.slider.value);
+                    return !FormUtilsService.isNumeric($scope.slider.value);
                 }
             };
 
-            $scope.disabled = function() {
-                return $scope.conditions.valueGtRemaining() ||
-                    $scope.conditions.valueLtMin() ||
-                    $scope.conditions.notNumeric();
-            };
+            $scope.disabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.ok = function () {
                 $scope.loading = true;
-                LoansService.submitOrder($scope.investorId, loanId, $scope.slider.value).then( orderSuccess, orderError );
+                LoansService.submitOrder($scope.investorId, loanId, $scope.slider.value)
+                    .then(
+                        AlertsService.order.success(function() {
+                            closeModal();
+                        }),
+                        AlertsService.order.error(function() {
+                            closeModal();
+                        })
+                    );
             };
 
             $scope.cancel = function () {
@@ -91,30 +95,6 @@
                 $modalInstance.close();
             }
 
-            function orderSuccess() {
-                SweetAlert.swal(
-                    "Done !",
-                    "Your order has been placed !",
-                    "success"
-                );
-
-                closeModal();
-            }
-
-            function orderError() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-
-                closeModal();
-            }
-
-            function isNumeric(n) {
-                return !isNaN(parseFloat(n)) && isFinite(n);
-            }
-
             function toCamelCase(str) {
                 return str
                     .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
@@ -123,6 +103,4 @@
             }
         }
     }
-
-
 })();

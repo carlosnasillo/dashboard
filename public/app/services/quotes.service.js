@@ -19,11 +19,9 @@
         .module('app')
         .factory('QuotesService', QuotesService);
 
-    QuotesService.$inject = ['$http', '$location'];
+    QuotesService.$inject = ['$http'];
 
-    function QuotesService($http, $location) {
-        var websocket;
-        var protocol = ($location.protocol() == "https") ? "wss" : "ws";
+    function QuotesService($http) {
 
         var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer, referenceEntity) {
             var element = {
@@ -46,63 +44,16 @@
             return $http.get('/api/quotes/dealer/' + currentAccount);
         };
 
-        var wsClientCallbackPool = {};
-        var wsDealerCallbackPool = {};
-
         var clientWs = {
-            openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/client/' + currentAccount;
-
-                websocket = new WebSocket(wsUri);
-
-                var onOpen = function() { console.log('== Quotes for client WebSocket Opened =='); };
-                var onClose = function() { console.log('== Quotes for client WebSocket Closed =='); };
-                var onError = function(evt) { console.log('Quotes for client WebSocket Error :', evt); };
-
-                websocket.onopen = onOpen;
-                websocket.onclose = onClose;
-                websocket.onmessage = getMyCallback(wsClientCallbackPool);
-                websocket.onerror = onError;
-            },
-            addCallback: function(name, callback) {
-                wsClientCallbackPool[name] = callback;
-            },
-            removeCallback: function(name) {
-                delete wsClientCallbackPool[name];
-            },
-            closeStream: function() {
-                websocket.onclose = function () {};
-                websocket.close();
-                console.log("== Quotes for client WebSocket Closed ==");
-            }
+            uri: '/api/quotes/stream/client/',
+            name: 'Quotes for client',
+            parsingFunction: parseQuote
         };
 
         var dealerWs = {
-            openStream: function(currentAccount) {
-                var wsUri = protocol + '://' + $location.host() + ':' + $location.port() + '/api/quotes/stream/dealer/' + currentAccount;
-
-                websocket = new WebSocket(wsUri);
-
-                var onOpen = function() { console.log('== Quotes for dealer WebSocket Opened =='); };
-                var onClose = function() { console.log('== Quotes for dealer WebSocket Closed =='); };
-                var onError = function(evt) { console.log('Quotes for dealer WebSocket Error :', evt); };
-
-                websocket.onopen = onOpen;
-                websocket.onclose = onClose;
-                websocket.onmessage = getMyCallback(wsDealerCallbackPool);
-                websocket.onerror = onError;
-            },
-            addCallback: function(name, callback) {
-                wsDealerCallbackPool[name] = callback;
-            },
-            removeCallback: function(name) {
-                delete wsDealerCallbackPool[name];
-            },
-            closeStream: function() {
-                websocket.onclose = function () {};
-                websocket.close();
-                console.log("== Quotes for dealer WebSocket Closed ==");
-            }
+            uri: '/api/quotes/stream/dealer/',
+            name: 'Quotes for dealer',
+            parsingFunction: parseQuote
         };
 
         function parseQuote(strQuote) {
@@ -116,7 +67,7 @@
                 timeWindowInMinutes: quote.timeWindowInMinutes,
                 client: quote.client,
                 dealer: quote.dealer,
-                referenceEntity: referenceEntity
+                referenceEntity: quote.referenceEntity
             };
         }
 
@@ -127,14 +78,5 @@
             clientWs: clientWs,
             dealerWs: dealerWs
         };
-
-        function getMyCallback(callbacksPool) {
-            return function(evt) {
-                $.map(callbacksPool, function(callback) {
-                    var rfqObject = parseQuote(evt.data);
-                    callback(rfqObject);
-                });
-            };
-        }
     }
 })();

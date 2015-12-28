@@ -36,7 +36,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, referenceEntity, originator, rfqId, client, timeout, QuotesService, AuthenticationService, SweetAlert) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, referenceEntity, originator, rfqId, client, timeout, QuotesService, AuthenticationService, AlertsService, FormUtilsService) {
             $scope.referenceEntity = referenceEntity;
             $scope.originator = originator;
             $scope.timeout = timeout;
@@ -51,11 +51,11 @@
             $scope.conditions = {
                 premiumNotNumericNatural: function() {
                     var premium = $scope.form.premium;
-                    return ( !isNumeric(premium) || premium <= 0 ) && premium !== null;
+                    return ( !FormUtilsService.isNumeric(premium) || premium <= 0 ) && premium !== null;
                 },
                 windowInMinutesNotNumericNatural: function() {
                     var windowInMinutes = $scope.form.windowInMinutes;
-                    return ( !isNumeric(windowInMinutes) || windowInMinutes <= 0 ) && windowInMinutes !== null;
+                    return ( !FormUtilsService.isNumeric(windowInMinutes) || windowInMinutes <= 0 ) && windowInMinutes !== null;
                 },
                 premiumIsNull: function() {
                     return $scope.form.premium === null;
@@ -76,12 +76,7 @@
                 }
             }, 1000);
 
-            $scope.submitButtonDisabled = function() {
-                return $scope.conditions.premiumNotNumericNatural() ||
-                    $scope.conditions.windowInMinutesNotNumericNatural() ||
-                    $scope.conditions.premiumIsNull() ||
-                    $scope.conditions.windowInMinutesIsNull();
-            };
+            $scope.submitButtonDisabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.ok = function () {
                 $scope.loading = true;
@@ -92,38 +87,23 @@
                     client,
                     AuthenticationService.getCurrentAccount(),
                     referenceEntity
-                ).then( orderSuccess, orderError );
+                ).then(
+                    AlertsService.quote.success(function() {
+                        closeModal();
+                    }),
+                    AlertsService.quote.error(function() {
+                        closeModal();
+                    })
+                );
             };
 
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
 
-            function isNumeric(n) {
-                return !isNaN(parseFloat(n)) && isFinite(n) || n === null;
-            }
-
             function closeModal() {
                 $scope.loading = false;
                 $modalInstance.close();
-            }
-
-            function orderSuccess() {
-                SweetAlert.swal(
-                    "Done !",
-                    "Quote submitted !",
-                    "success"
-                );
-                closeModal();
-            }
-
-            function orderError() {
-                SweetAlert.swal(
-                    "Oops...",
-                    "Something went wrong !",
-                    "error"
-                );
-                closeModal();
             }
         }
 

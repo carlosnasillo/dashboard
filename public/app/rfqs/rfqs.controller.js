@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
         var vm = this;
 
         var quotesByRfqId = {};
@@ -31,23 +31,18 @@
         /**
          * Top table
          */
-        var now = moment();
-
         vm.rfqsTable = { options: {} };
         vm.rfqsTable.loading = true;
 
         vm.rfqsTable.options = RfqsTableService.options();
         var rfqCallbackName = 'clientRfqTable';
 
-        var onWebSocketMessage = function(rfqObject) {
+        WebSocketsManager.webSockets.quotes.client.addCallback(rfqCallbackName, function(rfqObject) {
             vm.rfqsTable.loading = false;
 
             rfqObject.expired = false;
 
-            setUpTimeout(rfqObject);
-
-            rfqObject.dealers = prettifyList(rfqObject.dealers);
-            rfqObject.prettyCreditEvents = prettifyList(rfqObject.creditEvents);
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
 
             if (vm.rfqsTable.options.data) {
                 vm.rfqsTable.options.data.push(rfqObject);
@@ -57,37 +52,17 @@
             }
 
             quotesByRfqId[rfqObject.id] = [];
-
-            function prettifyList(uglyList) {
-                var prettyRes = "";
-                uglyList.map(function (dealer) {
-                    prettyRes += dealer + ', ';
-                });
-
-                return prettyRes.substr(0, prettyRes.length - 2);
-            }
-        };
-
-        RfqService.clientWs.addCallback(rfqCallbackName, onWebSocketMessage);
+        });
 
         RfqService.getRfqForClient(currentAccount).success(function(data) {
             vm.rfqsTable.loading = false;
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = $.extend(true,{},rfqObj);
 
-                rfq.prettyDealers = prettifyList(rfq.dealers);
-                rfq.prettyCreditEvents = prettifyList(rfq.creditEvents);
+                rfq.prettyDealers = ParseUtilsService.prettifyList(rfq.dealers);
+                rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.expired = false;
-                setUpTimeout(rfq);
-
-                function prettifyList(uglyList) {
-                    var prettyRes = "";
-                    uglyList.map(function (dealer) {
-                        prettyRes += dealer + ', ';
-                    });
-
-                    return prettyRes.substr(0, prettyRes.length - 2);
-                }
+                rfq = TimeoutManagerService.setUpTimeout(rfq);
 
                 return rfq;
             });
@@ -99,9 +74,6 @@
             });
         });
 
-        function isNumeric(n) {
-            return !isNaN(parseFloat(n)) && isFinite(n);
-        }
         /**
          * Bottom table
          */
@@ -115,21 +87,14 @@
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
-                    quote = setUpTimeout(quote);
-                    quote.rfqExpired = false;
-                    quote.loading = false;
-                    quote.accepted = false;
+                    quote = prepareQuote(quote);
                     return quote;
                 });
             });
         });
 
-        var onNewQuote = function(quoteObj) {
-            quoteObj = setUpTimeout(quoteObj);
-
-            quoteObj.rfqExpired = false;
-            quoteObj.loading = false;
-            quoteObj.accepted = false;
+        WebSocketsManager.webSockets.quotes.client.addCallback(quoteCallbackName, function(quoteObj) {
+            quoteObj = prepareQuote(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
@@ -137,9 +102,7 @@
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
             updateQuoteTable(selectedRfq);
-        };
-
-        QuotesService.clientWs.addCallback(quoteCallbackName, onNewQuote);
+        });
 
         vm.quotesTable.options = QuotesTableService.options();
 
@@ -193,40 +156,20 @@
         };
 
         vm.disableButton = function(quote) {
-            return isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
+            return FormUtilsService.isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
         };
 
         $scope.$on('$destroy', function() {
-            RfqService.clientWs.removeCallback(rfqCallbackName);
-            QuotesService.clientWs.removeCallback(quoteCallbackName);
+            WebSocketsManager.webSockets.rfq.client.removeCallback(rfqCallbackName);
+            WebSocketsManager.webSockets.quotes.client.removeCallback(quoteCallbackName);
         });
 
-        function isExpired(timeout) {
-            return !isNumeric(timeout) || timeout <= 0;
-        }
-
-        function setUpTimeout(object) {
-            var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
-            var diff = deadline.diff(now);
-            var duration = Math.round(moment.duration(diff).asSeconds());
-            var counter = setInterval(function () {
-                if (object.timeout == "Accepted") {
-                    clearInterval(counter);
-                }
-                else {
-                    if (duration > 0) {
-                        duration = duration - 1;
-                        object.timeout = duration;
-                    }
-                    else {
-                        object.timeout = "Expired";
-                        object.expired = true;
-                        clearInterval(counter);
-                    }
-                }
-            }, 1000);
-
-            return object;
+        function prepareQuote(quote) {
+            quote = TimeoutManagerService.setUpTimeout(quote);
+            quote.rfqExpired = false;
+            quote.loading = false;
+            quote.accepted = false;
+            return quote;
         }
     }
 })();

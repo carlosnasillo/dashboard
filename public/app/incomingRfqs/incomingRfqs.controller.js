@@ -19,12 +19,11 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
         var vm = this;
 
-        var now = moment();
         var currentAccount = AuthenticationService.getCurrentAccount();
 
         var selectedRfq;
@@ -39,8 +38,8 @@
         vm.rfqTable = {};
         vm.rfqTable.options = RfqsTableForDealerService.options();
 
-        var onWebSocketMessage = function(rfqObject) {
-            rfqObject = setUpTimeout(rfqObject);
+        WebSocketsManager.webSockets.rfq.dealer.addCallback(rfqsCallbackName, function(rfqObject) {
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
 
             if (vm.rfqTable.options.data) {
                 vm.rfqTable.options.data.push(rfqObject);
@@ -48,14 +47,12 @@
             else {
                 vm.rfqTable.options.data = [rfqObject];
             }
-        };
-
-        RfqService.dealerWs.addCallback(rfqsCallbackName, onWebSocketMessage);
+        });
 
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
-                var rfq = setUpTimeout(rfqObj);
-                rfq.prettyCreditEvents = RfqService.prettifyList(rfq.creditEvents);
+                var rfq = TimeoutManagerService.setUpTimeout(rfqObj);
+                rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
 
                 return rfq;
             });
@@ -67,14 +64,13 @@
             });
         });
 
-        vm.isExpired = function(timeout) {
-            return !isNumeric(timeout) || timeout <= 0;
-        };
+        vm.isExpired = FormUtilsService.isExpired;
 
         vm.quote = QuoteModalService.quoteModal;
 
         $scope.$on('$destroy', function() {
-            RfqService.dealerWs.removeCallback(rfqsCallbackName);
+            WebSocketsManager.webSockets.rfq.dealer.removeCallback(rfqsCallbackName);
+            WebSocketsManager.webSockets.quotes.dealer.removeCallback(quoteCallbackName);
         });
 
         /**
@@ -89,15 +85,15 @@
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
-                    quote = setUpTimeout(quote);
+                    quote = TimeoutManagerService.setUpTimeout(quote);
 
                     return quote;
                 });
             });
         });
 
-        var onNewQuote = function(quoteObj) {
-            quoteObj = setUpTimeout(quoteObj);
+        WebSocketsManager.webSockets.quotes.dealer.addCallback(quoteCallbackName, function(quoteObj) {
+            quoteObj = TimeoutManagerService.setUpTimeout(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
@@ -105,9 +101,7 @@
                 quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
             updateQuoteTable(selectedRfq);
-        };
-
-        QuotesService.dealerWs.addCallback(quoteCallbackName, onNewQuote);
+        });
 
         vm.quotesTable.options = QuotesByRfqTableService.options();
 
@@ -133,29 +127,6 @@
             else {
                 vm.quotesTable.options.data = [];
             }
-        }
-
-        function isNumeric(n) {
-            return !isNaN(parseFloat(n)) && isFinite(n);
-        }
-
-        function setUpTimeout(object) {
-            var newObj = $.extend({},object);
-            var deadline = moment(object.timestamp).add(object.timeWindowInMinutes, 'minutes');
-            var diff = deadline.diff(now);
-            var duration = Math.round(moment.duration(diff).asSeconds());
-            var counter = setInterval(function () {
-                if (duration > 0) {
-                    duration = duration - 1;
-                    newObj.timeout = duration;
-                }
-                else {
-                    newObj.timeout = "Expired";
-                    clearInterval(counter);
-                }
-            }, 1000);
-
-            return newObj;
         }
     }
 })();
