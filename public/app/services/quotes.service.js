@@ -67,7 +67,7 @@
                 timeWindowInMinutes: quote.timeWindowInMinutes,
                 client: quote.client,
                 dealer: quote.dealer,
-                referenceEntity: referenceEntity
+                referenceEntity: quote.referenceEntity
             };
         }
 

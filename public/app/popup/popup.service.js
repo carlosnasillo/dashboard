@@ -29,7 +29,7 @@
                     quote.loading = true;
 
                     RfqService.getRfqById(quote.rfqId).success(function(rfq) {
-                        TradeService.submitTrade(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, quote.dealer, rfq.creditEvents, rfq.cdsValue, rfq.originator, quote.premium)
+                        TradeService.submitTrade(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, quote.dealer, rfq.creditEvents, rfq.cdsValue, rfq.originator, quote.premium, quote.referenceEntity)
                             .then(
                                 AlertsService.accept.success(quote, function(quote) {
                                     quote.loading = false;
@@ -51,7 +51,7 @@
             return function(rfqObject) {
                 childScope.rfq = TimeoutManagerService.setUpTimeout(rfqObject);
                 childScope.quote = function(rfq, closeNotification) {
-                    QuoteModalService.quoteModal(rfq.loanId, rfq.originator, rfq.id, rfq.client, rfq.timeout);
+                    QuoteModalService.quoteModal(rfq.referenceEntity, rfq.originator, rfq.id, rfq.client, rfq.timeout);
                     closeNotification();
                 };
 
