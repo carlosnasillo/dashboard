@@ -62,7 +62,8 @@ class Quotes extends Controller {
         "premium" -> bigDecimal,
         "timeWindowInMinutes" -> number,
         "client" -> nonEmptyText,
-        "dealer" -> nonEmptyText
+        "dealer" -> nonEmptyText,
+        "referenceEntity" -> nonEmptyText
       )(Quote.apply)(Quote.unapply)
     )
 

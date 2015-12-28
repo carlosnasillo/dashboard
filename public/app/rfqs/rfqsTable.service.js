@@ -34,6 +34,10 @@
                 enableRowHeaderSelection: false,
                 columnDefs: [
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center'
+                    },
+                    {
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',

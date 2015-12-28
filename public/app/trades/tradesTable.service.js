@@ -35,6 +35,10 @@
                         visible: false
                     },
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center'
+                    },
+                    {
                         field: 'side',
                         headerCellClass: 'text-center'
                     },

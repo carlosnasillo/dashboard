@@ -35,7 +35,8 @@ case class Trade(
                  creditEvents: List[String],
                  cdsValue: BigDecimal,
                  originator: String,
-                 premium: BigDecimal
+                 premium: BigDecimal,
+                 referenceEntity: String
                 )
 
 object Trade {

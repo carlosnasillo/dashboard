@@ -33,6 +33,10 @@
                         headerCellClass: 'text-center'
                     },
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center'
+                    },
+                    {
                         field: 'client',
                         headerCellClass: 'text-center'
                     },

@@ -36,6 +36,10 @@
                         cellFilter: 'date:"HH:mm:ss"'
                     },
                     {
+                        field: 'referenceEntity',
+                        headerCellClass: 'text-center'
+                    },
+                    {
                         field: 'id',
                         headerCellClass: 'text-center'
                     },

@@ -179,7 +179,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium)
+            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium, quote.referenceEntity)
             .then(
                 AlertsService.accept.success(quote, function(quote) {
                     quote.loading = false;
