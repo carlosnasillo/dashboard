@@ -31,7 +31,7 @@
                 {
                     field: 'noteId',
                     displayName: 'Note Id',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters">  <i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.noteId.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.noteId.reset()" > <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true"  ></i> <span class="header-filtered">{{ col.grid.appScope.vm.notesTable.filters.noteId.value }}</span> </div>'
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.notesTable.filters.noteId', 'vm.notesTable.filters.filterNotes()')
                 },
                 {
                     field: 'issueDate',
@@ -39,7 +39,7 @@
                     cellFilter: 'date:"dd/MM/yyyy"',
                     filterCellFiltered: true,
                     type: 'date',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input date-range-picker placeholder="greater than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.issueDate.start.value" max="col.grid.appScope.vm.notesTable.filters.issueDate.end.value" options="col.grid.appScope.vm.notesTable.filters.issueDate.options" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.issueDate.start.reset()" > <i class="ui-grid-icon-cancel"></i> </button> </div> <div class="row"> <input date-range-picker placeholder="less than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.issueDate.end.value" min="col.grid.appScope.vm.notesTable.filters.issueDate.start.value" options="col.grid.appScope.vm.notesTable.filters.issueDate.options"/> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.issueDate.end.reset()" > <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true" ></i></span> <span class="header-filtered col-md-8">{{ col.grid.appScope.vm.notesTable.filters.issueDate.start.formattedValue() }}</span></div> <div class="row"><span class="header-filtered col-md-offset-2 col-md-8">{{ col.grid.appScope.vm.notesTable.filters.issueDate.end.formattedValue() }}</span></div> </div>'
+                    filterHeaderTemplate: GridTableUtil.dateFilterTemplateFactory('vm.notesTable.filters.issueDate')
                 },
                 {
                     field: 'orderDate',
@@ -47,103 +47,41 @@
                     cellFilter: 'date:"dd/MM/yyyy"',
                     filterCellFiltered: true,
                     type: 'date',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input date-range-picker placeholder="greater than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.orderDate.start.value" max="col.grid.appScope.vm.notesTable.filters.orderDate.end.value" options="col.grid.appScope.vm.notesTable.filters.orderDate.options" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.orderDate.start.reset()" > <i class="ui-grid-icon-cancel"></i> </button> </div> <div class="row"> <input date-range-picker placeholder="less than ..." class="date-picker col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.orderDate.end.value" min="col.grid.appScope.vm.notesTable.filters.orderDate.start.value" options="col.grid.appScope.vm.notesTable.filters.orderDate.options"/> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.orderDate.end.reset()" > <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true" ></i></span> <span class="header-filtered col-md-8">{{ col.grid.appScope.vm.notesTable.filters.orderDate.start.formattedValue() }}</span></div> <div class="row"><span class="header-filtered col-md-offset-2 col-md-8">{{ col.grid.appScope.vm.notesTable.filters.orderDate.end.formattedValue() }}</span></div> </div>'
+                    filterHeaderTemplate: GridTableUtil.dateFilterTemplateFactory('vm.notesTable.filters.orderDate')
                 },
                 {
                     field: 'loanAmount',
                     displayName: 'Requested',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input placeholder="greater than ..." class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.loanAmount.start.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()"/> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.loanAmount.start.reset()" > <i class="ui-grid-icon-cancel"></i> </button> </div> <div class="row"> <input placeholder="less than ..." class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.loanAmount.end.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.loanAmount.end.reset()" >  <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true"  ></i> </span> <span class="header-filtered col-md-8">{{ col.grid.appScope.vm.notesTable.filters.loanAmount.start.formattedValue() }}</span></div> <div class="row"><span class="header-filtered col-md-offset-2 col-md-8">{{ col.grid.appScope.vm.notesTable.filters.loanAmount.end.formattedValue() }}</span></div> </div>',
+                    filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.notesTable.filters.loanAmount'),
                     type: 'number'
                 },
                 {
                     field: 'noteAmount',
                     displayName: 'Note Amount',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input placeholder="greater than ..." class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.noteAmount.start.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()"/> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.noteAmount.start.reset()" > <i class="ui-grid-icon-cancel"></i> </button> </div> <div class="row"> <input placeholder="less than ..." class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.noteAmount.end.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.noteAmount.end.reset()" >  <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true"  ></i> </span> <span class="header-filtered col-md-8">{{ col.grid.appScope.vm.notesTable.filters.noteAmount.start.formattedValue() }}</span></div> <div class="row"><span class="header-filtered col-md-offset-2 col-md-8">{{ col.grid.appScope.vm.notesTable.filters.noteAmount.end.formattedValue() }}</span></div> </div>',
+                    filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.notesTable.filters.noteAmount'),
                     type: 'number'
                 },
                 {
                     field: 'grade',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input class="col-md-offset-1 col-md-8" type="text" placeholder="ex: C, D" data-ng-model="col.grid.appScope.vm.notesTable.filters.grade.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.grade.reset()" > <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true" ></i></span> <span class="header-filtered">{{ col.grid.appScope.vm.notesTable.filters.grade.value }}</span> </div>'
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.notesTable.filters.grade', 'vm.notesTable.filters.filterNotes()')
                 },
                 {
                     field: 'term',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input placeholder="greater than ..." class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.term.start.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()"/> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.term.start.reset()" > <i class="ui-grid-icon-cancel"></i> </button> </div> <div class="row"> <input placeholder="less than ..." class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.term.end.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.term.end.reset()" >  <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true"  ></i> </span> <span class="header-filtered col-md-8">{{ col.grid.appScope.vm.notesTable.filters.term.start.formattedValue() }}</span></div> <div class="row"><span class="header-filtered col-md-offset-2 col-md-8">{{ col.grid.appScope.vm.notesTable.filters.term.end.formattedValue() }}</span></div> </div>',
+                    filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.notesTable.filters.term'),
                     type: 'number'
                 },
                 {
                     field: 'interestRate',
                     displayName: 'Yield',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input placeholder="greater than (%)" class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.interestRate.start.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()"/> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.interestRate.start.reset()" > <i class="ui-grid-icon-cancel"></i> </button> </div> <div class="row"> <input placeholder="less than (%)" class="col-md-offset-1 col-md-8" type="text" data-ng-model="col.grid.appScope.vm.notesTable.filters.interestRate.end.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.interestRate.end.reset()" >  <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true"  ></i> </span> <span class="header-filtered col-md-8">{{ col.grid.appScope.vm.notesTable.filters.interestRate.start.formattedValue() }}</span></div> <div class="row"><span class="header-filtered col-md-offset-2 col-md-8">{{ col.grid.appScope.vm.notesTable.filters.interestRate.end.formattedValue() }}</span></div> </div>',
+                    filterHeaderTemplate: GridTableUtil.doublePercentFilterTemplateFactory('vm.notesTable.filters.interestRate'),
                     cellTemplate: '<div class="ui-grid-cell-contents">{{ COL_FIELD }} %</div>',
                     type: 'number'
                 },
                 {
                     field: 'purpose',
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"> <div class="row"> <span class="col-md-1"><i class="fa fa-filter" ns-popover ns-popover-timeout="-1" ns-popover-template=\'<div class="ns-popover-tooltip"><div class="triangle"></div><ul><li><div class="row"><input class="col-md-offset-1 col-md-8" type="text" placeholder="ex: house, car" data-ng-model="col.grid.appScope.vm.notesTable.filters.purpose.value" data-ng-change="col.grid.appScope.vm.notesTable.filters.filterNotes()" /> <button type="button" class="btn btn-primary btn-xs col-md-2" data-ng-click="col.grid.appScope.vm.notesTable.filters.purpose.reset()" > <i class="ui-grid-icon-cancel"></i> </button></div></li></ul></div>\' ns-popover-trigger="click" ns-popover-placement="top|left" ns-popover-plain="true" ></i></span> <span class="header-filtered">{{ col.grid.appScope.vm.notesTable.filters.purpose.value }}</span> </div>'
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.notesTable.filters.purpose', 'vm.notesTable.filters.filterNotes()')
                 }
             ]
-        };
-
-        var noteIdFilterFactory = function(postResetCallback) {
-            return GridTableUtil.singleFilterFactory(
-                postResetCallback,
-                function(objToFilter, filterTerm) { return String( objToFilter.noteId ).startsWith( filterTerm ); }
-            );
-        };
-
-        var loanAmountFilterFactory = function(postResetCallback) {
-            return GridTableUtil.doubleFilterFactory(
-                postResetCallback,
-                function(objToFilter, filterTerm) { return objToFilter.loanAmount > filterTerm; },
-                function(objToFilter, filterTerm) { return objToFilter.loanAmount < filterTerm; }
-            );
-        };
-
-        var noteAmountFilterFactory = function(postResetCallback) {
-            return GridTableUtil.doubleFilterFactory(
-                postResetCallback,
-                function (objToFilter, filterTerm) { return objToFilter.noteAmount > filterTerm; },
-                function (objToFilter, filterTerm) { return objToFilter.noteAmount < filterTerm; }
-            );
-        };
-
-        var gradeFilterFactory = function(postResetCallback) {
-            return GridTableUtil.singleFilterFactory(
-                postResetCallback,
-                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter.grade) >= 0; }
-            );
-        };
-
-        var termFilterFactory = function(postResetCallback) {
-            return GridTableUtil.doubleFilterFactory(
-                postResetCallback,
-                function (objToFilter, filterTerm) { return objToFilter.term > filterTerm; },
-                function (objToFilter, filterTerm) { return objToFilter.term < filterTerm; }
-            );
-        };
-
-        var interestRateFilterFactory = function(postResetCallback) {
-            return GridTableUtil.doubleFilterFactory(
-                postResetCallback,
-                function(objToFilter, filterTerm) { return objToFilter.interestRate > filterTerm; },
-                function(objToFilter, filterTerm) { return objToFilter.interestRate < filterTerm; },
-                function(value) { return value + ' %'; }
-            );
-        };
-
-        var purposeFilterFactory = function(postResetCallback) {
-            return GridTableUtil.singleFilterFactory(
-                postResetCallback,
-                function(objToFilter, filterTerm) {
-                    var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
-                    for (var i in searchTerms) {
-                        if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                            if (objToFilter.purpose.startsWith(searchTerms[i])) return true;
-                        }
-                    }
-                    return false;
-                }
-            );
         };
 
         var globalFilterFactory = function(filterValue) {
@@ -163,13 +101,6 @@
 
         return {
             options: tableOptions,
-            noteIdFilterFactory: noteIdFilterFactory,
-            loanAmountFilterFactory: loanAmountFilterFactory,
-            noteAmountFilterFactory: noteAmountFilterFactory,
-            gradeFilterFactory: gradeFilterFactory,
-            termFilterFactory: termFilterFactory,
-            interestRateFilterFactory: interestRateFilterFactory,
-            purposeFilterFactory: purposeFilterFactory,
             globalFilterFactory: globalFilterFactory
         };
     }
