@@ -19,14 +19,16 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService', 'GridTableUtil', '$filter'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService, GridTableUtil, $filter) {
         var vm = this;
 
         var quotesByRfqId = {};
 
         var currentAccount = AuthenticationService.getCurrentAccount();
+
+        vm.originalData = { rfqs: [], quotes: [] };
 
         /**
          * Top table
@@ -62,10 +64,13 @@
                 rfq.prettyDealers = ParseUtilsService.prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.expired = false;
+                rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
                 rfq = TimeoutManagerService.setUpTimeout(rfq);
 
                 return rfq;
             });
+
+            vm.originalData.rfqs = vm.rfqsTable.options.data;
 
             $timeout(function() {
                 if (vm.rfqsTable.gridApi.selection.selectRow) {
@@ -73,6 +78,41 @@
                 }
             });
         });
+
+        vm.rfqsTable.filters = {};
+        vm.rfqsTable.filters.filterRfqs = function () {
+            vm.rfqsTable.options.data = vm.originalData.rfqs.filter(function (rfqObj) {
+                return vm.rfqsTable.filters.referenceEntity.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.timestampStr.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.id.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.durationInMonths.start.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.durationInMonths.end.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.dealers.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.creditEvents.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.timeout.start.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.timeout.end.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.cdsValue.start.filterFn(rfqObj) &&
+                vm.rfqsTable.filters.cdsValue.end.filterFn(rfqObj);
+            });
+        };
+
+        vm.rfqsTable.filters.referenceEntity = GridTableUtil.idFilterFactory(vm.rfqsTable.filters.filterRfqs, 'referenceEntity');
+        vm.rfqsTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.rfqsTable.filters.filterRfqs, 'timestampStr');
+        vm.rfqsTable.filters.id = GridTableUtil.idFilterFactory(vm.rfqsTable.filters.filterRfqs, 'id');
+        vm.rfqsTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'durationInMonths');
+        vm.rfqsTable.filters.dealers = GridTableUtil.listFilterFactory(vm.rfqsTable.filters.filterRfqs, 'dealers');
+        vm.rfqsTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.rfqsTable.filters.filterRfqs, 'creditEvents');
+        vm.rfqsTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'timeout');
+        vm.rfqsTable.filters.cdsValue = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'cdsValue');
+
+        setInterval(function() {
+            if (vm.rfqsTable.filters.timeout.start.value.length || vm.rfqsTable.filters.timeout.end.value.length) {
+                vm.rfqsTable.options.data = vm.rfqsTable.options.data.filter(function(rfqObj) {
+                    return vm.rfqsTable.filters.timeout.start.filterFn(rfqObj) &&
+                        vm.rfqsTable.filters.timeout.end.filterFn(rfqObj);
+                });
+            }
+        }, 1000);
 
         /**
          * Bottom table

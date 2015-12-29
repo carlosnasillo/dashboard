@@ -239,7 +239,21 @@
             );
         };
 
-        return {
+        var listFilterFactory = function(postResetCallback, filter) {
+            return singleFilterFactory(
+                postResetCallback,
+                function(arrayToFilter, filterTerm) {
+                    var termAsArray = filterTerm.split(',');
+                    return arrayToFilter[filter].some(function(tableElem) {
+                        return termAsArray.some(function(term) {
+                            return tableElem.startsWith(term);
+                        });
+                    });
+                }
+            );
+        };
+
+        return  {
             applyDateFilter: applyDateFilter,
             formatValue: formatValue,
             resetFactory: resetFactory,
@@ -257,7 +271,8 @@
             doubleNumberFilterFactory: doubleNumberFilterFactory,
             doublePercentFilterFactory: doublePercentFilterFactory,
             textFilterFactory: textFilterFactory,
-            wordFilterFactory: wordFilterFactory
+            wordFilterFactory: wordFilterFactory,
+            listFilterFactory: listFilterFactory
         };
     }
 })();
