@@ -60,9 +60,7 @@
             vm.originalData.rfqs = vm.rfqTable.options.data;
 
             $timeout(function() {
-                if (vm.rfqTable.gridApi.selection.selectRow) {
-                    vm.rfqTable.gridApi.selection.selectRow(vm.rfqTable.options.data[vm.rfqTable.options.data.length - 1]);
-                }
+                selectFirstRow();
             });
         });
 
@@ -78,16 +76,24 @@
         vm.rfqTable.filters = {};
         vm.rfqTable.filters.filterRfqs = function () {
             vm.rfqTable.options.data = vm.originalData.rfqs.filter(function (rfqObj) {
-                return vm.rfqTable.filters.timestampStr.filterFn(rfqObj) &&
-                vm.rfqTable.filters.referenceEntity.filterFn(rfqObj) &&
-                vm.rfqTable.filters.client.filterFn(rfqObj) &&
-                vm.rfqTable.filters.durationInMonths.start.filterFn(rfqObj) &&
-                vm.rfqTable.filters.durationInMonths.end.filterFn(rfqObj) &&
-                vm.rfqTable.filters.creditEvents.filterFn(rfqObj) &&
-                vm.rfqTable.filters.timeout.start.filterFn(rfqObj) &&
-                vm.rfqTable.filters.timeout.end.filterFn(rfqObj) &&
-                vm.rfqTable.filters.cdsValue.start.filterFn(rfqObj) &&
-                vm.rfqTable.filters.cdsValue.end.filterFn(rfqObj);
+                var passFilter = vm.rfqTable.filters.timestampStr.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.referenceEntity.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.client.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.durationInMonths.start.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.durationInMonths.end.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.creditEvents.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.timeout.start.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.timeout.end.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.cdsValue.start.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.cdsValue.end.filterFn(rfqObj);
+
+                if (rfqObj.id === selectedRfq.id) {
+                    if (!passFilter) {
+                        vm.quotesTable.options.data = [];
+                    }
+                }
+
+                return passFilter;
             });
         };
 
@@ -201,6 +207,12 @@
             }
             else {
                 vm.quotesTable.options.data = [];
+            }
+        }
+
+        function selectFirstRow() {
+            if (vm.rfqTable.gridApi.selection.selectRow) {
+                vm.rfqTable.gridApi.selection.selectRow(vm.rfqTable.options.data[vm.rfqTable.options.data.length - 1]);
             }
         }
     }
