@@ -120,7 +120,7 @@
             $.map(data, function(v, k) {
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
-                    quote = TimeoutManagerService.setUpTimeout(quote);
+                    quote = prepareQuote(quote);
 
                     return quote;
                 });
@@ -128,7 +128,7 @@
         });
 
         WebSocketsManager.webSockets.quotes.dealer.addCallback(quoteCallbackName, function(quoteObj) {
-            quoteObj = TimeoutManagerService.setUpTimeout(quoteObj);
+            quoteObj = prepareQuote(quoteObj);
 
             if (quotesByRfqId[quoteObj.rfqId]) {
                 quotesByRfqId[quoteObj.rfqId].push(quoteObj);
@@ -149,15 +149,55 @@
             });
         };
 
+        vm.quotesTable.filters = {};
+
+        vm.quotesTable.filters.filterQuotes = function () {
+            vm.quotesTable.options.data = vm.originalData.quotes.filter(function (quoteObj) {
+                return vm.quotesTable.filters.id.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.referenceEntity.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.client.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.timestampStr.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.premium.end.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.timeout.end.filterFn(quoteObj);
+            });
+        };
+
+        vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
+
+        vm.quotesTable.filters.referenceEntity = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntity');
+        vm.quotesTable.filters.client = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'client');
+        vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
+        vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
+        vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
+
+        setInterval(function() {
+            if (vm.quotesTable.filters.timeout.start.value.length || vm.quotesTable.filters.timeout.end.value.length) {
+                vm.quotesTable.options.data = vm.quotesTable.options.data.filter(function(quoteObj) {
+                    return vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
+                        vm.quotesTable.filters.timeout.end.filterFn(quoteObj);
+                });
+            }
+        }, 1000);
+
         setInterval(function() {
             vm.rfqTable.gridApi.core.refresh();
         }, 1000);
+
+        function prepareQuote(quoteObj) {
+            quoteObj = TimeoutManagerService.setUpTimeout(quoteObj);
+            quoteObj.timestampStr = $filter('date')(quoteObj.timestamp, 'HH:mm:ss');
+            return quoteObj;
+        }
 
         function updateQuoteTable(currentRfq) {
             var relatedQuotes = quotesByRfqId[currentRfq.id];
 
             if (relatedQuotes) {
                 vm.quotesTable.options.data = relatedQuotes;
+                vm.originalData.quotes = relatedQuotes;
+                vm.quotesTable.filters.filterQuotes();
             }
             else {
                 vm.quotesTable.options.data = [];
