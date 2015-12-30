@@ -243,7 +243,7 @@
             return singleFilterFactory(
                 postResetCallback,
                 function(arrayToFilter, filterTerm) {
-                    var termAsArray = filterTerm.split(',');
+                    var termAsArray = filterTerm.split(',').map(function(term) { return term.trim(); });
                     return arrayToFilter[filter].some(function(tableElem) {
                         return termAsArray.some(function(term) {
                             return tableElem.startsWith(term);
