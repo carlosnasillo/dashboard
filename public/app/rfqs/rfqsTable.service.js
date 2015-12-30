@@ -44,7 +44,7 @@
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',
                         cellFilter: 'date:"HH:mm:ss"',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('14:30:10', 'vm.rfqsTable.filters.timestampStr', 'vm.rfqsTable.filters.filterRfqs()')
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: 14:30:10', 'vm.rfqsTable.filters.timestampStr', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'id',
@@ -60,13 +60,13 @@
                         field: 'prettyDealers',
                         displayName: 'Dealers',
                         headerCellClass: 'text-center',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('dealer1, dealer2, ...', 'vm.rfqsTable.filters.dealers', 'vm.rfqsTable.filters.filterRfqs()')
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: dealer1, dealer2, ...', 'vm.rfqsTable.filters.dealers', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'prettyCreditEvents',
                         displayName: 'Credit Events',
                         headerCellClass: 'text-center',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('default, ...', 'vm.rfqsTable.filters.creditEvents', 'vm.rfqsTable.filters.filterRfqs()')
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: default, ...', 'vm.rfqsTable.filters.creditEvents', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'timeout',
