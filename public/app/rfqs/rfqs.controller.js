@@ -39,7 +39,8 @@
         vm.rfqsTable.options = RfqsTableService.options();
         var rfqCallbackName = 'clientRfqTable';
 
-        WebSocketsManager.webSockets.quotes.client.addCallback(rfqCallbackName, function(rfqObject) {
+        WebSocketsManager.webSockets.rfq.client.addCallback(rfqCallbackName, function(rfqObject) {
+            console.log(rfqObject);
             vm.rfqsTable.loading = false;
 
             rfqObject.expired = false;
