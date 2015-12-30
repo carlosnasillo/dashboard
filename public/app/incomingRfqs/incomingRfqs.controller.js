@@ -19,14 +19,16 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService', 'GridTableUtil', '$filter'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService, GridTableUtil, $filter) {
         var vm = this;
 
         var currentAccount = AuthenticationService.getCurrentAccount();
 
         var selectedRfq;
+
+        vm.originalData = { rfqs: [], quotes: [] };
 
         /**
          * Top table
@@ -40,22 +42,22 @@
 
         WebSocketsManager.webSockets.rfq.dealer.addCallback(rfqsCallbackName, function(rfqObject) {
             rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
+            rfqObject.timestampStr = $filter('date')(rfqObject.timestamp, 'HH:mm:ss');
 
-            if (vm.rfqTable.options.data) {
-                vm.rfqTable.options.data.push(rfqObject);
-            }
-            else {
-                vm.rfqTable.options.data = [rfqObject];
-            }
+            vm.originalData.rfqs.push(rfqObject);
+            vm.rfqTable.filters.filterRfqs();
         });
 
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
                 var rfq = TimeoutManagerService.setUpTimeout(rfqObj);
                 rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
+                rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
 
                 return rfq;
             });
+
+            vm.originalData.rfqs = vm.rfqTable.options.data;
 
             $timeout(function() {
                 if (vm.rfqTable.gridApi.selection.selectRow) {
@@ -72,6 +74,39 @@
             WebSocketsManager.webSockets.rfq.dealer.removeCallback(rfqsCallbackName);
             WebSocketsManager.webSockets.quotes.dealer.removeCallback(quoteCallbackName);
         });
+
+        vm.rfqTable.filters = {};
+        vm.rfqTable.filters.filterRfqs = function () {
+            vm.rfqTable.options.data = vm.originalData.rfqs.filter(function (rfqObj) {
+                return vm.rfqTable.filters.timestampStr.filterFn(rfqObj) &&
+                vm.rfqTable.filters.referenceEntity.filterFn(rfqObj) &&
+                vm.rfqTable.filters.client.filterFn(rfqObj) &&
+                vm.rfqTable.filters.durationInMonths.start.filterFn(rfqObj) &&
+                vm.rfqTable.filters.durationInMonths.end.filterFn(rfqObj) &&
+                vm.rfqTable.filters.creditEvents.filterFn(rfqObj) &&
+                vm.rfqTable.filters.timeout.start.filterFn(rfqObj) &&
+                vm.rfqTable.filters.timeout.end.filterFn(rfqObj) &&
+                vm.rfqTable.filters.cdsValue.start.filterFn(rfqObj) &&
+                vm.rfqTable.filters.cdsValue.end.filterFn(rfqObj);
+            });
+        };
+
+        vm.rfqTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'timestampStr');
+        vm.rfqTable.filters.referenceEntity = GridTableUtil.idFilterFactory(vm.rfqTable.filters.filterRfqs, 'referenceEntity');
+        vm.rfqTable.filters.client = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'client');
+        vm.rfqTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.rfqTable.filters.filterRfqs, 'durationInMonths');
+        vm.rfqTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.rfqTable.filters.filterRfqs, 'creditEvents');
+        vm.rfqTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.rfqTable.filters.filterRfqs, 'timeout');
+        vm.rfqTable.filters.cdsValue = GridTableUtil.doubleNumberFilterFactory(vm.rfqTable.filters.filterRfqs, 'cdsValue');
+
+        setInterval(function() {
+            if (vm.rfqTable.filters.timeout.start.value.length || vm.rfqTable.filters.timeout.end.value.length) {
+                vm.rfqTable.options.data = vm.rfqTable.options.data.filter(function(rfqObj) {
+                    return vm.rfqTable.filters.timeout.start.filterFn(rfqObj) &&
+                        vm.rfqTable.filters.timeout.end.filterFn(rfqObj);
+                });
+            }
+        }, 1000);
 
         /**
          * Bottom table

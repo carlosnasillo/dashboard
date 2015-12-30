@@ -19,9 +19,9 @@
         .module('app')
         .factory('RfqsTableForDealerService', RfqsTableForDealerService);
 
-    RfqsTableForDealerService.$inject = ['uiGridConstants'];
+    RfqsTableForDealerService.$inject = ['uiGridConstants', 'GridTableUtil'];
 
-    function RfqsTableForDealerService(uiGridConstants) {
+    function RfqsTableForDealerService(uiGridConstants, GridTableUtil) {
 
         var tableOptions = function() {
             return {
@@ -40,35 +40,42 @@
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',
-                        cellFilter: 'date:"HH:mm:ss"'
+                        cellFilter: 'date:"HH:mm:ss"',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: 14:30:10', 'vm.rfqTable.filters.timestampStr', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'referenceEntity',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqTable.filters.referenceEntity', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'client',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: Dealer1, ...', 'vm.rfqTable.filters.client', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'durationInMonths',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqTable.filters.durationInMonths', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'prettyCreditEvents',
                         displayName: 'Credit Events',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: default, ...', 'vm.rfqTable.filters.creditEvents', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
                         type: 'text',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqTable.filters.timeout', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'cdsValue',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqTable.filters.cdsValue', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'id',
