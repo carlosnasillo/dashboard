@@ -5,4 +5,5 @@ package utils
   */
 object Constants {
   val portfolioName = "BlackRock"
+  val automaticDealer = "Lattice"
 }

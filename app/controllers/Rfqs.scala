@@ -11,14 +11,17 @@ package controllers
 
 import java.util.UUID
 
+import com.lattice.lib.channels.Channels
+import com.lattice.lib.autoquoter.AutoQuoter
 import controllers.Security.HasToken
-import models.Rfq
+import models.{Quote, Rfq}
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.iteratee.{Enumeratee, Concurrent, Iteratee}
-import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
+import play.api.libs.iteratee.Enumeratee
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
+import utils.Constants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -30,32 +33,29 @@ import scala.concurrent.ExecutionContext.Implicits.global
 // Todo : find a better way to not have the id for storage
 class Rfqs extends Controller {
 
-  val (outRfq, channelRfq) = Concurrent.broadcast[JsValue]
+  implicit val RFQFormFormat = Json.format[Rfq]
 
   def streamRfqToDealer(account: String) = WebSocket.using[JsValue] {
     request =>
-      val in = Iteratee.ignore[JsValue]
       val dealerFilter = Enumeratee.filter[JsValue](jsObj => {
         val extractedDealers = (jsObj \ "dealers").getOrElse(JsArray()).as[List[String]]
         extractedDealers contains account
       })
 
-      (in, outRfq through dealerFilter)
+      (Channels.ignoredIn, Channels.outRfq through dealerFilter)
   }
 
   def streamRfqToClient(account: String) = WebSocket.using[JsValue] {
     request =>
-      val in = Iteratee.ignore[JsValue]
       val clientFilter = Enumeratee.filter[JsValue](jsObj => {
         val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[List[String]]
         extractedClient.toString == account
       })
 
-      (in, outRfq through clientFilter)
+      (Channels.ignoredIn, Channels.outRfq through clientFilter)
   }
 
   def submitRFQ = HasToken { implicit request =>
-    implicit val RFQFormFormat = Json.format[Rfq]
 
     val rfqForm = Form(
       mapping (
@@ -79,7 +79,13 @@ class Rfqs extends Controller {
       },
       submittedRfq => {
         Rfq.store(submittedRfq)
-        channelRfq push Json.toJson(submittedRfq)
+        Channels.channelRfq push Json.toJson(submittedRfq)
+
+        if (submittedRfq.dealers.contains(Constants.automaticDealer)) {
+          val quote = AutoQuoter.generateQuote(submittedRfq)
+          Channels.channelQuotes push Json.toJson(quote)
+          Quote.store(quote)
+        }
         Ok
       }
     )

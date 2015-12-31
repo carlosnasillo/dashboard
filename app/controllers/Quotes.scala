@@ -11,6 +11,7 @@ package controllers
 
 import java.util.UUID
 
+import com.lattice.lib.channels.Channels
 import controllers.Security.HasToken
 import models.Quote
 import org.joda.time.DateTime
@@ -29,28 +30,25 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 
 class Quotes extends Controller {
-  val (outQuotes, channelQuotes) = Concurrent.broadcast[JsValue]
 
   def streamQuotesToClient(account: String) = WebSocket.using[JsValue] {
     request =>
-      val in = Iteratee.ignore[JsValue]
       val accountFilter = Enumeratee.filter[JsValue](jsObj => {
         val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
         extractedClient == account
       })
 
-      (in, outQuotes through accountFilter)
+      (Channels.ignoredIn, Channels.outQuotes through accountFilter)
   }
 
   def streamQuotesToDealer(account: String) = WebSocket.using[JsValue] {
     request =>
-      val in = Iteratee.ignore[JsValue]
       val accountFilter = Enumeratee.filter[JsValue](jsObj => {
         val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
         extractedDealer == account
       })
 
-      (in, outQuotes through accountFilter)
+      (Channels.ignoredIn, Channels.outQuotes through accountFilter)
   }
 
   def submitQuote = HasToken { implicit request =>
@@ -79,7 +77,7 @@ class Quotes extends Controller {
 //        }
 //        else {
           Quote.store(submittedQuote)
-        channelQuotes push Json.toJson(submittedQuote)
+        Channels.channelQuotes push Json.toJson(submittedQuote)
         Ok
 //        }
       }

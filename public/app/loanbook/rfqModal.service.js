@@ -34,7 +34,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, AlertsService, FormUtilsService) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
             $scope.loanId = loanId;
             $scope.originator = originator;
 
@@ -43,7 +43,7 @@
             $scope.form = {
                 duration: null,
                 creditEvent: [],
-                counterparty: [],
+                counterparty: [Constants.automaticDealer],
                 quoteWindow: null,
                 cdsValue: null
             };
@@ -82,7 +82,7 @@
 
             $scope.selectUtils = {
                 banks: {
-                    data: ["Dealer1", "Dealer2", "Dealer3"].filter(function(dealer) { return dealer != AuthenticationService.getCurrentAccount(); }),
+                    data: ["Dealer1", "Dealer2", "Dealer3", Constants.automaticDealer].filter(function(dealer) { return dealer != AuthenticationService.getCurrentAccount(); }),
                     clearSelect: function() {
                         $scope.form.counterparty = [];
                     },
