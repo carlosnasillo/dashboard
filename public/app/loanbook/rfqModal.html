@@ -15,7 +15,7 @@
         <div class="modal-body">
             <div class="form-group">
                 <label for="duration">Duration (months)</label>
-                <input type="text" class="form-control" id="duration" placeholder="Duration (months)" data-ng-model="form.duration" ng-enter="ok()">
+                <input type="text" class="form-control" id="duration" placeholder="Duration (months)" data-ng-model="form.duration" ng-enter="ok(conditionsNotMet())">
             </div>
             <div class="form-group">
                 <label for="creditEvent">Credit Event</label><br>
@@ -31,13 +31,13 @@
             </div>
             <div class="form-group">
                 <label for="quoteWindow">Quote Window (minutes)</label>
-                <input type="text" class="form-control" id="quoteWindow" placeholder="Quote Window (minutes)" data-ng-model="form.quoteWindow" ng-enter="ok()">
+                <input type="text" class="form-control" id="quoteWindow" placeholder="Quote Window (minutes)" data-ng-model="form.quoteWindow" ng-enter="ok(conditionsNotMet())">
             </div>
             <div class="form-group">
                 <label for="orderValue">CDS Value</label>
                 <div class="input-group m-b">
                     <span class="input-group-addon">$</span>
-                    <input id="orderValue" type="text" class="form-control" data-ng-model="form.cdsValue" ng-enter="ok()">
+                    <input id="orderValue" type="text" class="form-control" data-ng-model="form.cdsValue" ng-enter="ok(conditionsNotMet())">
                 </div>
             </div>
             <div data-ng-show="loading" class="sk-spinner sk-spinner-double-bounce">
@@ -53,7 +53,7 @@
             </div>
             <div class="col-md-6">
                 <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
-                <button type="button" class="btn btn-primary" data-ng-click="ok()" ng-keypress="ok()" data-ng-disabled="submitButtonDisabled()">Submit RFQ</button>
+                <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="conditionsNotMet()">Submit RFQ</button>
             </div>
         </div>
     </form>

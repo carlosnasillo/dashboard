@@ -76,25 +76,27 @@
                 }
             }, 1000);
 
-            $scope.submitButtonDisabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
+            $scope.conditionsNotMet = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
-            $scope.ok = function () {
-                $scope.loading = true;
-                QuotesService.submitQuote(
-                    rfqId,
-                    $scope.form.premium,
-                    $scope.form.windowInMinutes,
-                    client,
-                    AuthenticationService.getCurrentAccount(),
-                    referenceEntity
-                ).then(
-                    AlertsService.quote.success(function() {
-                        closeModal();
-                    }),
-                    AlertsService.quote.error(function() {
-                        closeModal();
-                    })
-                );
+            $scope.ok = function(conditionsNotMet) {
+                if (!conditionsNotMet) {
+                    $scope.loading = true;
+                    QuotesService.submitQuote(
+                        rfqId,
+                        $scope.form.premium,
+                        $scope.form.windowInMinutes,
+                        client,
+                        AuthenticationService.getCurrentAccount(),
+                        referenceEntity
+                    ).then(
+                        AlertsService.quote.success(function() {
+                            closeModal();
+                        }),
+                        AlertsService.quote.error(function() {
+                            closeModal();
+                        })
+                    );
+                }
             };
 
             $scope.cancel = function () {

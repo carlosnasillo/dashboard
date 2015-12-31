@@ -18,12 +18,12 @@
                 <label for="premium">Premium</label>
                 <div class="input-group m-b">
                     <span class="input-group-addon">$</span>
-                    <input id="premium" type="text" class="form-control" data-ng-model="form.premium" ng-enter="ok()" >
+                    <input id="premium" type="text" class="form-control" data-ng-model="form.premium" ng-enter="ok(conditionsNotMet())" >
                 </div>
             </div>
             <div class="form-group">
                 <label for="windowInMinutes">Time window (in minutes)</label>
-                <input id="windowInMinutes" type="text" class="form-control" data-ng-model="form.windowInMinutes" ng-enter="ok()" >
+                <input id="windowInMinutes" type="text" class="form-control" data-ng-model="form.windowInMinutes" ng-enter="ok(conditionsNotMet())" >
             </div>
             <div data-ng-show="loading" class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
@@ -37,7 +37,7 @@
             </div>
             <div class="col-md-6">
                 <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
-                <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="submitButtonDisabled()">Submit Quote</button>
+                <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="conditionsNotMet()">Submit Quote</button>
             </div>
         </div>
     </form>
