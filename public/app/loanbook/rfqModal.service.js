@@ -78,7 +78,7 @@
                 }
             };
 
-            $scope.submitButtonDisabled = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
+            $scope.conditionsNotMet = function() { return FormUtilsService.isAtLeastOneTrue($scope.conditions); };
 
             $scope.selectUtils = {
                 banks: {
@@ -101,25 +101,27 @@
                 }
             };
 
-            $scope.ok = function () {
-                $scope.loading = true;
-                RfqService.submitRfq(
-                    $scope.form.duration,
-                    $scope.form.creditEvent,
-                    $scope.form.counterparty,
-                    $scope.form.quoteWindow,
-                    $scope.form.cdsValue,
-                    AuthenticationService.getCurrentAccount(),
-                    loanId,
-                    originator
-                ).then(
-                    AlertsService.rfq.success(function() {
-                        closeModal();
-                    }),
-                    AlertsService.rfq.error(function() {
-                        closeModal();
-                    })
-                );
+            $scope.ok = function(conditionsNotMet) {
+                if (!conditionsNotMet) {
+                    $scope.loading = true;
+                    RfqService.submitRfq(
+                        $scope.form.duration,
+                        $scope.form.creditEvent,
+                        $scope.form.counterparty,
+                        $scope.form.quoteWindow,
+                        $scope.form.cdsValue,
+                        AuthenticationService.getCurrentAccount(),
+                        loanId,
+                        originator
+                    ).then(
+                        AlertsService.rfq.success(function() {
+                            closeModal();
+                        }),
+                        AlertsService.rfq.error(function() {
+                            closeModal();
+                        })
+                    );
+                }
             };
 
             $scope.cancel = function () {
