@@ -8,12 +8,9 @@
 
 package com.lattice.lib.integration.lc
 
-import com.lattice.lib.integration.lc.impl.LendingClubAnalytics
-import com.lattice.lib.integration.lc.impl.LendingClubConnectionImpl
-import com.lattice.lib.integration.lc.impl.LendingClubMongoDb
+import com.lattice.lib.integration.lc.impl.{LendingClubAnalytics, LendingClubConnectionImpl, LendingClubMongoDb}
 import com.lattice.lib.portfolio.MarketPlaceFactory
 import com.lattice.lib.utils.DbUtil
-import com.lattice.lib.integration.lc.impl.PortfolioManagerImpl
 
 /**
  * TODO change this to proper DI
@@ -23,5 +20,4 @@ import com.lattice.lib.integration.lc.impl.PortfolioManagerImpl
 object LendingClubFactory extends MarketPlaceFactory {
   private val db = new LendingClubMongoDb(DbUtil.db)
   override val analytics = new LendingClubAnalytics(LendingClubConnectionImpl,db)
-  override val portfolio = new PortfolioManagerImpl(LendingClubConnectionImpl,db)
 }

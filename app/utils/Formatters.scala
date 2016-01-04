@@ -10,7 +10,7 @@
 package utils
 
 import models.Grade._
-import models.{Quote, Grade, Term, Note}
+import models.{Quote, Grade, Term}
 import play.api.libs.json._
 import play.api.libs.json.Json.JsValueWrapper
 
@@ -43,6 +43,4 @@ object Formatters {
   implicit val mapGradeIntFormat: Format[Map[Grade.Value, Int]] = mapFormatFactory[Grade.Value, Int](Grade.withName, _.toInt)(_.toString, _.toInt)
   implicit val mapIntMapGradeValueIntFormat: Format[Map[Int,Map[models.Grade.Value,Int]]] = mapFormatFactory[Int,Map[Grade.Value,Int]](_.toInt, _.asInstanceOf[Map[models.Grade.Value,Int]])(_.toString, _.toString())
   implicit val mapStringListQuote: Format[Map[String, List[Quote]]] = mapFormatFactory[String, List[Quote]](_.toString, _.asInstanceOf[List[Quote]])(_.toString, Json.toJson(_))
-
-  implicit val noteFormat = Json.format[Note]
 }
