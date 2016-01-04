@@ -23,20 +23,22 @@
 
     function RfqModalService($uibModal) {
 
-        var orderModal = function(loanId, originator) {
+        var orderModal = function(loanId, originator, selectedLoans) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'assets/app/loanbook/rfqModal.html',
                 controller: OrderModalInstanceCtrl,
                 resolve: {
                     loanId: function() { return loanId; },
-                    originator: function() { return originator; }
+                    originator: function() { return originator; },
+                    selectedLoans: function() { return (selectedLoans.some(function(loan) { return loan.id === loanId; })) ? selectedLoans : undefined; }
                 }
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
+        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, selectedLoans, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
             $scope.loanId = loanId;
             $scope.originator = originator;
+            $scope.selectedLoans = selectedLoans;
 
             $scope.loading = false;
 
@@ -111,7 +113,7 @@
                         $scope.form.quoteWindow,
                         $scope.form.cdsValue,
                         AuthenticationService.getCurrentAccount(),
-                        loanId,
+                        (selectedLoans) ? selectedLoans.map(function(loan) { return loan.id; }) : [loanId],
                         originator
                     ).then(
                         AlertsService.rfq.success(function() {

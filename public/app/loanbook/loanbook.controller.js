@@ -40,13 +40,15 @@
 
             $timeout(function() {
                 if (vm.loanBookTable.gridApi.selection.selectRow) {
-                    var loanId = $routeParams.loanId;
-                    if (loanId) {
-                        var selectedLoans = vm.loanBookTable.options.data.filter(function(loan) {
-                            return loan.id == loanId;
-                        });
-                        if (selectedLoans.length === 1 && selectedLoans[0]) {
-                            vm.loanBookTable.gridApi.selection.selectRow(selectedLoans[0]);
+                    if ($routeParams.loansId) {
+                        var loansId = $routeParams.loansId.split('+').map(function(id) { return parseInt(id); });
+                        if (loansId) {
+                            var selectedLoans = vm.loanBookTable.options.data.filter(function(loan) {
+                                return loansId.indexOf(loan.id) >= 0;
+                            });
+                            selectedLoans.forEach(function(loan) {
+                                vm.loanBookTable.gridApi.selection.selectRow(loan);
+                            });
                         }
                     }
                 }

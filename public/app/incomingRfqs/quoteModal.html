@@ -9,8 +9,11 @@
 
 <div class="inmodal">
     <div class="modal-header">
-        <h4 class="modal-title">Quote - {{originator}} {{referenceEntity}}</h4>
+        <h4 class="modal-title">Quote - {{originator}}</h4>
         <h5 class="text-danger">Expires in {{timeout}} seconds !</h5>
+        <h4 data-ng-repeat="loanId in referenceEntities">
+            # {{loanId}}
+        </h4>
     </div>
     <form>
         <div class="modal-body">

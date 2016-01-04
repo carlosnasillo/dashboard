@@ -9,7 +9,10 @@
 
 <div class="inmodal">
     <div class="modal-header">
-        <h4 class="modal-title">CDS - {{originator}} {{loanId}}</h4>
+        <h4 class="modal-title">CDS - {{originator}} {{selectedLoans ? "" : loanId}}</h4>
+        <h4 data-ng-repeat="loan in selectedLoans">
+            # {{loan.id}}
+        </h4>
     </div>
     <form>
         <div class="modal-body">

@@ -38,8 +38,8 @@
                     {
                         field: 'referenceEntity',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.referenceEntity', 'vm.tradesTable.filters.filterTrades()')
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntities | listAsUrlParams}}">{{row.entity.referenceEntities | prettifyList}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.referenceEntities', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {
                         field: 'side',
@@ -81,8 +81,9 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.tradesTable.filters.durationInMonths', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {
-                        field: 'prettyCreditEvents',
+                        field: 'creditEvents',
                         headerCellClass: 'text-center',
+                        cellFilter: 'prettifyList',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.creditEvents', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {

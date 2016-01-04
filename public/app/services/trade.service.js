@@ -20,11 +20,11 @@
         .module('app')
         .factory('TradeService', TradeService);
 
-    TradeService.$inject = ['$http', 'ParseUtilsService'];
+    TradeService.$inject = ['$http'];
 
-    function TradeService($http, ParseUtilsService) {
+    function TradeService($http) {
 
-        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium, referenceEntity) {
+        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium, referenceEntities) {
             var element = {
                 rfqId: rfqId,
                 quoteId: quoteId,
@@ -35,7 +35,7 @@
                 cdsValue: cdsValue,
                 originator: originator,
                 premium: premium,
-                referenceEntity: referenceEntity
+                referenceEntities: referenceEntities
             };
             return $http.post('/api/trades', element);
         };
@@ -68,12 +68,11 @@
                 durationInMonths: trade.durationInMonths,
                 client: trade.client,
                 dealer: trade.dealer,
-                prettyCreditEvents: ParseUtilsService.prettifyList(trade.creditEvents),
                 creditEvents: trade.creditEvents,
                 cdsValue: trade.cdsValue,
                 originator: trade.originator,
                 premium: trade.premium,
-                referenceEntity: trade.referenceEntity
+                referenceEntities: trade.referenceEntities
             };
         }
     }

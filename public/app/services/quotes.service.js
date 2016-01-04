@@ -23,14 +23,14 @@
 
     function QuotesService($http) {
 
-        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer, referenceEntity) {
+        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer, referenceEntities) {
             var element = {
                 rfqId: rfqId,
                 premium: premium,
                 timeWindowInMinutes: timeWindowInMinutes,
                 client: client,
                 dealer: dealer,
-                referenceEntity: referenceEntity
+                referenceEntities: referenceEntities
             };
 
             return $http.post('/api/quotes', element);
@@ -67,7 +67,7 @@
                 timeWindowInMinutes: quote.timeWindowInMinutes,
                 client: quote.client,
                 dealer: quote.dealer,
-                referenceEntity: quote.referenceEntity
+                referenceEntities: quote.referenceEntities
             };
         }
 

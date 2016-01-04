@@ -19,9 +19,9 @@
         .module('app')
         .controller('IncomingRfqsController', IncomingRfqsController);
 
-    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService', 'GridTableUtil', '$filter'];
+    IncomingRfqsController.$inject = ['RfqService', 'RfqsTableForDealerService', 'QuoteModalService', '$scope', 'AuthenticationService', 'QuotesByRfqTableService', 'QuotesService', '$timeout', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'GridTableUtil', '$filter'];
 
-    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService, GridTableUtil, $filter) {
+    function IncomingRfqsController(RfqService, RfqsTableForDealerService, QuoteModalService, $scope, AuthenticationService, QuotesByRfqTableService, QuotesService, $timeout, FormUtilsService, TimeoutManagerService, WebSocketsManager, GridTableUtil, $filter) {
         var vm = this;
 
         var currentAccount = AuthenticationService.getCurrentAccount();
@@ -51,7 +51,6 @@
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
                 var rfq = TimeoutManagerService.setUpTimeout(rfqObj);
-                rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
 
                 return rfq;
@@ -77,7 +76,7 @@
         vm.rfqTable.filters.filterRfqs = function () {
             vm.rfqTable.options.data = vm.originalData.rfqs.filter(function (rfqObj) {
                 var passFilter = vm.rfqTable.filters.timestampStr.filterFn(rfqObj) &&
-                    vm.rfqTable.filters.referenceEntity.filterFn(rfqObj) &&
+                    vm.rfqTable.filters.referenceEntities.filterFn(rfqObj) &&
                     vm.rfqTable.filters.client.filterFn(rfqObj) &&
                     vm.rfqTable.filters.durationInMonths.start.filterFn(rfqObj) &&
                     vm.rfqTable.filters.durationInMonths.end.filterFn(rfqObj) &&
@@ -98,7 +97,7 @@
         };
 
         vm.rfqTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'timestampStr');
-        vm.rfqTable.filters.referenceEntity = GridTableUtil.idFilterFactory(vm.rfqTable.filters.filterRfqs, 'referenceEntity');
+        vm.rfqTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.rfqTable.filters.filterRfqs, 'referenceEntities');
         vm.rfqTable.filters.client = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'client');
         vm.rfqTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.rfqTable.filters.filterRfqs, 'durationInMonths');
         vm.rfqTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.rfqTable.filters.filterRfqs, 'creditEvents');
@@ -160,7 +159,7 @@
         vm.quotesTable.filters.filterQuotes = function () {
             vm.quotesTable.options.data = vm.originalData.quotes.filter(function (quoteObj) {
                 return vm.quotesTable.filters.id.filterFn(quoteObj) &&
-                    vm.quotesTable.filters.referenceEntity.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.referenceEntities.filterFn(quoteObj) &&
                     vm.quotesTable.filters.client.filterFn(quoteObj) &&
                     vm.quotesTable.filters.timestampStr.filterFn(quoteObj) &&
                     vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
@@ -172,7 +171,7 @@
 
         vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
 
-        vm.quotesTable.filters.referenceEntity = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntity');
+        vm.quotesTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntities');
         vm.quotesTable.filters.client = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'client');
         vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');

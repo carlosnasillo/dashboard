@@ -9,7 +9,7 @@
 
 /**
 * @author : julienderay
-* Created on 22/12/2015
+* Created on 04/01/2016
 */
 
 (function() {
@@ -17,22 +17,18 @@
 
     angular
         .module('app')
-        .factory('ParseUtilsService', ParseUtilsService);
+        .filter('prettifyList', prettifyList);
 
-    ParseUtilsService.$inject = [];
+    prettifyList.$inject = [];
 
-    function ParseUtilsService() {
-        var prettifyList = function(uglyList) {
+    function prettifyList() {
+        return function (uglyList) {
             var prettyRes = "";
-            uglyList.map(function (dealer) {
-                prettyRes += dealer + ', ';
+            uglyList.forEach(function (elem) {
+                prettyRes += elem + ', ';
             });
 
             return prettyRes.substr(0, prettyRes.length - 2);
-        };
-
-        return {
-            prettifyList: prettifyList
         };
     }
 })();

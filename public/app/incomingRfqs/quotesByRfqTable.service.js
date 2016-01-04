@@ -34,10 +34,10 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.id', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
-                        field: 'referenceEntity',
+                        field: 'referenceEntities',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.referenceEntity', 'vm.quotesTable.filters.filterQuotes()')
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntities | listAsUrlParams}}">{{row.entity.referenceEntities | prettifyList}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.referenceEntities', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'client',
