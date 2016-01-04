@@ -19,14 +19,16 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService', 'GridTableUtil', '$filter'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService, GridTableUtil, $filter) {
         var vm = this;
 
         var quotesByRfqId = {};
 
         var currentAccount = AuthenticationService.getCurrentAccount();
+
+        vm.originalData = { rfqs: [], quotes: [] };
 
         /**
          * Top table
@@ -37,7 +39,7 @@
         vm.rfqsTable.options = RfqsTableService.options();
         var rfqCallbackName = 'clientRfqTable';
 
-        WebSocketsManager.webSockets.quotes.client.addCallback(rfqCallbackName, function(rfqObject) {
+        WebSocketsManager.webSockets.rfq.client.addCallback(rfqCallbackName, function(rfqObject) {
             vm.rfqsTable.loading = false;
 
             rfqObject.expired = false;
@@ -62,17 +64,61 @@
                 rfq.prettyDealers = ParseUtilsService.prettifyList(rfq.dealers);
                 rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.expired = false;
+                rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
                 rfq = TimeoutManagerService.setUpTimeout(rfq);
 
                 return rfq;
             });
 
+            vm.originalData.rfqs = vm.rfqsTable.options.data;
+
             $timeout(function() {
-                if (vm.rfqsTable.gridApi.selection.selectRow) {
-                    vm.rfqsTable.gridApi.selection.selectRow(vm.rfqsTable.options.data[vm.rfqsTable.options.data.length - 1]);
-                }
+                selectFirstRow();
             });
         });
+
+        vm.rfqsTable.filters = {};
+        vm.rfqsTable.filters.filterRfqs = function () {
+            vm.rfqsTable.options.data = vm.originalData.rfqs.filter(function (rfqObj) {
+                var passFilter = vm.rfqsTable.filters.referenceEntity.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.timestampStr.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.id.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.durationInMonths.start.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.durationInMonths.end.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.dealers.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.creditEvents.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.timeout.start.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.timeout.end.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.cdsValue.start.filterFn(rfqObj) &&
+                    vm.rfqsTable.filters.cdsValue.end.filterFn(rfqObj);
+
+                if (rfqObj.id === selectedRfq.id) {
+                    if (!passFilter) {
+                        vm.quotesTable.options.data = [];
+                    }
+                }
+
+                return passFilter;
+            });
+        };
+
+        vm.rfqsTable.filters.referenceEntity = GridTableUtil.idFilterFactory(vm.rfqsTable.filters.filterRfqs, 'referenceEntity');
+        vm.rfqsTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.rfqsTable.filters.filterRfqs, 'timestampStr');
+        vm.rfqsTable.filters.id = GridTableUtil.idFilterFactory(vm.rfqsTable.filters.filterRfqs, 'id');
+        vm.rfqsTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'durationInMonths');
+        vm.rfqsTable.filters.dealers = GridTableUtil.listFilterFactory(vm.rfqsTable.filters.filterRfqs, 'dealers');
+        vm.rfqsTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.rfqsTable.filters.filterRfqs, 'creditEvents');
+        vm.rfqsTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'timeout');
+        vm.rfqsTable.filters.cdsValue = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'cdsValue');
+
+        setInterval(function() {
+            if (vm.rfqsTable.filters.timeout.start.value.length || vm.rfqsTable.filters.timeout.end.value.length) {
+                vm.rfqsTable.options.data = vm.rfqsTable.options.data.filter(function(rfqObj) {
+                    return vm.rfqsTable.filters.timeout.start.filterFn(rfqObj) &&
+                        vm.rfqsTable.filters.timeout.end.filterFn(rfqObj);
+                });
+            }
+        }, 1000);
 
         /**
          * Bottom table
@@ -115,6 +161,37 @@
             });
         };
 
+        vm.quotesTable.filters = {};
+
+        vm.quotesTable.filters.filterQuotes = function () {
+            vm.quotesTable.options.data = vm.originalData.quotes.filter(function (quoteObj) {
+                return vm.quotesTable.filters.timestampStr.filterFn(quoteObj) &&
+                vm.quotesTable.filters.referenceEntity.filterFn(quoteObj) &&
+                vm.quotesTable.filters.id.filterFn(quoteObj) &&
+                vm.quotesTable.filters.dealer.filterFn(quoteObj) &&
+                vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
+                vm.quotesTable.filters.premium.end.filterFn(quoteObj) &&
+                vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
+                vm.quotesTable.filters.timeout.end.filterFn(quoteObj);
+            });
+        };
+
+        vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
+        vm.quotesTable.filters.referenceEntity = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntity');
+        vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
+        vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer');
+        vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
+        vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
+
+        setInterval(function() {
+            if (vm.quotesTable.filters.timeout.start.value.length || vm.quotesTable.filters.timeout.end.value.length) {
+                vm.quotesTable.options.data = vm.quotesTable.options.data.filter(function(quoteObj) {
+                    return vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
+                        vm.quotesTable.filters.timeout.end.filterFn(quoteObj);
+                });
+            }
+        }, 1000);
+
         function disableButtons(quotes) {
             return quotes.map(function(quote) {
                 quote.rfqExpired = true;
@@ -130,6 +207,8 @@
                     relatedQuotes = disableButtons(relatedQuotes);
                 }
                 vm.quotesTable.options.data = relatedQuotes;
+                vm.originalData.quotes = relatedQuotes;
+                vm.quotesTable.filters.filterQuotes();
             }
             else {
                 vm.quotesTable.options.data = [];
@@ -169,7 +248,14 @@
             quote.rfqExpired = false;
             quote.loading = false;
             quote.accepted = false;
+            quote.timestampStr = $filter('date')(quote.timestamp, 'HH:mm:ss');
             return quote;
+        }
+
+        function selectFirstRow() {
+            if (vm.rfqsTable.gridApi.selection.selectRow) {
+                vm.rfqsTable.gridApi.selection.selectRow(vm.rfqsTable.options.data[vm.rfqsTable.options.data.length - 1]);
+            }
         }
     }
 })();

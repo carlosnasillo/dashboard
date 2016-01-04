@@ -93,14 +93,14 @@
                     });
             };
 
-        vm.loansTable.filters.identifier = LoansTableService.identifierFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.originator = LoansTableService.originatorFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.loanAmount = LoansTableService.loanAmountFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.fundedAmountPerCent = LoansTableService.fundedAmountPerCentFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.grade = LoansTableService.gradeFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.term = LoansTableService.termFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.intRate = LoansTableService.intRateFilterFactory(vm.loansTable.filters.filterLoans);
-        vm.loansTable.filters.purpose = LoansTableService.purposeFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.identifier = GridTableUtil.idFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.originator = GridTableUtil.textFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.loanAmount = GridTableUtil.doubleNumberFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.fundedAmountPerCent = GridTableUtil.doubleNumberFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.grade = GridTableUtil.wordFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.term = GridTableUtil.doubleNumberFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.intRate = GridTableUtil.doublePercentFilterFactory(vm.loansTable.filters.filterLoans);
+        vm.loansTable.filters.purpose = GridTableUtil.textFilterFactory(vm.loansTable.filters.filterLoans);
 
         vm.loansTable.pieChartOptions = {
             fill: ["#00b494", "#d7d7d7"],
@@ -167,13 +167,13 @@
                 });
         };
 
-        vm.notesTable.filters.noteId = NotesTableService.noteIdFilterFactory(vm.notesTable.filters.filterNotes);
-        vm.notesTable.filters.loanAmount = NotesTableService.loanAmountFilterFactory(vm.notesTable.filters.filterNotes);
-        vm.notesTable.filters.noteAmount = NotesTableService.noteAmountFilterFactory(vm.notesTable.filters.filterNotes);
-        vm.notesTable.filters.grade = NotesTableService.gradeFilterFactory(vm.notesTable.filters.filterNotes);
-        vm.notesTable.filters.term = NotesTableService.termFilterFactory(vm.notesTable.filters.filterNotes);
-        vm.notesTable.filters.interestRate = NotesTableService.interestRateFilterFactory(vm.notesTable.filters.filterNotes);
-        vm.notesTable.filters.purpose = NotesTableService.purposeFilterFactory(vm.notesTable.filters.filterNotes);
+        vm.notesTable.filters.noteId = GridTableUtil.idFilterFactory(vm.notesTable.filters.filterNotes, 'noteId');
+        vm.notesTable.filters.loanAmount = GridTableUtil.doubleNumberFilterFactory(vm.notesTable.filters.filterNotes, 'loanAmount');
+        vm.notesTable.filters.noteAmount = GridTableUtil.doubleNumberFilterFactory(vm.notesTable.filters.filterNotes, 'noteAmount');
+        vm.notesTable.filters.grade = GridTableUtil.wordFilterFactory(vm.notesTable.filters.filterNotes, 'grade');
+        vm.notesTable.filters.term = GridTableUtil.doubleNumberFilterFactory(vm.notesTable.filters.filterNotes, 'term');
+        vm.notesTable.filters.interestRate = GridTableUtil.doublePercentFilterFactory(vm.notesTable.filters.filterNotes, 'interestRate');
+        vm.notesTable.filters.purpose = GridTableUtil.textFilterFactory(vm.notesTable.filters.filterNotes, 'purpose');
 
         $scope.$watch('vm.notesTable.filters.issueDate.start.value', vm.notesTable.filters.filterNotes, false);
         $scope.$watch('vm.notesTable.filters.issueDate.end.value', vm.notesTable.filters.filterNotes, false);

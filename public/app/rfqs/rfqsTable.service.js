@@ -18,9 +18,9 @@
         .module('app')
         .factory('RfqsTableService', RfqsTableService);
 
-    RfqsTableService.$inject = ['uiGridConstants'];
+    RfqsTableService.$inject = ['uiGridConstants', 'GridTableUtil'];
 
-    function RfqsTableService(uiGridConstants) {
+    function RfqsTableService(uiGridConstants, GridTableUtil) {
 
         var tableOptions = function() {
             return {
@@ -36,46 +36,49 @@
                     {
                         field: 'referenceEntity',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqsTable.filters.referenceEntity', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',
-                        cellFilter: 'date:"HH:mm:ss"'
+                        cellFilter: 'date:"HH:mm:ss"',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: 14:30:10', 'vm.rfqsTable.filters.timestampStr', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'id',
-                        headerCellClass: 'text-center'
-                    },
-                    {
-                        field: 'client',
                         headerCellClass: 'text-center',
-                        visible: false
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqsTable.filters.id', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'durationInMonths',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqsTable.filters.durationInMonths', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'prettyDealers',
                         displayName: 'Dealers',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: dealer1, dealer2, ...', 'vm.rfqsTable.filters.dealers', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'prettyCreditEvents',
                         displayName: 'Credit Events',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: default, ...', 'vm.rfqsTable.filters.creditEvents', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
                         type: 'text',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqsTable.filters.timeout', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'cdsValue',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqsTable.filters.cdsValue', 'vm.rfqsTable.filters.filterRfqs()')
                     }
                 ]
             };

@@ -20,9 +20,9 @@
         .factory('LoanBookTableService', LoanBookTableService);
 
 
-    LoanBookTableService.$inject = [];
+    LoanBookTableService.$inject = ['GridTableUtil'];
 
-    function LoanBookTableService() {
+    function LoanBookTableService(GridTableUtil) {
         var tableOptions = {
             enableColumnMenus: false,
             enableSorting: true,
@@ -35,52 +35,64 @@
             columnDefs: [
                 {
                     field: 'originator',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: Lending Club, ...', 'vm.loanBookTable.filters.originator', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'status',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: open, ...', 'vm.loanBookTable.filters.status', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'grade',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: C, A, ...', 'vm.loanBookTable.filters.grade', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'purpose',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: house, ...', 'vm.loanBookTable.filters.purpose', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'sector',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: wholesale, ...', 'vm.loanBookTable.filters.sector', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'type',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: limited', 'vm.loanBookTable.filters.type', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'region',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: north, west', 'vm.loanBookTable.filters.region', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'amount',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.loanBookTable.filters.amount', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'interest',
                     headerCellClass: 'text-center',
-                    cellFilter: 'percentage:2'
+                    cellFilter: 'percentage:2',
+                    filterHeaderTemplate: GridTableUtil.doublePercentFilterTemplateFactory('vm.loanBookTable.filters.interestPerCent', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'term',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.loanBookTable.filters.term', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'loanDate',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.dateFilterTemplateFactory('vm.loanBookTable.filters.loanDate')
                 },
                 {
                     field: 'security',
-                    headerCellClass: 'text-center'
+                    headerCellClass: 'text-center',
+                    filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.loanBookTable.filters.security', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
                     field: 'id',

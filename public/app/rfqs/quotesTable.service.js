@@ -19,9 +19,9 @@
         .module('app')
         .factory('QuotesTableService', QuotesTableService);
 
-    QuotesTableService.$inject = ['uiGridConstants'];
+    QuotesTableService.$inject = ['uiGridConstants', 'GridTableUtil'];
 
-    function QuotesTableService(uiGridConstants) {
+    function QuotesTableService(uiGridConstants, GridTableUtil) {
 
         var tableOptions = function() {
             return {
@@ -33,31 +33,37 @@
                         field: 'timestamp',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',
-                        cellFilter: 'date:"HH:mm:ss"'
+                        cellFilter: 'date:"HH:mm:ss"',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.timestampStr', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'referenceEntity',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>'
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.referenceEntity', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'id',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.id', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'dealer',
                         displayName: 'Counterparty',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.dealer', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'premium',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.premium', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
                         type: 'text',
-                        headerCellClass: 'text-center'
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.timeout', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
                         field: 'id',
