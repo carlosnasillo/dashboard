@@ -34,7 +34,6 @@ case class Trade(
                  dealer: String,
                  creditEvents: List[String],
                  cdsValue: BigDecimal,
-                 originator: String,
                  premium: BigDecimal,
                  referenceEntities: List[String]
                 )

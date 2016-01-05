@@ -83,7 +83,6 @@
                 vm.tradesTable.filters.creditEvents.filterFn(tradeObj) &&
                 vm.tradesTable.filters.cdsValue.start.filterFn(tradeObj) &&
                 vm.tradesTable.filters.cdsValue.end.filterFn(tradeObj) &&
-                vm.tradesTable.filters.originator.filterFn(tradeObj) &&
                 vm.tradesTable.filters.premium.start.filterFn(tradeObj) &&
                 vm.tradesTable.filters.premium.end.filterFn(tradeObj);
             });
@@ -108,7 +107,6 @@
         vm.tradesTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.tradesTable.filters.filterTrades, 'durationInMonths');
         vm.tradesTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.tradesTable.filters.filterTrades, 'creditEvents');
         vm.tradesTable.filters.cdsValue = GridTableUtil.doubleNumberFilterFactory(vm.tradesTable.filters.filterTrades, 'cdsValue');
-        vm.tradesTable.filters.originator = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'originator');
         vm.tradesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.tradesTable.filters.filterTrades, 'premium');
 
         $scope.$watch('vm.tradesTable.filters.timestamp.start.value', vm.tradesTable.filters.filterTrades, false);

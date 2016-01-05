@@ -24,7 +24,7 @@
 
     function TradeService($http) {
 
-        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, originator, premium, referenceEntities) {
+        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, premium, referenceEntities) {
             var element = {
                 rfqId: rfqId,
                 quoteId: quoteId,
@@ -33,7 +33,6 @@
                 dealer: dealer,
                 creditEvents: creditEvents,
                 cdsValue: cdsValue,
-                originator: originator,
                 premium: premium,
                 referenceEntities: referenceEntities
             };
@@ -70,7 +69,6 @@
                 dealer: trade.dealer,
                 creditEvents: trade.creditEvents,
                 cdsValue: trade.cdsValue,
-                originator: trade.originator,
                 premium: trade.premium,
                 referenceEntities: trade.referenceEntities
             };

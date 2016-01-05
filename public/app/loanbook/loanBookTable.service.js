@@ -95,7 +95,7 @@
                     field: 'id',
                     headerCellClass: 'text-center',
                     displayName: 'RFQ',
-                    cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity.id, row.entity.originator, row.grid.appScope.vm.loanBookTable.gridApi.selection.getSelectedRows())'>RFQ</span></div></div>",
+                    cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><span class='label label-primary' data-ng-click='row.grid.appScope.vm.order(row.entity, row.grid.appScope.vm.loanBookTable.gridApi.selection.getSelectedRows())'>RFQ</span></div></div>",
                     enableFiltering: false
                 }
             ]

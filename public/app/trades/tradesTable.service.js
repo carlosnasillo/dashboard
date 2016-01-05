@@ -92,11 +92,6 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.tradesTable.filters.cdsValue', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {
-                        field: 'originator',
-                        headerCellClass: 'text-center',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.originator', 'vm.tradesTable.filters.filterTrades()')
-                    },
-                    {
                         field: 'premium',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.tradesTable.filters.premium', 'vm.tradesTable.filters.filterTrades()')

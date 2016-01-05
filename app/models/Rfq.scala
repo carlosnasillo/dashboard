@@ -34,8 +34,7 @@ case class Rfq(
                 timeWindowInMinutes: Int,
                 isValid: Boolean,
                 cdsValue: BigDecimal,
-                referenceEntities: List[String],
-                originator: String
+                referenceEntities: Set[String]
               )
 
 object Rfq {

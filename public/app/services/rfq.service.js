@@ -23,7 +23,7 @@
 
     function RfqService($http) {
 
-        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntities, originator) {
+        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntities) {
             var element = {
                 durationInMonths: duration,
                 creditEvents: creditEvents,
@@ -32,8 +32,7 @@
                 cdsValue: cdsValue,
                 client: client,
                 isValid: true,
-                referenceEntities: referenceEntities,
-                originator: originator
+                referenceEntities: referenceEntities
             };
             return $http.post('/api/rfqs', element);
         };
@@ -62,8 +61,7 @@
                 creditEvents: rfq.creditEvents,
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
                 cdsValue: rfq.cdsValue,
-                referenceEntities: rfq.referenceEntities,
-                originator: rfq.originator
+                referenceEntities: rfq.referenceEntities
             };
         };
 

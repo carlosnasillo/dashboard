@@ -9,10 +9,15 @@
 
 <div class="inmodal">
     <div class="modal-header">
-        <h4 class="modal-title">CDS - {{originator}} {{selectedLoans ? "" : loanId}}</h4>
-        <h4 data-ng-repeat="loan in selectedLoans">
-            # {{loan.id}}
-        </h4>
+        <h4 class="modal-title">CDS</h4>
+        <div class="fixedHeight scrollable">
+            <table class="table text-left scrollable">
+                <thead> <tr> <th>#</th> <th>Originator</th> <th>Amount</th> <th>Grade</th> <th>Interest</th> </tr> </thead>
+                <tbody data-ng-repeat="loan in selectedLoans">
+                    <tr> <td>{{loan.id}}</td> <td>{{loan.originator}}</td> <td>{{loan.amount | currency}}</td> <td>{{loan.grade}}</td> <td>{{loan.interest | percentage : 2}}</td> </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <form>
         <div class="modal-body">

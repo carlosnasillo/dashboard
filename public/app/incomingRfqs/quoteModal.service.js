@@ -22,13 +22,12 @@
     QuoteModalService.$inject = ['$uibModal'];
 
     function QuoteModalService($uibModal) {
-        var quoteModal = function(referenceEntities, originator, rfqId, client, timeout) {
+        var quoteModal = function(referenceEntities, rfqId, client, timeout) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'assets/app/incomingRfqs/quoteModal.html',
                 controller: OrderModalInstanceCtrl,
                 resolve: {
                     referenceEntities: function() { return referenceEntities; },
-                    originator: function() { return originator; },
                     rfqId: function() { return rfqId; },
                     client: function() { return client; },
                     timeout: function() { return timeout; }
@@ -36,12 +35,17 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, referenceEntities, originator, rfqId, client, timeout, QuotesService, AuthenticationService, AlertsService, FormUtilsService) {
-            $scope.referenceEntities = referenceEntities;
-            $scope.originator = originator;
+        function OrderModalInstanceCtrl($scope, $modalInstance, referenceEntities, rfqId, client, timeout, QuotesService, AuthenticationService, AlertsService, FormUtilsService, LoanBookService) {
             $scope.timeout = timeout;
-
             $scope.loading = false;
+            $scope.referenceEntities = [];
+
+            LoanBookService.loanBookData().then(function(loans) {
+                referenceEntities = referenceEntities.map(function(id) { return parseInt(id); });
+                $scope.referenceEntities = loans.filter(function(loan) {
+                    return referenceEntities.indexOf(loan.id) >= 0;
+                });
+            });
 
             $scope.form = {
                 premium: null,

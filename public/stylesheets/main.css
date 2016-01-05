@@ -34,3 +34,11 @@ h1.with-space-before {
 .cg-notify-message {
     text-align: left;
 }
+
+div.scrollable {
+    overflow: scroll;
+}
+
+div.fixedHeight {
+    height: 100px;
+}

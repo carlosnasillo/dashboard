@@ -23,21 +23,19 @@
 
     function RfqModalService($uibModal) {
 
-        var orderModal = function(loanId, originator, selectedLoans) {
+        var orderModal = function(clickedLoan, selectedLoans) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'assets/app/loanbook/rfqModal.html',
                 controller: OrderModalInstanceCtrl,
                 resolve: {
-                    loanId: function() { return loanId; },
-                    originator: function() { return originator; },
-                    selectedLoans: function() { return (selectedLoans.some(function(loan) { return loan.id === loanId; })) ? selectedLoans : undefined; }
+                    clickedLoan: function() { return clickedLoan; },
+                    selectedLoans: function() { return (selectedLoans.some(function(loan) { return loan.id === clickedLoan.id; })) ? selectedLoans : [clickedLoan]; }
                 }
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, loanId, originator, selectedLoans, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
-            $scope.loanId = loanId;
-            $scope.originator = originator;
+        function OrderModalInstanceCtrl($scope, $modalInstance, clickedLoan, selectedLoans, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
+            $scope.clickedLoan = clickedLoan;
             $scope.selectedLoans = selectedLoans;
 
             $scope.loading = false;
@@ -113,8 +111,7 @@
                         $scope.form.quoteWindow,
                         $scope.form.cdsValue,
                         AuthenticationService.getCurrentAccount(),
-                        (selectedLoans) ? selectedLoans.map(function(loan) { return loan.id; }) : [loanId],
-                        originator
+                        (selectedLoans) ? selectedLoans.map(function(loan) { return loan.id; }) : [loanId]
                     ).then(
                         AlertsService.rfq.success(function() {
                             closeModal();
