@@ -41,7 +41,7 @@
         vm.rfqTable.options = RfqsTableForDealerService.options();
 
         WebSocketsManager.webSockets.rfq.dealer.addCallback(rfqsCallbackName, function(rfqObject) {
-            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject, $scope);
             rfqObject.timestampStr = $filter('date')(rfqObject.timestamp, 'HH:mm:ss');
 
             vm.originalData.rfqs.push(rfqObject);
@@ -50,7 +50,7 @@
 
         RfqService.getRfqForDealer(currentAccount).success(function(data) {
             vm.rfqTable.options.data = data.map(function(rfqObj) {
-                var rfq = TimeoutManagerService.setUpTimeout(rfqObj);
+                var rfq = TimeoutManagerService.setUpTimeout(rfqObj, $scope);
                 rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
 
                 return rfq;
@@ -191,7 +191,7 @@
         }, 1000);
 
         function prepareQuote(quoteObj) {
-            quoteObj = TimeoutManagerService.setUpTimeout(quoteObj);
+            quoteObj = TimeoutManagerService.setUpTimeout(quoteObj, $scope);
             quoteObj.timestampStr = $filter('date')(quoteObj.timestamp, 'HH:mm:ss');
             return quoteObj;
         }

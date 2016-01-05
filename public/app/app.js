@@ -73,8 +73,8 @@
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
             WebSocketsManager.startAllWS($rootScope.globals.currentUser.account);
-            WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope));
-            WebSocketsManager.webSockets.rfq.dealer.addCallback('rfqPopup', PopupService.newRfqCallback($rootScope));
+            WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope.$new()));
+            WebSocketsManager.webSockets.rfq.dealer.addCallback('rfqPopup', PopupService.newRfqCallback($rootScope.$new()));
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {

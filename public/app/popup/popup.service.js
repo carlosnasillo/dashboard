@@ -24,7 +24,7 @@
     function PopupService(notify, TradeService, RfqService, AlertsService, QuoteModalService, TimeoutManagerService) {
         var newQuoteCallback = function(childScope) {
             return function(quoteObject) {
-                childScope.quote = TimeoutManagerService.setUpTimeout(quoteObject);
+                childScope.quote = TimeoutManagerService.setUpTimeout(quoteObject, childScope);
                 childScope.accept = function(quote, closeNotification) {
                     quote.loading = true;
 
@@ -49,7 +49,7 @@
 
         var newRfqCallback = function(childScope) {
             return function(rfqObject) {
-                childScope.rfq = TimeoutManagerService.setUpTimeout(rfqObject);
+                childScope.rfq = TimeoutManagerService.setUpTimeout(rfqObject, childScope);
                 childScope.quote = function(rfq, closeNotification) {
                     QuoteModalService.quoteModal(rfq.referenceEntities, rfq.originator, rfq.id, rfq.client, rfq.timeout);
                     closeNotification();

@@ -44,7 +44,7 @@
 
             rfqObject.expired = false;
 
-            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject, $scope);
 
             if (vm.rfqsTable.options.data) {
                 vm.rfqsTable.options.data.push(rfqObject);
@@ -63,7 +63,7 @@
 
                 rfq.expired = false;
                 rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
-                rfq = TimeoutManagerService.setUpTimeout(rfq);
+                rfq = TimeoutManagerService.setUpTimeout(rfq, $scope);
 
                 return rfq;
             });
@@ -242,7 +242,7 @@
         });
 
         function prepareQuote(quote) {
-            quote = TimeoutManagerService.setUpTimeout(quote);
+            quote = TimeoutManagerService.setUpTimeout(quote, $scope);
             quote.rfqExpired = false;
             quote.loading = false;
             quote.accepted = false;
