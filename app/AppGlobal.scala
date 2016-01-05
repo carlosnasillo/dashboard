@@ -17,16 +17,13 @@ class AppGlobal extends GlobalSettings {
   def start() {
     Akka.system.scheduler.schedule(0 seconds, 2 hours) {
       Logger.info("reconciling loans")
-      LendingClubFactory.analytics.loadLoansFromMarket
-    }
-    Akka.system.scheduler.schedule(0 seconds, 6 hours) {
-      LendingClubFactory.portfolio.reconcilePortfolio
+      LendingClubFactory.analytics.loadLoansFromMarket()
     }
   }
   
   override def onStop(app: play.api.Application) {
     Logger.info("Application shutdown...")
-    DbUtil.closeDriver
+    DbUtil.closeDriver()
   }
 }
 

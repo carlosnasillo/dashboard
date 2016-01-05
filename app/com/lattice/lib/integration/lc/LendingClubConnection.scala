@@ -7,12 +7,7 @@
  */
 package com.lattice.lib.integration.lc
 
-import com.lattice.lib.integration.lc.model.AccountSummary
-import com.lattice.lib.integration.lc.model.ExecutionReport
-import com.lattice.lib.integration.lc.model.LendingClubNote
 import com.lattice.lib.integration.lc.model.LoanListing
-import com.lattice.lib.integration.lc.model.Order
-import com.lattice.lib.integration.lc.model.PortfolioDetails
 
 /**
  * interface for interaction with Lending Club API
@@ -21,27 +16,6 @@ import com.lattice.lib.integration.lc.model.PortfolioDetails
  */
 trait LendingClubConnection {
 
-  // submit an order to lending club
-  def submitOrder(orders: Seq[Order]): ExecutionReport
-
-  // get a sequence of owned loans details
-  def ownedNotes: Seq[LendingClubNote]
-
   // get a sequence of available loans
   def availableLoans: LoanListing
-
-  // transfer funds to lattice account with Lending Club
-  def transferFunds(amount: BigDecimal)
-
-  // withdraw funds from Lending Club to lattice account
-  def withdrawFunds(amount: BigDecimal)
-
-  // get lattice account summary in LC
-  def accountSummary: AccountSummary
-
-  // create a porfolio
-  def createPorfolio(name: String, description: String): PortfolioDetails
-
-  // load configured portfolios
-  def loadPortfolios: Seq[PortfolioDetails]
 }

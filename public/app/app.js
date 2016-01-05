@@ -28,21 +28,6 @@
                 controller: "MainDashboardController",
                 controllerAs: 'vm'
             })
-            .when('/portfolio', {
-                templateUrl: "assets/app/portfolio/portfolio.html",
-                controller: "PortfolioController",
-                controllerAs: 'vm'
-            })
-            .when('/analytics', {
-                templateUrl: "assets/app/analytics/analytics.html",
-                controller: "AnalyticsController",
-                controllerAs: 'vm'
-            })
-            .when('/loans', {
-                templateUrl: "assets/app/loans/loans.html",
-                controller: "LoansController",
-                controllerAs: 'vm'
-            })
             .when('/rfqs', {
                 templateUrl: "assets/app/rfqs/rfqs.html",
                 controller: "RFQsController",
