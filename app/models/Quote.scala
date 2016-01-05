@@ -32,7 +32,7 @@ case class Quote(
                   timeWindowInMinutes: Int,
                   client: String,
                   dealer: String,
-                  referenceEntities: List[String]
+                  referenceEntities: Set[String]
                 )
 
 object Quote {
