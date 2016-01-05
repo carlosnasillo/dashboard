@@ -34,10 +34,10 @@
                 enableRowHeaderSelection: false,
                 columnDefs: [
                     {
-                        field: 'referenceEntity',
+                        field: 'referenceEntities',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqsTable.filters.referenceEntity', 'vm.rfqsTable.filters.filterRfqs()')
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntities | listAsUrlParams}}">{{row.entity.referenceEntities | prettifyList}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqsTable.filters.referenceEntities', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
                         field: 'timestamp',
@@ -57,15 +57,17 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqsTable.filters.durationInMonths', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
-                        field: 'prettyDealers',
+                        field: 'dealers',
                         displayName: 'Dealers',
                         headerCellClass: 'text-center',
+                        cellFilter: 'prettifyList',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: dealer1, dealer2, ...', 'vm.rfqsTable.filters.dealers', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {
-                        field: 'prettyCreditEvents',
+                        field: 'creditEvents',
                         displayName: 'Credit Events',
                         headerCellClass: 'text-center',
+                        cellFilter: 'prettifyList',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: default, ...', 'vm.rfqsTable.filters.creditEvents', 'vm.rfqsTable.filters.filterRfqs()')
                     },
                     {

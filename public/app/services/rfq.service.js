@@ -19,11 +19,11 @@
         .module('app')
         .factory('RfqService', RfqService);
 
-    RfqService.$inject = ['$http', 'ParseUtilsService'];
+    RfqService.$inject = ['$http'];
 
-    function RfqService($http, ParseUtilsService) {
+    function RfqService($http) {
 
-        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntity, originator) {
+        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntities) {
             var element = {
                 durationInMonths: duration,
                 creditEvents: creditEvents,
@@ -32,8 +32,7 @@
                 cdsValue: cdsValue,
                 client: client,
                 isValid: true,
-                referenceEntity: referenceEntity,
-                originator: originator
+                referenceEntities: referenceEntities
             };
             return $http.post('/api/rfqs', element);
         };
@@ -59,13 +58,10 @@
                 durationInMonths: rfq.durationInMonths,
                 client: rfq.client,
                 dealers: rfq.dealers,
-                prettyDealers: ParseUtilsService.prettifyList(rfq.dealers),
                 creditEvents: rfq.creditEvents,
-                prettyCreditEvents: ParseUtilsService.prettifyList(rfq.creditEvents),
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
                 cdsValue: rfq.cdsValue,
-                referenceEntity: rfq.referenceEntity,
-                originator: rfq.originator
+                referenceEntities: rfq.referenceEntities
             };
         };
 

@@ -44,10 +44,10 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: 14:30:10', 'vm.rfqTable.filters.timestampStr', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
-                        field: 'referenceEntity',
+                        field: 'referenceEntities',
                         headerCellClass: 'text-center',
-                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntity}}">{{row.entity.referenceEntity}}</a></div>',
-                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqTable.filters.referenceEntity', 'vm.rfqTable.filters.filterRfqs()')
+                        cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a href="/#/loanbook/{{row.entity.referenceEntities | listAsUrlParams}}">{{row.entity.referenceEntities | prettifyList}}</a></div>',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqTable.filters.referenceEntities', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
                         field: 'client',
@@ -60,9 +60,10 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.rfqTable.filters.durationInMonths', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
-                        field: 'prettyCreditEvents',
+                        field: 'creditEvents',
                         displayName: 'Credit Events',
                         headerCellClass: 'text-center',
+                        cellFilter: 'prettifyList',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: default, ...', 'vm.rfqTable.filters.creditEvents', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
@@ -80,7 +81,7 @@
                     {
                         field: 'id',
                         displayName: 'Quote',
-                        cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.referenceEntity, row.entity.originator, row.entity.id, row.entity.client, row.entity.timeout)'>Quote</button></div></div>",
+                        cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.quote(row.entity.referenceEntities, row.entity.id, row.entity.client, row.entity.timeout)'>Quote</button></div></div>",
                         enableFiltering: false,
                         headerCellClass: 'text-center'
                     }

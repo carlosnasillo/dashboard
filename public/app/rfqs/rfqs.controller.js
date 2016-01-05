@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'ParseUtilsService', 'GridTableUtil', '$filter'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'GridTableUtil', '$filter'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, ParseUtilsService, GridTableUtil, $filter) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, GridTableUtil, $filter) {
         var vm = this;
 
         var quotesByRfqId = {};
@@ -44,7 +44,7 @@
 
             rfqObject.expired = false;
 
-            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject);
+            rfqObject = TimeoutManagerService.setUpTimeout(rfqObject, $scope);
 
             if (vm.rfqsTable.options.data) {
                 vm.rfqsTable.options.data.push(rfqObject);
@@ -61,11 +61,9 @@
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = $.extend(true,{},rfqObj);
 
-                rfq.prettyDealers = ParseUtilsService.prettifyList(rfq.dealers);
-                rfq.prettyCreditEvents = ParseUtilsService.prettifyList(rfq.creditEvents);
                 rfq.expired = false;
                 rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
-                rfq = TimeoutManagerService.setUpTimeout(rfq);
+                rfq = TimeoutManagerService.setUpTimeout(rfq, $scope);
 
                 return rfq;
             });
@@ -80,7 +78,7 @@
         vm.rfqsTable.filters = {};
         vm.rfqsTable.filters.filterRfqs = function () {
             vm.rfqsTable.options.data = vm.originalData.rfqs.filter(function (rfqObj) {
-                var passFilter = vm.rfqsTable.filters.referenceEntity.filterFn(rfqObj) &&
+                var passFilter = vm.rfqsTable.filters.referenceEntities.filterFn(rfqObj) &&
                     vm.rfqsTable.filters.timestampStr.filterFn(rfqObj) &&
                     vm.rfqsTable.filters.id.filterFn(rfqObj) &&
                     vm.rfqsTable.filters.durationInMonths.start.filterFn(rfqObj) &&
@@ -102,7 +100,7 @@
             });
         };
 
-        vm.rfqsTable.filters.referenceEntity = GridTableUtil.idFilterFactory(vm.rfqsTable.filters.filterRfqs, 'referenceEntity');
+        vm.rfqsTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.rfqsTable.filters.filterRfqs, 'referenceEntities');
         vm.rfqsTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.rfqsTable.filters.filterRfqs, 'timestampStr');
         vm.rfqsTable.filters.id = GridTableUtil.idFilterFactory(vm.rfqsTable.filters.filterRfqs, 'id');
         vm.rfqsTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.rfqsTable.filters.filterRfqs, 'durationInMonths');
@@ -166,7 +164,7 @@
         vm.quotesTable.filters.filterQuotes = function () {
             vm.quotesTable.options.data = vm.originalData.quotes.filter(function (quoteObj) {
                 return vm.quotesTable.filters.timestampStr.filterFn(quoteObj) &&
-                vm.quotesTable.filters.referenceEntity.filterFn(quoteObj) &&
+                vm.quotesTable.filters.referenceEntities.filterFn(quoteObj) &&
                 vm.quotesTable.filters.id.filterFn(quoteObj) &&
                 vm.quotesTable.filters.dealer.filterFn(quoteObj) &&
                 vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
@@ -177,7 +175,7 @@
         };
 
         vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
-        vm.quotesTable.filters.referenceEntity = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntity');
+        vm.quotesTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntities');
         vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
         vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
@@ -221,7 +219,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium, quote.referenceEntity)
+            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, selectedRfq.originator, quote.premium, quote.referenceEntities)
             .then(
                 AlertsService.accept.success(quote, function(quote) {
                     quote.loading = false;
@@ -244,7 +242,7 @@
         });
 
         function prepareQuote(quote) {
-            quote = TimeoutManagerService.setUpTimeout(quote);
+            quote = TimeoutManagerService.setUpTimeout(quote, $scope);
             quote.rfqExpired = false;
             quote.loading = false;
             quote.accepted = false;

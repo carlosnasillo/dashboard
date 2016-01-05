@@ -29,13 +29,12 @@ case class Rfq(
                 timestamp: DateTime,
                 durationInMonths: Int,
                 client: String,
-                dealers: List[String],
-                creditEvents: List[String],
+                dealers: Set[String],
+                creditEvents: Set[String],
                 timeWindowInMinutes: Int,
                 isValid: Boolean,
                 cdsValue: BigDecimal,
-                referenceEntity: String,
-                originator: String
+                referenceEntities: Set[String]
               )
 
 object Rfq {

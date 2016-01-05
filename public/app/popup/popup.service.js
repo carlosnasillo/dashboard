@@ -24,12 +24,12 @@
     function PopupService(notify, TradeService, RfqService, AlertsService, QuoteModalService, TimeoutManagerService) {
         var newQuoteCallback = function(childScope) {
             return function(quoteObject) {
-                childScope.quote = TimeoutManagerService.setUpTimeout(quoteObject);
+                childScope.quote = TimeoutManagerService.setUpTimeout(quoteObject, childScope);
                 childScope.accept = function(quote, closeNotification) {
                     quote.loading = true;
 
                     RfqService.getRfqById(quote.rfqId).success(function(rfq) {
-                        TradeService.submitTrade(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, quote.dealer, rfq.creditEvents, rfq.cdsValue, rfq.originator, quote.premium, quote.referenceEntity)
+                        TradeService.submitTrade(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, quote.dealer, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities)
                             .then(
                                 AlertsService.accept.success(quote, function(quote) {
                                     quote.loading = false;
@@ -49,9 +49,9 @@
 
         var newRfqCallback = function(childScope) {
             return function(rfqObject) {
-                childScope.rfq = TimeoutManagerService.setUpTimeout(rfqObject);
+                childScope.rfq = TimeoutManagerService.setUpTimeout(rfqObject, childScope);
                 childScope.quote = function(rfq, closeNotification) {
-                    QuoteModalService.quoteModal(rfq.referenceEntity, rfq.originator, rfq.id, rfq.client, rfq.timeout);
+                    QuoteModalService.quoteModal(rfq.referenceEntities, rfq.id, rfq.client, rfq.timeout);
                     closeNotification();
                 };
 

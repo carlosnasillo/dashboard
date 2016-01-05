@@ -22,27 +22,29 @@
     TimeoutManagerService.$inject = [];
 
     function TimeoutManagerService() {
-        function setUpTimeout(object) {
+        function setUpTimeout(object, $scope) {
             var now = moment();
             var newObj = $.extend({},object);
             var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());
             var counter = setInterval(function () {
-                if (newObj.timeout == "Accepted") {
-                    clearInterval(counter);
-                }
-                else {
-                    if (duration > 0) {
-                        duration = duration - 1;
-                        newObj.timeout = duration;
-                    }
-                    else {
-                        newObj.timeout = "Expired";
-                        newObj.expired = true;
+                $scope.$apply(function() {
+                    if (newObj.timeout == "Accepted") {
                         clearInterval(counter);
                     }
-                }
+                    else {
+                        if (duration > 0) {
+                            duration = duration - 1;
+                            newObj.timeout = duration;
+                        }
+                        else {
+                            newObj.timeout = "Expired";
+                            newObj.expired = true;
+                            clearInterval(counter);
+                        }
+                    }
+                });
             }, 1000);
 
             return newObj;

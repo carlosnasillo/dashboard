@@ -32,11 +32,10 @@ case class Trade(
                  durationInMonths: Int,
                  client: String,
                  dealer: String,
-                 creditEvents: List[String],
+                 creditEvents: Set[String],
                  cdsValue: BigDecimal,
-                 originator: String,
                  premium: BigDecimal,
-                 referenceEntity: String
+                 referenceEntities: Set[String]
                 )
 
 object Trade {

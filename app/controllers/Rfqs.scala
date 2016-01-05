@@ -63,13 +63,12 @@ class Rfqs extends Controller {
         "timestamp" -> ignored(DateTime.now()),
         "durationInMonths" -> number,
         "client" -> nonEmptyText,
-        "dealers" -> list(nonEmptyText),
-        "creditEvents" -> list(nonEmptyText),
+        "dealers" -> set(nonEmptyText),
+        "creditEvents" -> set(nonEmptyText),
         "timeWindowInMinutes" -> number,
         "isValid" -> boolean,
         "cdsValue" -> bigDecimal,
-        "referenceEntity" -> nonEmptyText,
-        "originator" -> nonEmptyText
+        "referenceEntities" -> set(nonEmptyText)
       )(Rfq.apply)(Rfq.unapply)
     )
 

@@ -53,11 +53,10 @@ class Trades extends Controller {
         "durationInMonths" -> number,
         "client" -> nonEmptyText,
         "dealer" -> nonEmptyText,
-        "creditEvents" -> list(nonEmptyText),
+        "creditEvents" -> set(nonEmptyText),
         "cdsValue" -> bigDecimal,
-        "originator" -> nonEmptyText,
         "premium" -> bigDecimal,
-        "referenceEntity" -> nonEmptyText
+        "referenceEntities" -> set(nonEmptyText)
       )(Trade.apply)(Trade.unapply)
     )
 
