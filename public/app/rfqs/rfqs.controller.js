@@ -42,7 +42,7 @@
         WebSocketsManager.webSockets.rfq.client.addCallback(rfqCallbackName, function(rfqObject) {
             vm.rfqsTable.loading = false;
 
-            rfqObject.expired = false;
+            rfqObject.state = RfqService.states.outstanding;
 
             rfqObject = TimeoutManagerService.setUpTimeout(rfqObject, $scope);
 
@@ -61,7 +61,7 @@
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = $.extend(true,{},rfqObj);
 
-                rfq.expired = false;
+                rfq.state = RfqService.states.outstanding;
                 rfq.timestampStr = $filter('date')(rfqObj.timestamp, 'HH:mm:ss');
                 rfq = TimeoutManagerService.setUpTimeout(rfq, $scope);
 
@@ -201,7 +201,7 @@
             var relatedQuotes = quotesByRfqId[currentRfq.id];
 
             if (relatedQuotes) {
-                if (currentRfq.expired) {
+                if (currentRfq.state == RfqService.states.expired) {
                     relatedQuotes = disableButtons(relatedQuotes);
                 }
                 vm.quotesTable.options.data = relatedQuotes;

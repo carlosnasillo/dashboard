@@ -12,7 +12,7 @@ package models
 import com.lattice.lib.utils.DbUtil
 import org.joda.time.DateTime
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json._
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
 
@@ -32,11 +32,17 @@ case class Quote(
                   timeWindowInMinutes: Int,
                   client: String,
                   dealer: String,
-                  referenceEntities: Set[String]
+                  referenceEntities: Set[String],
+                  state: QuoteState.Value
                 )
 
 object Quote {
   val collectionName = "quotes"
+
+  implicit val quoteStatusFormat = new Format[QuoteState.Value] {
+    def reads(json: JsValue) = JsSuccess(QuoteState.withName(json.as[String]))
+    def writes(enum: QuoteState.Value) = JsString(enum.toString)
+  }
 
   implicit val quoteFormat = Json.format[Quote]
 
@@ -63,4 +69,23 @@ object Quote {
       .sort(Json.obj("timestamp" -> 1))
       .cursor[Quote]()
       .collect[List](Int.MaxValue)
+
+  def updateState(quoteId: String, state: QuoteState.Value) = {
+    val selector = Json.obj("id" -> quoteId)
+    val modifier = Json.obj("$set" -> Json.obj("state" -> state))
+    val future = quotesTable.update(selector, modifier)
+    future.onComplete {
+      case Failure(e) => throw e
+      case Success(lastError) => Logger.info(s"Quote #$quoteId new status : $state")
+    }
+    future
+  }
+}
+
+object QuoteState extends Enumeration {
+  type Grade = Value
+  val Outstanding,
+    Cancelled,
+    Expired,
+    Achieved = Value
 }

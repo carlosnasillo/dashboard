@@ -19,9 +19,9 @@
         .module('app')
         .factory('TimeoutManagerService', TimeoutManagerService);
 
-    TimeoutManagerService.$inject = [];
+    TimeoutManagerService.$inject = ['QuotesService', 'GenericStatesService'];
 
-    function TimeoutManagerService() {
+    function TimeoutManagerService(QuotesService, GenericStatesService) {
         function setUpTimeout(object, $scope) {
             var now = moment();
             var newObj = $.extend({},object);
@@ -30,7 +30,12 @@
             var duration = Math.round(moment.duration(diff).asSeconds());
             var counter = setInterval(function () {
                 $scope.$apply(function() {
-                    if (newObj.timeout == "Accepted") {
+                    if (newObj.state == QuotesService.states.accepted) {
+                        newObj.timeout = 0;
+                        clearInterval(counter);
+                    }
+                    else if (newObj.state == QuotesService.states.cancelled) {
+                        newObj.timeout = 0;
                         clearInterval(counter);
                     }
                     else {
@@ -39,8 +44,8 @@
                             newObj.timeout = duration;
                         }
                         else {
-                            newObj.timeout = "Expired";
-                            newObj.expired = true;
+                            newObj.timeout = 0;
+                            newObj.state = GenericStatesService.expired;
                             clearInterval(counter);
                         }
                     }

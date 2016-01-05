@@ -177,6 +177,12 @@
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
 
+        vm.cancelQuote = function(quote) {
+            QuotesService.setStateCancelled(quote.id).success(function() {
+                quote.state = QuotesService.states.cancelled;
+            });
+        };
+
         setInterval(function() {
             if (vm.quotesTable.filters.timeout.start.value.length || vm.quotesTable.filters.timeout.end.value.length) {
                 vm.quotesTable.options.data = vm.quotesTable.options.data.filter(function(quoteObj) {

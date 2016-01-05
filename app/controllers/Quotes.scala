@@ -13,16 +13,18 @@ import java.util.UUID
 
 import com.lattice.lib.channels.Channels
 import controllers.Security.HasToken
-import models.Quote
+import models.{QuoteState, Quote}
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Valid, Invalid}
 import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
 import utils.Formatters.mapStringListQuote
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Success, Failure}
 
 /**
   * @author : julienderay
@@ -61,7 +63,8 @@ class Quotes extends Controller {
         "timeWindowInMinutes" -> number,
         "client" -> nonEmptyText,
         "dealer" -> nonEmptyText,
-        "referenceEntities" -> set(nonEmptyText)
+        "referenceEntities" -> set(nonEmptyText),
+        "state" -> ignored(QuoteState.Outstanding)
       )(Quote.apply)(Quote.unapply)
     )
 
@@ -90,5 +93,9 @@ class Quotes extends Controller {
 
   def getQuoteByDealerGroupByRfqId(account: String) = HasToken.async {
     Quote.getQuotesByDealer(account).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
+  }
+
+  def setQuoteStateToCancelled(quoteId: String) = HasToken.async {
+    Quote.updateState(quoteId, QuoteState.Cancelled).map { result => if (result.ok) Ok else BadRequest("Something went wrong. Please verify the id you sent.") }
   }
 }

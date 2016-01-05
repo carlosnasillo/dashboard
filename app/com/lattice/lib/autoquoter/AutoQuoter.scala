@@ -11,7 +11,7 @@ package com.lattice.lib.autoquoter
 
 import java.util.UUID
 
-import models.{Quote, Rfq}
+import models.{QuoteState, Quote, Rfq}
 import org.joda.time.DateTime
 import utils.Constants
 
@@ -24,7 +24,7 @@ import scala.util.Random
 
 object AutoQuoter {
   def generateQuote(rfq: Rfq): Quote = {
-    Quote(UUID.randomUUID.toString, rfq.id, DateTime.now, randomBetween10and100, 10, rfq.client, Constants.automaticDealer, rfq.referenceEntities)
+    Quote(UUID.randomUUID.toString, rfq.id, DateTime.now, randomBetween10and100, 10, rfq.client, Constants.automaticDealer, rfq.referenceEntities, QuoteState.Outstanding)
   }
 
   private def randomBetween10and100: Int = {
