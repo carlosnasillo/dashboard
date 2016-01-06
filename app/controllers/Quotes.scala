@@ -9,14 +9,9 @@
 
 package controllers
 
-import java.util.UUID
-
 import com.lattice.lib.channels.Channels
 import controllers.Security.HasToken
 import models.{Quote, QuoteState, Trade}
-import org.joda.time.DateTime
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.libs.iteratee.Enumeratee
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
@@ -54,21 +49,7 @@ class Quotes extends Controller {
   }
 
   def submitQuote = HasToken { implicit request =>
-    val quoteForm = Form(
-      mapping (
-        "id" -> ignored(UUID.randomUUID().toString),
-        "rfqId" -> nonEmptyText,
-        "timestamp" -> ignored(DateTime.now()),
-        "premium" -> bigDecimal,
-        "timeWindowInMinutes" -> number,
-        "client" -> nonEmptyText,
-        "dealer" -> nonEmptyText,
-        "referenceEntities" -> set(nonEmptyText),
-        "state" -> ignored(QuoteState.Outstanding)
-      )(Quote.apply)(Quote.unapply)
-    )
-
-    quoteForm.bindFromRequest.fold(
+    Forms.quoteForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
       },
@@ -93,31 +74,15 @@ class Quotes extends Controller {
         Future.successful( BadRequest("Wrong data sent.") )
       },
       submittedTrade => {
-        Quote.getById(submittedTrade.quoteId).flatMap( quoteOpt => {
-          val quote = quoteOpt.get
-          if (quote.state == QuoteState.Outstanding) {
-            Quote.updateState(submittedTrade.quoteId, QuoteState.Accepted).flatMap(resultUpdateQuote =>
-              if (resultUpdateQuote.ok) {
-                Trade.store(submittedTrade).map(resultStoreTrade => {
-                  if (resultStoreTrade.ok) {
-                    Channels.channelTrades push Json.toJson(submittedTrade)
-                    Channels.channelQuotes push Json.toJson(quote)
-                    Ok
-                  }
-                  else {
-                    BadRequest("Something went bad, please check the data sent.")
-                  }
-                })
-              }
-              else {
-                Future.successful(BadRequest("Something went bad, please check the quote id sent."))
-              }
-            )
-          }
-          else {
-            Future.successful(BadRequest("Quote's state should be outstanding in order to be accepted."))
-          }
+        Quote.getById(submittedTrade.quoteId).map (_.filter (_.state == QuoteState.Outstanding).map( quote => {
+            Quote.updateState(submittedTrade.quoteId, QuoteState.Accepted) filter(_.ok) map (_ =>
+              Trade.store(submittedTrade) filter(_.ok) map(resultStoreTrade => {
+                Channels.channelQuotes push Json.toJson(quote.copy(state = QuoteState.Accepted))
+                Channels.channelTrades push Json.toJson(submittedTrade)
+              }))
+            Ok
         })
+          getOrElse BadRequest("Quote's state should be outstanding in order to be accepted."))
       }
     )
   }

@@ -137,10 +137,20 @@
         WebSocketsManager.webSockets.quotes.dealer.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = prepareQuote(quoteObj);
 
+            var quoteInTheTable;
             if (quoteObj.state === QuotesService.states.accepted) {
-                var quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
                 if (quoteInTheTable) {
                     quoteInTheTable.state = QuotesService.states.accepted;
+                }
+                else {
+                    addQuoteToTheTable(quoteObj);
+                }
+            }
+            else if (quoteObj.state === QuotesService.states.cancelled) {
+                quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                if (quoteInTheTable) {
+                    quoteInTheTable.state = QuotesService.states.cancelled;
                 }
                 else {
                     addQuoteToTheTable(quoteObj);
