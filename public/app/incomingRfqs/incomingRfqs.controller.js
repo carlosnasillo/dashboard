@@ -86,9 +86,11 @@
                     vm.rfqTable.filters.cdsValue.start.filterFn(rfqObj) &&
                     vm.rfqTable.filters.cdsValue.end.filterFn(rfqObj);
 
-                if (rfqObj.id === selectedRfq.id) {
-                    if (!passFilter) {
-                        vm.quotesTable.options.data = [];
+                if (selectedRfq) {
+                    if (rfqObj.id === selectedRfq.id) {
+                        if (!passFilter) {
+                            vm.quotesTable.options.data = [];
+                        }
                     }
                 }
 
@@ -203,15 +205,17 @@
         }
 
         function updateQuoteTable(currentRfq) {
-            var relatedQuotes = quotesByRfqId[currentRfq.id];
+            if (currentRfq) {
+                var relatedQuotes = quotesByRfqId[currentRfq.id];
 
-            if (relatedQuotes) {
-                vm.quotesTable.options.data = relatedQuotes;
-                vm.originalData.quotes = relatedQuotes;
-                vm.quotesTable.filters.filterQuotes();
-            }
-            else {
-                vm.quotesTable.options.data = [];
+                if (relatedQuotes) {
+                    vm.quotesTable.options.data = relatedQuotes;
+                    vm.originalData.quotes = relatedQuotes;
+                    vm.quotesTable.filters.filterQuotes();
+                }
+                else {
+                    vm.quotesTable.options.data = [];
+                }
             }
         }
 
