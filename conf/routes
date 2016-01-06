@@ -22,6 +22,7 @@ GET     /api/quotes/dealer/:account                                             
 GET     /api/quotes/stream/client/:account                                          controllers.Quotes.streamQuotesToClient(account)
 GET     /api/quotes/stream/dealer/:account                                          controllers.Quotes.streamQuotesToDealer(account)
 POST    /api/quotes/:id/state/cancelled                                             controllers.Quotes.setQuoteStateToCancelled(id)
+POST    /api/quotes/accept                                                          controllers.Quotes.accept
 
 POST    /api/trades                                                                 controllers.Trades.submitTrade
 GET     /api/trades/:account                                                        controllers.Trades.getTradesByAccount(account)

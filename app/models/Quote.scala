@@ -89,5 +89,5 @@ object QuoteState extends Enumeration {
   val Outstanding,
     Cancelled,
     Expired,
-    Achieved = Value
+    Accepted = Value
 }

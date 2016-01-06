@@ -140,18 +140,27 @@
         WebSocketsManager.webSockets.quotes.client.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = prepareQuote(quoteObj);
 
+            var quoteInTheTable;
             if (quoteObj.state === QuotesService.states.cancelled) {
-                var quoteInTheTable = vm.originalData.quotes.filter(function (quote) {
-                    return quoteObj.id === quote.id;
-                })[0];
-                quoteInTheTable.state = QuotesService.states.cancelled;
+                quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                if (quoteInTheTable) {
+                    quoteInTheTable.state = QuotesService.states.cancelled;
+                }
+                else {
+                    addQuoteToTheTable(quoteObj);
+                }
+            }
+            else if (quoteObj.state === QuotesService.states.accepted) {
+                quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                if (quoteInTheTable) {
+                    quoteInTheTable.state = QuotesService.states.accepted;
+                }
+                else {
+                    addQuoteToTheTable(quoteObj);
+                }
             }
             else {
-                if (quotesByRfqId[quoteObj.rfqId]) {
-                    quotesByRfqId[quoteObj.rfqId].push(quoteObj);
-                } else {
-                    quotesByRfqId[quoteObj.rfqId] = [quoteObj];
-                }
+                addQuoteToTheTable(quoteObj);
             }
 
             updateQuoteTable(selectedRfq);
@@ -230,12 +239,10 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            TradeService.submitTrade(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
+            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
             .then(
                 AlertsService.accept.success(quote, function(quote) {
                     quote.loading = false;
-                    quote.accepted = true;
-                    quote.timeout = "Accepted";
                 }),
                 AlertsService.accept.error(quote, function(quote) {
                     quote.loading = false;
@@ -256,7 +263,6 @@
             quote = TimeoutManagerService.setUpTimeout(quote, $scope);
             quote.rfqExpired = false;
             quote.loading = false;
-            quote.accepted = false;
             quote.timestampStr = $filter('date')(quote.timestamp, 'HH:mm:ss');
             return quote;
         }
@@ -264,6 +270,20 @@
         function selectFirstRow() {
             if (vm.rfqsTable.gridApi.selection.selectRow) {
                 vm.rfqsTable.gridApi.selection.selectRow(vm.rfqsTable.options.data[vm.rfqsTable.options.data.length - 1]);
+            }
+        }
+
+        function retrieveQuoteFromLocalData(quoteObj) {
+            return vm.originalData.quotes.filter(function (quote) {
+                return quoteObj.id === quote.id;
+            })[0];
+        }
+
+        function addQuoteToTheTable(quoteObj) {
+            if (quotesByRfqId[quoteObj.rfqId]) {
+                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+            } else {
+                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
         }
     }

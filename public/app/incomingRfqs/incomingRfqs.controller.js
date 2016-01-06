@@ -137,11 +137,19 @@
         WebSocketsManager.webSockets.quotes.dealer.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = prepareQuote(quoteObj);
 
-            if (quotesByRfqId[quoteObj.rfqId]) {
-                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
-            } else {
-                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+            if (quoteObj.state === QuotesService.states.accepted) {
+                var quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                if (quoteInTheTable) {
+                    quoteInTheTable.state = QuotesService.states.accepted;
+                }
+                else {
+                    addQuoteToTheTable(quoteObj);
+                }
             }
+            else {
+                addQuoteToTheTable(quoteObj);
+            }
+
             updateQuoteTable(selectedRfq);
         });
 
@@ -224,6 +232,20 @@
         function selectFirstRow() {
             if (vm.rfqTable.gridApi.selection.selectRow) {
                 vm.rfqTable.gridApi.selection.selectRow(vm.rfqTable.options.data[vm.rfqTable.options.data.length - 1]);
+            }
+        }
+
+        function retrieveQuoteFromLocalData(quoteObj) {
+            return vm.originalData.quotes.filter(function (quote) {
+                return quoteObj.id === quote.id;
+            })[0];
+        }
+
+        function addQuoteToTheTable(quoteObj) {
+            if (quotesByRfqId[quoteObj.rfqId]) {
+                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+            } else {
+                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
         }
     }

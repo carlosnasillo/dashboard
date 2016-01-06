@@ -9,16 +9,13 @@
 
 package controllers
 
-import java.util.UUID
-
+import com.lattice.lib.channels.Channels
 import controllers.Security._
 import models.Trade
-import org.joda.time.DateTime
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
+import play.api.libs.iteratee.{Enumeratee, Iteratee}
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc.{Controller, WebSocket}
+import utils.Forms
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -29,8 +26,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class Trades extends Controller {
 
-  val (outTrades, channelTrades) = Concurrent.broadcast[JsValue]
-
   def streamTrades(account: String) = WebSocket.using[JsValue] {
     request =>
       val in = Iteratee.ignore[JsValue]
@@ -40,33 +35,17 @@ class Trades extends Controller {
         extractedClient == account || extractedDealer == account
       })
 
-      (in, outTrades through clientAndDealerFilter)
+      (in, Channels.outTrades through clientAndDealerFilter)
   }
 
   def submitTrade = HasToken { implicit request =>
-    val tradeForm = Form(
-      mapping (
-        "id" -> ignored(UUID.randomUUID().toString),
-        "rfqId" -> nonEmptyText,
-        "quoteId" -> nonEmptyText,
-        "timestamp" -> ignored(DateTime.now()),
-        "durationInMonths" -> number,
-        "client" -> nonEmptyText,
-        "dealer" -> nonEmptyText,
-        "creditEvents" -> set(nonEmptyText),
-        "cdsValue" -> bigDecimal,
-        "premium" -> bigDecimal,
-        "referenceEntities" -> set(nonEmptyText)
-      )(Trade.apply)(Trade.unapply)
-    )
-
-    tradeForm.bindFromRequest.fold(
+    Forms.tradeForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
       },
       submittedTrade => {
         Trade.store(submittedTrade)
-        channelTrades push Json.toJson(submittedTrade)
+        Channels.channelTrades push Json.toJson(submittedTrade)
         Ok
       }
     )

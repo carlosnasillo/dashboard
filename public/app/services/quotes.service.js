@@ -48,6 +48,21 @@
             return $http.post('/api/quotes/' + quoteId + '/state/cancelled');
         };
 
+        var accept = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, premium, referenceEntities) {
+            var tradeObj = {
+                rfqId: rfqId,
+                quoteId: quoteId,
+                durationInMonths: durationInMonths,
+                client: client,
+                dealer: dealer,
+                creditEvents: creditEvents,
+                cdsValue: cdsValue,
+                premium: premium,
+                referenceEntities: referenceEntities
+            };
+            return $http.post('/api/quotes/accept', tradeObj);
+        };
+
         var clientWs = {
             uri: '/api/quotes/stream/client/',
             name: 'Quotes for client',
@@ -90,7 +105,8 @@
             setStateCancelled: setStateCancelled,
             clientWs: clientWs,
             dealerWs: dealerWs,
-            states: states
+            states: states,
+            accept: accept
         };
     }
 })();

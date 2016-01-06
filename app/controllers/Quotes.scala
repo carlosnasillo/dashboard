@@ -13,18 +13,18 @@ import java.util.UUID
 
 import com.lattice.lib.channels.Channels
 import controllers.Security.HasToken
-import models.{QuoteState, Quote}
+import models.{Quote, QuoteState, Trade}
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Valid, Invalid}
-import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
+import play.api.libs.iteratee.Enumeratee
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
 import utils.Formatters.mapStringListQuote
+import utils.Forms
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Success, Failure}
+import scala.concurrent.Future
 
 /**
   * @author : julienderay
@@ -83,6 +83,41 @@ class Quotes extends Controller {
         Channels.channelQuotes push Json.toJson(submittedQuote)
         Ok
 //        }
+      }
+    )
+  }
+
+  def accept = HasToken.async { implicit request =>
+    Forms.tradeForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful( BadRequest("Wrong data sent.") )
+      },
+      submittedTrade => {
+        Quote.getById(submittedTrade.quoteId).flatMap( quoteOpt => {
+          val quote = quoteOpt.get
+          if (quote.state == QuoteState.Outstanding) {
+            Quote.updateState(submittedTrade.quoteId, QuoteState.Accepted).flatMap(resultUpdateQuote =>
+              if (resultUpdateQuote.ok) {
+                Trade.store(submittedTrade).map(resultStoreTrade => {
+                  if (resultStoreTrade.ok) {
+                    Channels.channelTrades push Json.toJson(submittedTrade)
+                    Channels.channelQuotes push Json.toJson(quote)
+                    Ok
+                  }
+                  else {
+                    BadRequest("Something went bad, please check the data sent.")
+                  }
+                })
+              }
+              else {
+                Future.successful(BadRequest("Something went bad, please check the quote id sent."))
+              }
+            )
+          }
+          else {
+            Future.successful(BadRequest("Quote's state should be outstanding in order to be accepted."))
+          }
+        })
       }
     )
   }
