@@ -59,6 +59,11 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.premium', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
+                        field: 'state',
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('Outstanding, ...', 'vm.quotesTable.filters.state', 'vm.quotesTable.filters.filterQuotes()')
+                    },
+                    {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
                         type: 'text',

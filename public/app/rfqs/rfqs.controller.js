@@ -170,7 +170,8 @@
                 vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
                 vm.quotesTable.filters.premium.end.filterFn(quoteObj) &&
                 vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
-                vm.quotesTable.filters.timeout.end.filterFn(quoteObj);
+                vm.quotesTable.filters.timeout.end.filterFn(quoteObj) &&
+                vm.quotesTable.filters.state.filterFn(quoteObj);
             });
         };
 
@@ -180,6 +181,7 @@
         vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
+        vm.quotesTable.filters.state = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'state');
 
         setInterval(function() {
             if (vm.quotesTable.filters.timeout.start.value.length || vm.quotesTable.filters.timeout.end.value.length) {
