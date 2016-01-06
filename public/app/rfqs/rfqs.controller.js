@@ -140,11 +140,20 @@
         WebSocketsManager.webSockets.quotes.client.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = prepareQuote(quoteObj);
 
-            if (quotesByRfqId[quoteObj.rfqId]) {
-                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
-            } else {
-                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+            if (quoteObj.state === QuotesService.states.cancelled) {
+                var quoteInTheTable = vm.originalData.quotes.filter(function (quote) {
+                    return quoteObj.id === quote.id;
+                })[0];
+                quoteInTheTable.state = QuotesService.states.cancelled;
             }
+            else {
+                if (quotesByRfqId[quoteObj.rfqId]) {
+                    quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+                } else {
+                    quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+                }
+            }
+
             updateQuoteTable(selectedRfq);
         });
 

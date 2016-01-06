@@ -96,6 +96,11 @@ class Quotes extends Controller {
   }
 
   def setQuoteStateToCancelled(quoteId: String) = HasToken.async {
-    Quote.updateState(quoteId, QuoteState.Cancelled).map { result => if (result.ok) Ok else BadRequest("Something went wrong. Please verify the id you sent.") }
+    Quote.updateState(quoteId, QuoteState.Cancelled).map { result =>
+      if (result.ok) {
+        Quote.getById(quoteId).map( _.map( Channels.channelQuotes push Json.toJson(_) ) )
+        Ok
+      }
+      else BadRequest("Something went wrong. Please verify the id you sent.") }
   }
 }

@@ -80,6 +80,8 @@ object Quote {
     }
     future
   }
+
+  def getById(id: String) = quotesTable.find(Json.obj("id" -> id)).one[Quote]
 }
 
 object QuoteState extends Enumeration {
