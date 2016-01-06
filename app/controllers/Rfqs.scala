@@ -9,19 +9,14 @@
 
 package controllers
 
-import java.util.UUID
-
-import com.lattice.lib.channels.Channels
 import com.lattice.lib.autoquoter.AutoQuoter
+import com.lattice.lib.channels.Channels
 import controllers.Security.HasToken
 import models.{Quote, Rfq}
-import org.joda.time.DateTime
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.libs.iteratee.Enumeratee
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
-import utils.Constants
+import utils.{Constants, Forms}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -57,22 +52,7 @@ class Rfqs extends Controller {
 
   def submitRFQ = HasToken { implicit request =>
 
-    val rfqForm = Form(
-      mapping (
-        "id" -> ignored(UUID.randomUUID().toString),
-        "timestamp" -> ignored(DateTime.now()),
-        "durationInMonths" -> number,
-        "client" -> nonEmptyText,
-        "dealers" -> set(nonEmptyText),
-        "creditEvents" -> set(nonEmptyText),
-        "timeWindowInMinutes" -> number,
-        "isValid" -> boolean,
-        "cdsValue" -> bigDecimal,
-        "referenceEntities" -> set(nonEmptyText)
-      )(Rfq.apply)(Rfq.unapply)
-    )
-
-    rfqForm.bindFromRequest.fold(
+    Forms.rfqForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
       },

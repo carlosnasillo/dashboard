@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2015 Lattice Markets, All rights reserved.
+ *
+ * Unpublished copyright. All rights reserved. This material contains
+ * proprietary information that shall be used or copied only with
+ * Lattice Markets, except with written permission of Lattice Markets.
+ */
+
+package utils
+
+import java.util.UUID
+
+import controllers.LoginFormObj
+import models.{Rfq, Quote, QuoteState, Trade}
+import org.joda.time.DateTime
+import play.api.data.Form
+import play.api.data.Forms._
+
+/**
+  * @author : julienderay
+  * Created on 06/01/2016
+  */
+
+object Forms {
+  def loginForm = Form(
+    mapping (
+      "email" -> email,
+      "password" -> nonEmptyText
+    )(LoginFormObj.apply)(LoginFormObj.unapply)
+  )
+
+  def tradeForm = Form(
+    mapping (
+      "id" -> ignored(UUID.randomUUID().toString),
+      "rfqId" -> nonEmptyText,
+      "quoteId" -> nonEmptyText,
+      "timestamp" -> ignored(DateTime.now()),
+      "durationInMonths" -> number,
+      "client" -> nonEmptyText,
+      "dealer" -> nonEmptyText,
+      "creditEvents" -> set(nonEmptyText),
+      "cdsValue" -> bigDecimal,
+      "premium" -> bigDecimal,
+      "referenceEntities" -> set(nonEmptyText)
+    )(Trade.apply)(Trade.unapply)
+  )
+
+  def quoteForm = Form(
+    mapping (
+      "id" -> ignored(UUID.randomUUID().toString),
+      "rfqId" -> nonEmptyText,
+      "timestamp" -> ignored(DateTime.now()),
+      "premium" -> bigDecimal,
+      "timeWindowInMinutes" -> number,
+      "client" -> nonEmptyText,
+      "dealer" -> nonEmptyText,
+      "referenceEntities" -> set(nonEmptyText),
+      "state" -> ignored(QuoteState.Outstanding)
+    )(Quote.apply)(Quote.unapply)
+  )
+
+  def rfqForm = Form(
+    mapping (
+      "id" -> ignored(UUID.randomUUID().toString),
+      "timestamp" -> ignored(DateTime.now()),
+      "durationInMonths" -> number,
+      "client" -> nonEmptyText,
+      "dealers" -> set(nonEmptyText),
+      "creditEvents" -> set(nonEmptyText),
+      "timeWindowInMinutes" -> number,
+      "isValid" -> boolean,
+      "cdsValue" -> bigDecimal,
+      "referenceEntities" -> set(nonEmptyText)
+    )(Rfq.apply)(Rfq.unapply)
+  )
+}

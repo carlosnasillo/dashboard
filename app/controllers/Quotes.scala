@@ -9,20 +9,17 @@
 
 package controllers
 
-import java.util.UUID
-
 import com.lattice.lib.channels.Channels
 import controllers.Security.HasToken
-import models.Quote
-import org.joda.time.DateTime
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.libs.iteratee.{Concurrent, Enumeratee, Iteratee}
+import models.{Quote, QuoteState, Trade}
+import play.api.libs.iteratee.Enumeratee
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
 import utils.Formatters.mapStringListQuote
+import utils.Forms
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
   * @author : julienderay
@@ -52,20 +49,7 @@ class Quotes extends Controller {
   }
 
   def submitQuote = HasToken { implicit request =>
-    val quoteForm = Form(
-      mapping (
-        "id" -> ignored(UUID.randomUUID().toString),
-        "rfqId" -> nonEmptyText,
-        "timestamp" -> ignored(DateTime.now()),
-        "premium" -> bigDecimal,
-        "timeWindowInMinutes" -> number,
-        "client" -> nonEmptyText,
-        "dealer" -> nonEmptyText,
-        "referenceEntities" -> set(nonEmptyText)
-      )(Quote.apply)(Quote.unapply)
-    )
-
-    quoteForm.bindFromRequest.fold(
+    Forms.quoteForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
       },
@@ -84,11 +68,39 @@ class Quotes extends Controller {
     )
   }
 
+  def accept = HasToken.async { implicit request =>
+    Forms.tradeForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful( BadRequest("Wrong data sent.") )
+      },
+      submittedTrade => {
+        Quote.getById(submittedTrade.quoteId).map (_.filter (_.state == QuoteState.Outstanding).map( quote => {
+            Quote.updateState(submittedTrade.quoteId, QuoteState.Accepted) filter(_.ok) map (_ =>
+              Trade.store(submittedTrade) filter(_.ok) map(resultStoreTrade => {
+                Channels.channelQuotes push Json.toJson(quote.copy(state = QuoteState.Accepted))
+                Channels.channelTrades push Json.toJson(submittedTrade)
+              }))
+            Ok
+        })
+          getOrElse BadRequest("Quote's state should be outstanding in order to be accepted."))
+      }
+    )
+  }
+
   def getQuoteByClientGroupByRfqId(account: String) = HasToken.async {
     Quote.getQuotesByClient(account).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
   }
 
   def getQuoteByDealerGroupByRfqId(account: String) = HasToken.async {
     Quote.getQuotesByDealer(account).map( quotes => Ok( Json.toJson(quotes.groupBy(_.rfqId)) ) )
+  }
+
+  def setQuoteStateToCancelled(quoteId: String) = HasToken.async {
+    Quote.updateState(quoteId, QuoteState.Cancelled).map { result =>
+      if (result.ok) {
+        Quote.getById(quoteId).map( _.map( Channels.channelQuotes push Json.toJson(_) ) )
+        Ok
+      }
+      else BadRequest("Something went wrong. Please verify the id you sent.") }
   }
 }

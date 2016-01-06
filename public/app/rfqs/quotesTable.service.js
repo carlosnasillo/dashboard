@@ -59,6 +59,11 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.premium', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
+                        field: 'state',
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('Outstanding, ...', 'vm.quotesTable.filters.state', 'vm.quotesTable.filters.filterQuotes()')
+                    },
+                    {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
                         type: 'text',
@@ -68,6 +73,7 @@
                     {
                         field: 'id',
                         displayName: 'Accept',
+                        headerCellClass: 'text-center',
                         cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><button data-ng-hide='row.entity.loading' class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.disableButton(row.entity)' data-ng-click='row.grid.appScope.vm.accept(row.entity)'>Accept</button><div data-ng-show='row.entity.loading' class='sk-spinner sk-spinner-wave'> <div class='sk-rect1'></div> <div class='sk-rect2'></div> <div class='sk-rect3'></div> <div class='sk-rect4'></div> <div class='sk-rect5'></div> </div></div></div>",
                         enableFiltering: false
                     }

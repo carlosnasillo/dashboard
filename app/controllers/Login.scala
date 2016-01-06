@@ -10,28 +10,19 @@
 package controllers
 
 import models.UserLogin
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.libs.json.Json
 import play.api.mvc._
-import utils.Hash
+import utils.{Forms, Hash}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 case class LoginFormObj(email: String, password: String)
 
 class Login extends Controller {
 
-  val loginForm = Form(
-    mapping (
-      "email" -> email,
-      "password" -> nonEmptyText
-    )(LoginFormObj.apply)(LoginFormObj.unapply)
-  )
-
   def authentication = Action.async { implicit request =>
-    loginForm.bindFromRequest.fold(
+    Forms.loginForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(
           BadRequest("Wrong data sent.")

@@ -22,4 +22,5 @@ object Channels {
   val ignoredIn = Iteratee.ignore[JsValue]
   val (outRfq, channelRfq) = Concurrent.broadcast[JsValue]
   val (outQuotes, channelQuotes) = Concurrent.broadcast[JsValue]
+  val (outTrades, channelTrades) = Concurrent.broadcast[JsValue]
 }

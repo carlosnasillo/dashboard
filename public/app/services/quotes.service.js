@@ -19,9 +19,9 @@
         .module('app')
         .factory('QuotesService', QuotesService);
 
-    QuotesService.$inject = ['$http'];
+    QuotesService.$inject = ['$http', 'GenericStatesService'];
 
-    function QuotesService($http) {
+    function QuotesService($http, GenericStatesService) {
 
         var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer, referenceEntities) {
             var element = {
@@ -44,6 +44,25 @@
             return $http.get('/api/quotes/dealer/' + currentAccount);
         };
 
+        var setStateCancelled = function(quoteId) {
+            return $http.post('/api/quotes/' + quoteId + '/state/cancelled');
+        };
+
+        var accept = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, premium, referenceEntities) {
+            var tradeObj = {
+                rfqId: rfqId,
+                quoteId: quoteId,
+                durationInMonths: durationInMonths,
+                client: client,
+                dealer: dealer,
+                creditEvents: creditEvents,
+                cdsValue: cdsValue,
+                premium: premium,
+                referenceEntities: referenceEntities
+            };
+            return $http.post('/api/quotes/accept', tradeObj);
+        };
+
         var clientWs = {
             uri: '/api/quotes/stream/client/',
             name: 'Quotes for client',
@@ -54,6 +73,13 @@
             uri: '/api/quotes/stream/dealer/',
             name: 'Quotes for dealer',
             parsingFunction: parseQuote
+        };
+
+        var states = {
+            accepted: "Accepted",
+            cancelled: "Cancelled",
+            expired: GenericStatesService.expired,
+            outstanding: GenericStatesService.outstanding
         };
 
         function parseQuote(strQuote) {
@@ -67,7 +93,8 @@
                 timeWindowInMinutes: quote.timeWindowInMinutes,
                 client: quote.client,
                 dealer: quote.dealer,
-                referenceEntities: quote.referenceEntities
+                referenceEntities: quote.referenceEntities,
+                state: quote.state
             };
         }
 
@@ -75,8 +102,11 @@
             submitQuote: submitQuote,
             getQuotesByClientGroupByRfqId: getQuotesByClientGroupByRfqId,
             getQuotesByDealerGroupByRfqId: getQuotesByDealerGroupByRfqId,
+            setStateCancelled: setStateCancelled,
             clientWs: clientWs,
-            dealerWs: dealerWs
+            dealerWs: dealerWs,
+            states: states,
+            accept: accept
         };
     }
 })();

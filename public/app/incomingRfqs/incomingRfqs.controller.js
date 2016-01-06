@@ -86,9 +86,11 @@
                     vm.rfqTable.filters.cdsValue.start.filterFn(rfqObj) &&
                     vm.rfqTable.filters.cdsValue.end.filterFn(rfqObj);
 
-                if (rfqObj.id === selectedRfq.id) {
-                    if (!passFilter) {
-                        vm.quotesTable.options.data = [];
+                if (selectedRfq) {
+                    if (rfqObj.id === selectedRfq.id) {
+                        if (!passFilter) {
+                            vm.quotesTable.options.data = [];
+                        }
                     }
                 }
 
@@ -135,11 +137,29 @@
         WebSocketsManager.webSockets.quotes.dealer.addCallback(quoteCallbackName, function(quoteObj) {
             quoteObj = prepareQuote(quoteObj);
 
-            if (quotesByRfqId[quoteObj.rfqId]) {
-                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
-            } else {
-                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
+            var quoteInTheTable;
+            if (quoteObj.state === QuotesService.states.accepted) {
+                quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                if (quoteInTheTable) {
+                    quoteInTheTable.state = QuotesService.states.accepted;
+                }
+                else {
+                    addQuoteToTheTable(quoteObj);
+                }
             }
+            else if (quoteObj.state === QuotesService.states.cancelled) {
+                quoteInTheTable = retrieveQuoteFromLocalData(quoteObj);
+                if (quoteInTheTable) {
+                    quoteInTheTable.state = QuotesService.states.cancelled;
+                }
+                else {
+                    addQuoteToTheTable(quoteObj);
+                }
+            }
+            else {
+                addQuoteToTheTable(quoteObj);
+            }
+
             updateQuoteTable(selectedRfq);
         });
 
@@ -165,7 +185,8 @@
                     vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
                     vm.quotesTable.filters.premium.end.filterFn(quoteObj) &&
                     vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
-                    vm.quotesTable.filters.timeout.end.filterFn(quoteObj);
+                    vm.quotesTable.filters.timeout.end.filterFn(quoteObj) &&
+                    vm.quotesTable.filters.state.filterFn(quoteObj);
             });
         };
 
@@ -176,6 +197,13 @@
         vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
+        vm.quotesTable.filters.state = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'state');
+
+        vm.cancelQuote = function(quote) {
+            QuotesService.setStateCancelled(quote.id).success(function() {
+                quote.state = QuotesService.states.cancelled;
+            });
+        };
 
         setInterval(function() {
             if (vm.quotesTable.filters.timeout.start.value.length || vm.quotesTable.filters.timeout.end.value.length) {
@@ -197,21 +225,37 @@
         }
 
         function updateQuoteTable(currentRfq) {
-            var relatedQuotes = quotesByRfqId[currentRfq.id];
+            if (currentRfq) {
+                var relatedQuotes = quotesByRfqId[currentRfq.id];
 
-            if (relatedQuotes) {
-                vm.quotesTable.options.data = relatedQuotes;
-                vm.originalData.quotes = relatedQuotes;
-                vm.quotesTable.filters.filterQuotes();
-            }
-            else {
-                vm.quotesTable.options.data = [];
+                if (relatedQuotes) {
+                    vm.quotesTable.options.data = relatedQuotes;
+                    vm.originalData.quotes = relatedQuotes;
+                    vm.quotesTable.filters.filterQuotes();
+                }
+                else {
+                    vm.quotesTable.options.data = [];
+                }
             }
         }
 
         function selectFirstRow() {
             if (vm.rfqTable.gridApi.selection.selectRow) {
                 vm.rfqTable.gridApi.selection.selectRow(vm.rfqTable.options.data[vm.rfqTable.options.data.length - 1]);
+            }
+        }
+
+        function retrieveQuoteFromLocalData(quoteObj) {
+            return vm.originalData.quotes.filter(function (quote) {
+                return quoteObj.id === quote.id;
+            })[0];
+        }
+
+        function addQuoteToTheTable(quoteObj) {
+            if (quotesByRfqId[quoteObj.rfqId]) {
+                quotesByRfqId[quoteObj.rfqId].push(quoteObj);
+            } else {
+                quotesByRfqId[quoteObj.rfqId] = [quoteObj];
             }
         }
     }

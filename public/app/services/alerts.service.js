@@ -23,10 +23,10 @@
 
     function AlertsService(SweetAlert) {
         var genericError = function(quote, callback) {
-            return function() {
+            return function(error) {
                 SweetAlert.swal(
                     "Oops...",
-                    "Something went wrong !",
+                    error.data,
                     "error"
                 );
                 callback(quote);

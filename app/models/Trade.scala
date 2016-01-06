@@ -45,12 +45,13 @@ object Trade {
 
   val tradesTable: JSONCollection = DbUtil.db.collection(collectionName)
 
-  def store(rfq: Trade) {
+  def store(rfq: Trade) = {
     val future = tradesTable.insert(Json.toJson(rfq).as[JsObject])
     future.onComplete {
       case Failure(e) => throw e
       case Success(lastError) => Logger.info(s"New trade inserted : $rfq")
     }
+    future
   }
 
   def getTradesByAccount(account: String) = {

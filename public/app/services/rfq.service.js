@@ -19,9 +19,9 @@
         .module('app')
         .factory('RfqService', RfqService);
 
-    RfqService.$inject = ['$http'];
+    RfqService.$inject = ['$http', 'GenericStatesService'];
 
-    function RfqService($http) {
+    function RfqService($http, GenericStatesService) {
 
         var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntities) {
             var element = {
@@ -77,6 +77,11 @@
             parsingFunction: parseRfq
         };
 
+        var states = {
+            expired: GenericStatesService.expired,
+            outstanding: GenericStatesService.outstanding
+        };
+
         return {
             submitRfq: submitRfq,
             getRfqForDealer: getRfqForDealer,
@@ -84,7 +89,8 @@
             parseRfq: parseRfq,
             clientWs: clientsWs,
             dealerWs: dealersWs,
-            getRfqById: getRfqById
+            getRfqById: getRfqById,
+            states: states
         };
     }
 })();

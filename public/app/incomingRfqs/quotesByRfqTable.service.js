@@ -57,11 +57,24 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.premium', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
+                        field: 'state',
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('Outstanding, ...', 'vm.quotesTable.filters.state', 'vm.quotesTable.filters.filterQuotes()')
+                    },
+                    {
                         field: 'timeout',
                         displayName: 'Timeout in seconds',
                         type: 'text',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.timeout', 'vm.quotesTable.filters.filterQuotes()')
+                    },
+                    {
+                        field: 'id',
+                        displayName: 'Cancel',
+                        headerCellClass: 'text-center',
+                        cellTemplate: "<div class='ui-grid-cell-contents ng-binding ng-scope'><div class='text-center'><button class='btn btn-primary btn-xs' data-ng-disabled='row.grid.appScope.vm.isExpired(row.entity.timeout)' data-ng-click='row.grid.appScope.vm.cancelQuote(row.entity)'>Cancel</button></div></div>",
+                        enableFiltering: false,
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.id', 'vm.quotesTable.filters.filterQuotes()')
                     }
                 ]
             };
