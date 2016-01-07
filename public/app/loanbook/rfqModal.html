@@ -28,14 +28,14 @@
             <div class="form-group">
                 <label for="creditEvent">Credit Event</label><br>
                 <select multiple my-chosen="formData.creditEvent" class="chosen-select" id="creditEvent" data-ng-model="form.creditEvent" data-placeholder="Select the credit event" ng-options="creditEvent for creditEvent in selectUtils.creditEvents.data"></select>
-                <button ng-click="selectUtils.creditEvents.selectAll()" type="button" class="btn btn-primary btn-xs">Select All</button>
-                <button ng-click="selectUtils.creditEvents.clearSelect()" type="button" class="btn btn-white btn-xs">Clear</button>
+                <button ng-click="selectUtils.creditEvents.selectAll()" type="button" class="btn btn-primary btn-xs" id="creditEventSelectAll">Select All</button>
+                <button ng-click="selectUtils.creditEvents.clearSelect()" type="button" class="btn btn-white btn-xs" id="creditEventClear">Clear</button>
             </div>
             <div class="form-group">
                 <label for="counterparty">Counterparty</label><br>
                 <select multiple my-chosen="formData.banks" class="chosen-select" id="counterparty" data-ng-model="form.counterparty" data-placeholder="Select the counterparty" ng-options="bank for bank in selectUtils.banks.data"></select>
-                <button ng-click="selectUtils.banks.selectAll()" type="button" class="btn btn-primary btn-xs">Select All</button>
-                <button ng-click="selectUtils.banks.clearSelect()" type="button" class="btn btn-white btn-xs">Clear</button>
+                <button ng-click="selectUtils.banks.selectAll()" type="button" class="btn btn-primary btn-xs" id="counterpartySelectAll">Select All</button>
+                <button ng-click="selectUtils.banks.clearSelect()" type="button" class="btn btn-white btn-xs" id="counterpartyClear">Clear</button>
             </div>
             <div class="form-group">
                 <label for="quoteWindow">Quote Window (minutes)</label>
@@ -61,7 +61,7 @@
             </div>
             <div class="col-md-6">
                 <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
-                <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="conditionsNotMet()">Submit RFQ</button>
+                <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="conditionsNotMet()" id="sendRfq">Submit RFQ</button>
             </div>
         </div>
     </form>

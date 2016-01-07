@@ -44,9 +44,9 @@
                         });
                     };
 
-                    $timeout(function() {
+                    setTimeout(function() {
                         notify({scope: childScope, templateUrl: 'assets/app/popup/newQuotePopup.html', position: 'right', duration: '10000'});
-                    }, 1000);
+                    }, 2000);
                 }
             };
         };
@@ -59,9 +59,9 @@
                     closeNotification();
                 };
 
-                $timeout(function() {
+                setTimeout(function() {
                     notify({scope: childScope, templateUrl: 'assets/app/popup/newRfqPopup.html', position: 'right', duration: '10000'});
-                }, 1000);
+                }, 2000);
             };
         };
 

@@ -11,19 +11,9 @@
 * Created on 07/01/2016
 */
 
-describe('Smoke tests', function() {
-    var LoginPage = function() {
-        this.get = function() {
-            browser.get('http://localhost:9000/');
-        };
+var LoginPage = require('../pages/login.page.js');
 
-        this.login = function() {
-            element(by.model('vm.username')).sendKeys("dealer1@latticemarkets.com");
-            element(by.model('vm.password')).sendKeys("D$al3r1");
-            element(by.css('.btn.btn-primary')).click();
-        };
-    };
-
+describe('Login page tests', function() {
     var loginPage;
 
     beforeEach(function(){
@@ -42,7 +32,7 @@ describe('Smoke tests', function() {
     });
 
     it('should log in successfully', function() {
-        loginPage.login();
+        loginPage.loginDealer1();
 
         expect(browser.getLocationAbsUrl()).toBe('/dashboard');
     });
