@@ -128,7 +128,6 @@
                 quotesByRfqId[k] = v.map(function(quoteObj) {
                     var quote = $.extend(true,{},quoteObj);
                     quote = prepareQuote(quote);
-
                     return quote;
                 });
             });

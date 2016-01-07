@@ -111,6 +111,7 @@
                         $scope.form.quoteWindow,
                         $scope.form.cdsValue,
                         AuthenticationService.getCurrentAccount(),
+                        AuthenticationService.getCurrentUsername(),
                         (selectedLoans) ? selectedLoans.map(function(loan) { return loan.id; }) : [loanId]
                     ).then(
                         AlertsService.rfq.success(function() {

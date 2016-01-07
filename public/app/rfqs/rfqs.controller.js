@@ -19,14 +19,15 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'GridTableUtil', '$filter'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'GridTableUtil', '$filter'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, GridTableUtil, $filter) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, GridTableUtil, $filter) {
         var vm = this;
 
         var quotesByRfqId = {};
 
         var currentAccount = AuthenticationService.getCurrentAccount();
+        var currentUsername = AuthenticationService.getCurrentUsername();
 
         vm.originalData = { rfqs: [], quotes: [] };
 
@@ -239,7 +240,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
+            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
             .then(
                 AlertsService.accept.success(quote, function(quote) {
                     quote.loading = false;
@@ -251,7 +252,7 @@
         };
 
         vm.disableButton = function(quote) {
-            return FormUtilsService.isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
+            return FormUtilsService.isExpired(quote.timeout) || quote.accepted;
         };
 
         $scope.$on('$destroy', function() {
@@ -261,7 +262,6 @@
 
         function prepareQuote(quote) {
             quote = TimeoutManagerService.setUpTimeout(quote, $scope);
-            quote.rfqExpired = false;
             quote.loading = false;
             quote.timestampStr = $filter('date')(quote.timestamp, 'HH:mm:ss');
             return quote;

@@ -11,7 +11,7 @@ package utils
 import java.util.UUID
 
 import controllers.LoginFormObj
-import models.{Rfq, Quote, QuoteState, Trade}
+import models._
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
@@ -38,6 +38,8 @@ object Forms {
       "durationInMonths" -> number,
       "client" -> nonEmptyText,
       "dealer" -> nonEmptyText,
+      "submittedBy" -> email,
+      "acceptedBy" -> email,
       "creditEvents" -> set(nonEmptyText),
       "cdsValue" -> bigDecimal,
       "premium" -> bigDecimal,
@@ -54,6 +56,7 @@ object Forms {
       "timeWindowInMinutes" -> number,
       "client" -> nonEmptyText,
       "dealer" -> nonEmptyText,
+      "submittedBy" -> email,
       "referenceEntities" -> set(nonEmptyText),
       "state" -> ignored(QuoteState.Outstanding)
     )(Quote.apply)(Quote.unapply)
@@ -66,6 +69,7 @@ object Forms {
       "durationInMonths" -> number,
       "client" -> nonEmptyText,
       "dealers" -> set(nonEmptyText),
+      "submittedBy" -> email,
       "creditEvents" -> set(nonEmptyText),
       "timeWindowInMinutes" -> number,
       "isValid" -> boolean,

@@ -30,6 +30,7 @@ case class Rfq(
                 durationInMonths: Int,
                 client: String,
                 dealers: Set[String],
+                submittedBy: String,
                 creditEvents: Set[String],
                 timeWindowInMinutes: Int,
                 isValid: Boolean,

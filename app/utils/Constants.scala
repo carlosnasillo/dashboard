@@ -12,5 +12,7 @@ package utils
   */
 object Constants {
   val portfolioName = "BlackRock"
-  val automaticDealer = "PDX"
+
+  val automaticDealerAccount = "PDX"
+  val automaticDealerEmail = "dealer@pdxtechnology.com"
 }

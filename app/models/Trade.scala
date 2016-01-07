@@ -26,16 +26,18 @@ import scala.util.{Failure, Success}
 
 case class Trade(
                   id: String,
-                 rfqId: String,
-                 quoteId: String,
-                 timestamp: DateTime,
-                 durationInMonths: Int,
-                 client: String,
-                 dealer: String,
-                 creditEvents: Set[String],
-                 cdsValue: BigDecimal,
-                 premium: BigDecimal,
-                 referenceEntities: Set[String]
+                  rfqId: String,
+                  quoteId: String,
+                  timestamp: DateTime,
+                  durationInMonths: Int,
+                  client: String,
+                  dealer: String,
+                  submittedBy: String,
+                  acceptedBy: String,
+                  creditEvents: Set[String],
+                  cdsValue: BigDecimal,
+                  premium: BigDecimal,
+                  referenceEntities: Set[String]
                 )
 
 object Trade {

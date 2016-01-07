@@ -51,7 +51,6 @@ class Rfqs extends Controller {
   }
 
   def submitRFQ = HasToken { implicit request =>
-
     Forms.rfqForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
@@ -59,8 +58,7 @@ class Rfqs extends Controller {
       submittedRfq => {
         Rfq.store(submittedRfq)
         Channels.channelRfq push Json.toJson(submittedRfq)
-
-        if (submittedRfq.dealers.contains(Constants.automaticDealer)) {
+        if (submittedRfq.dealers.contains(Constants.automaticDealerAccount)) {
           val quote = AutoQuoter.generateQuote(submittedRfq)
           Channels.channelQuotes push Json.toJson(quote)
           Quote.store(quote)

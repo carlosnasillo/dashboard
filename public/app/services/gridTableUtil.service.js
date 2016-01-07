@@ -196,23 +196,23 @@
         var idFilterFactory = function(postResetCallback, filter) {
             return singleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return String( objToFilter[filter] ).startsWith( filterTerm ); }
+                function(objToFilter, filterTerm) { return String( getProperty(objToFilter, filter) ).startsWith( filterTerm ); }
             );
         };
 
         var doubleNumberFilterFactory = function(postResetCallback, filter) {
             return doubleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return objToFilter[filter] > filterTerm; },
-                function(objToFilter, filterTerm) { return objToFilter[filter] < filterTerm; }
+                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) > filterTerm; },
+                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) < filterTerm; }
             );
         };
 
         var doublePercentFilterFactory = function(postResetCallback, filter) {
             return doubleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return objToFilter[filter] > filterTerm; },
-                function(objToFilter, filterTerm) { return objToFilter[filter] < filterTerm; },
+                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) > filterTerm; },
+                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) < filterTerm; },
                 function(value) { return value + ' %'; }
             );
         };
@@ -224,7 +224,7 @@
                     var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
                     for (var i in searchTerms) {
                         if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                            if (objToFilter[filter].startsWith(searchTerms[i])) return true;
+                            if (getProperty(objToFilter, filter).startsWith(searchTerms[i])) return true;
                         }
                     }
                     return false;
@@ -235,7 +235,7 @@
         var wordFilterFactory = function(postResetCallback, filter) {
             return singleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(objToFilter[filter]) >= 0; }
+                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(getProperty(objToFilter, filter)) >= 0; }
             );
         };
 
@@ -274,5 +274,27 @@
             wordFilterFactory: wordFilterFactory,
             listFilterFactory: listFilterFactory
         };
+
+        function getProperty(obj, prop) {
+            var parts = prop.split('.');
+
+            if (Array.isArray(parts)) {
+                var last = parts.pop(),
+                    l = parts.length,
+                    i = 1,
+                    current = parts[0];
+
+                while (l > 0 && (obj = obj[current]) && i < l) {
+                    current = parts[i];
+                    i++;
+                }
+
+                if(obj) {
+                    return obj[last];
+                }
+            } else {
+                throw 'parts is not valid array';
+            }
+        }
     }
 })();

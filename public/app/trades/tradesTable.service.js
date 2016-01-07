@@ -48,6 +48,7 @@
                     },
                     {
                         field: 'client',
+                        displayName: 'Client',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.client', 'vm.tradesTable.filters.filterTrades()')
                     },

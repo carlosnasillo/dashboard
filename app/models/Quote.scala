@@ -32,6 +32,7 @@ case class Quote(
                   timeWindowInMinutes: Int,
                   client: String,
                   dealer: String,
+                  submittedBy: String,
                   referenceEntities: Set[String],
                   state: QuoteState.Value
                 )
@@ -56,16 +57,16 @@ object Quote {
     }
   }
 
-  def getQuotesByClient(client: String) =
+  def getQuotesByClient(account: String) =
     quotesTable
-      .find(Json.obj("client" -> client))
+      .find(Json.obj("client" -> account))
       .sort(Json.obj("timestamp" -> 1))
       .cursor[Quote]()
       .collect[List](Int.MaxValue)
 
-  def getQuotesByDealer(dealer: String) =
+  def getQuotesByDealer(account: String) =
     quotesTable
-      .find(Json.obj("dealer" -> dealer))
+      .find(Json.obj("dealer" -> account))
       .sort(Json.obj("timestamp" -> 1))
       .cursor[Quote]()
       .collect[List](Int.MaxValue)
