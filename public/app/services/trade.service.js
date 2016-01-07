@@ -43,9 +43,19 @@
             return $http.get('/api/trades/' + currentAccount);
         };
 
+        var getTodaysAnonymisedTrades = function() {
+            return $http.get('/api/trades/anonymised/today');
+        };
+
         var webSocket = {
             uri: '/api/trades/stream/',
             name: 'Trades',
+            parsingFunction: parseTrade
+        };
+
+        var webSocketAnonymised = {
+            uri: '/api/trades/anonymised/stream',
+            name: 'Anonymised Trades',
             parsingFunction: parseTrade
         };
 
@@ -53,7 +63,9 @@
             submitTrade: submitTrade,
             getTradesByAccount: getTradesByAccount,
             parseTrade: parseTrade,
-            webSocket: webSocket
+            webSocket: webSocket,
+            getTodaysAnonymisedTrades: getTodaysAnonymisedTrades,
+            webSocketAnonymised: webSocketAnonymised
         };
 
         function parseTrade(strTrade) {

@@ -66,5 +66,12 @@ object Trade {
       .cursor[Trade]()
       .collect[List](Int.MaxValue)
   }
+
+  def getTodaysAnonymisedTrades = {
+    tradesTable
+      .find(Json.obj("timestamp" -> Json.obj("$gt" -> DateTime.now.withTimeAtStartOfDay())))
+      .cursor[AnonymisedTrade]()
+      .collect[List](Int.MaxValue)
+  }
 }
 

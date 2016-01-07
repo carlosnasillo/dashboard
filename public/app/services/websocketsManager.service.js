@@ -31,6 +31,7 @@
         var quoteClient = webSocketFactory(QuotesService.clientWs.uri, QuotesService.clientWs.name, QuotesService.clientWs.parsingFunction);
 
         var trade = webSocketFactory(TradeService.webSocket.uri, TradeService.webSocket.name, TradeService.webSocket.parsingFunction);
+        var tradesAnonymised = webSocketFactory(TradeService.webSocketAnonymised.uri, TradeService.webSocketAnonymised.name, TradeService.webSocketAnonymised.parsingFunction);
 
         var startAllWS = function(account) {
             rfqDealer.openStream(account);
@@ -38,6 +39,7 @@
             quoteDealer.openStream(account);
             quoteClient.openStream(account);
             trade.openStream(account);
+            tradesAnonymised.openStream('');
         };
 
         var closeAllWS = function() {
@@ -46,6 +48,7 @@
             quoteDealer.closeStream();
             quoteClient.closeStream();
             trade.closeStream();
+            tradesAnonymised.closeStream();
         };
 
         var webSockets = {
@@ -57,7 +60,8 @@
                 dealer: quoteDealer,
                 client: quoteClient
             },
-            trades: trade
+            trades: trade,
+            tradesAnonymised: tradesAnonymised
         };
 
         return {
