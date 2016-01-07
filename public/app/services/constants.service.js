@@ -23,7 +23,7 @@
 
     function Constants() {
         return {
-            automaticDealer: "Lattice"
+            automaticDealer: "PDX"
         };
     }
 })();
