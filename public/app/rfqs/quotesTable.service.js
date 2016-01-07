@@ -48,7 +48,7 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.id', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
-                        field: 'dealer.account',
+                        field: 'dealer',
                         displayName: 'Counterparty',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.dealer', 'vm.quotesTable.filters.filterQuotes()')

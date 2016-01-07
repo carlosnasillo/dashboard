@@ -30,8 +30,8 @@ class Trades extends Controller {
     request =>
       val in = Iteratee.ignore[JsValue]
       val clientAndDealerFilter = Enumeratee.filter[JsValue](jsObj => {
-        val extractedDealer = (jsObj \ "dealer" \ "account").getOrElse(JsArray()).as[String]
-        val extractedClient = (jsObj \ "client" \ "account").getOrElse(JsArray()).as[String]
+        val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
+        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
         extractedClient == account || extractedDealer == account
       })
 

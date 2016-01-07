@@ -29,7 +29,8 @@
                 premium: premium,
                 timeWindowInMinutes: timeWindowInMinutes,
                 client: client,
-                dealer: {email: dealerUsername, account: dealerAccount},
+                dealer: dealerAccount,
+                submittedBy: dealerUsername,
                 referenceEntities: referenceEntities
             });
         };
@@ -46,13 +47,15 @@
             return $http.post('/api/quotes/' + quoteId + '/state/cancelled');
         };
 
-        var accept = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, premium, referenceEntities) {
+        var accept = function(rfqId, quoteId, durationInMonths, clientAccount, clientUsername, dealerAccount, dealerUsername, creditEvents, cdsValue, premium, referenceEntities) {
             var tradeObj = {
                 rfqId: rfqId,
                 quoteId: quoteId,
                 durationInMonths: durationInMonths,
-                client: client,
-                dealer: dealer,
+                client: clientAccount,
+                dealer: dealerAccount,
+                submittedBy: dealerUsername,
+                acceptedBy: clientUsername,
                 creditEvents: creditEvents,
                 cdsValue: cdsValue,
                 premium: premium,
@@ -91,6 +94,7 @@
                 timeWindowInMinutes: quote.timeWindowInMinutes,
                 client: quote.client,
                 dealer: quote.dealer,
+                submittedBy: quote.submittedBy,
                 referenceEntities: quote.referenceEntities,
                 state: quote.state
             };

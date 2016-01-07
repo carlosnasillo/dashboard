@@ -43,7 +43,7 @@ class Rfqs extends Controller {
   def streamRfqToClient(account: String) = WebSocket.using[JsValue] {
     request =>
       val clientFilter = Enumeratee.filter[JsValue](jsObj => {
-        val extractedClient = (jsObj \ "client" \ "account").getOrElse(JsArray()).as[List[String]]
+        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[List[String]]
         extractedClient.toString == account
       })
 
@@ -58,7 +58,7 @@ class Rfqs extends Controller {
       submittedRfq => {
         Rfq.store(submittedRfq)
         Channels.channelRfq push Json.toJson(submittedRfq)
-        if (submittedRfq.dealers.contains(Constants.automaticDealer.account)) {
+        if (submittedRfq.dealers.contains(Constants.automaticDealerAccount)) {
           val quote = AutoQuoter.generateQuote(submittedRfq)
           Channels.channelQuotes push Json.toJson(quote)
           Quote.store(quote)

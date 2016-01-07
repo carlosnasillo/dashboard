@@ -7,12 +7,12 @@
  */
 package utils
 
-import models.UserInfo$
-
 /**
   * Created by julienderay on 04/11/2015.
   */
 object Constants {
   val portfolioName = "BlackRock"
-  val automaticDealer = UserInfo("dealer@pdxtechnology.com", "PDX")
+
+  val automaticDealerAccount = "PDX"
+  val automaticDealerEmail = "dealer@pdxtechnology.com"
 }

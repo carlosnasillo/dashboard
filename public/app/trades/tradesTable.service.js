@@ -47,13 +47,13 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.side', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {
-                        field: 'client.account',
+                        field: 'client',
                         displayName: 'Client',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.client', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {
-                        field: 'dealer.account',
+                        field: 'dealer',
                         headerCellClass: 'text-center',
                         displayName: 'Counterparty',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.dealer', 'vm.tradesTable.filters.filterTrades()')

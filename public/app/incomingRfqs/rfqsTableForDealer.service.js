@@ -50,8 +50,7 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.rfqTable.filters.referenceEntities', 'vm.rfqTable.filters.filterRfqs()')
                     },
                     {
-                        field: 'client.account',
-                        displayName: 'Client',
+                        field: 'client',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: Dealer1, ...', 'vm.rfqTable.filters.client', 'vm.rfqTable.filters.filterRfqs()')
                     },

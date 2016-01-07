@@ -100,7 +100,7 @@
 
         vm.rfqTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'timestampStr');
         vm.rfqTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.rfqTable.filters.filterRfqs, 'referenceEntities');
-        vm.rfqTable.filters.client = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'client.account');
+        vm.rfqTable.filters.client = GridTableUtil.textFilterFactory(vm.rfqTable.filters.filterRfqs, 'client');
         vm.rfqTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.rfqTable.filters.filterRfqs, 'durationInMonths');
         vm.rfqTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.rfqTable.filters.filterRfqs, 'creditEvents');
         vm.rfqTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.rfqTable.filters.filterRfqs, 'timeout');
@@ -192,7 +192,7 @@
         vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
 
         vm.quotesTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntities');
-        vm.quotesTable.filters.client = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'client.account');
+        vm.quotesTable.filters.client = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'client');
         vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');

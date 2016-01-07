@@ -27,6 +27,7 @@
         var quotesByRfqId = {};
 
         var currentAccount = AuthenticationService.getCurrentAccount();
+        var currentUsername = AuthenticationService.getCurrentUsername();
 
         vm.originalData = { rfqs: [], quotes: [] };
 
@@ -196,7 +197,7 @@
         vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
         vm.quotesTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntities');
         vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
-        vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer.account');
+        vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
         vm.quotesTable.filters.state = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'state');
@@ -239,7 +240,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, quote.dealer, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
+            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
             .then(
                 AlertsService.accept.success(quote, function(quote) {
                     quote.loading = false;

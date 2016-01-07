@@ -30,7 +30,8 @@
                 dealers: counterparty,
                 timeWindowInMinutes: quoteWindow,
                 cdsValue: cdsValue,
-                client: {email: clientUsername, account: clientAccount},
+                client: clientAccount,
+                submittedBy: clientUsername,
                 isValid: true,
                 referenceEntities: referenceEntities
             });
@@ -57,6 +58,7 @@
                 durationInMonths: rfq.durationInMonths,
                 client: rfq.client,
                 dealers: rfq.dealers,
+                submittedBy: rfq.submittedBy,
                 creditEvents: rfq.creditEvents,
                 timeWindowInMinutes: rfq.timeWindowInMinutes,
                 cdsValue: rfq.cdsValue,

@@ -36,8 +36,10 @@ object Forms {
       "quoteId" -> nonEmptyText,
       "timestamp" -> ignored(DateTime.now()),
       "durationInMonths" -> number,
-      "client" -> userInfo,
-      "dealer" -> userInfo,
+      "client" -> nonEmptyText,
+      "dealer" -> nonEmptyText,
+      "submittedBy" -> email,
+      "acceptedBy" -> email,
       "creditEvents" -> set(nonEmptyText),
       "cdsValue" -> bigDecimal,
       "premium" -> bigDecimal,
@@ -52,8 +54,9 @@ object Forms {
       "timestamp" -> ignored(DateTime.now()),
       "premium" -> bigDecimal,
       "timeWindowInMinutes" -> number,
-      "client" -> userInfo,
-      "dealer" -> userInfo,
+      "client" -> nonEmptyText,
+      "dealer" -> nonEmptyText,
+      "submittedBy" -> email,
       "referenceEntities" -> set(nonEmptyText),
       "state" -> ignored(QuoteState.Outstanding)
     )(Quote.apply)(Quote.unapply)
@@ -64,8 +67,9 @@ object Forms {
       "id" -> ignored(UUID.randomUUID().toString),
       "timestamp" -> ignored(DateTime.now()),
       "durationInMonths" -> number,
-      "client" -> userInfo,
+      "client" -> nonEmptyText,
       "dealers" -> set(nonEmptyText),
+      "submittedBy" -> email,
       "creditEvents" -> set(nonEmptyText),
       "timeWindowInMinutes" -> number,
       "isValid" -> boolean,
@@ -73,9 +77,4 @@ object Forms {
       "referenceEntities" -> set(nonEmptyText)
     )(Rfq.apply)(Rfq.unapply)
   )
-
-  def userInfo = mapping (
-      "email" -> email,
-      "account" -> nonEmptyText
-    )(UserInfo.apply)(UserInfo.unapply)
 }

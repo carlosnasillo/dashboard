@@ -24,21 +24,6 @@
 
     function TradeService($http) {
 
-        var submitTrade = function(rfqId, quoteId, durationInMonths, client, dealer, creditEvents, cdsValue, premium, referenceEntities) {
-            var element = {
-                rfqId: rfqId,
-                quoteId: quoteId,
-                durationInMonths: durationInMonths,
-                client: client,
-                dealer: dealer,
-                creditEvents: creditEvents,
-                cdsValue: cdsValue,
-                premium: premium,
-                referenceEntities: referenceEntities
-            };
-            return $http.post('/api/trades', element);
-        };
-
         var getTradesByAccount = function(currentAccount) {
             return $http.get('/api/trades/' + currentAccount);
         };
@@ -50,7 +35,6 @@
         };
 
         return {
-            submitTrade: submitTrade,
             getTradesByAccount: getTradesByAccount,
             parseTrade: parseTrade,
             webSocket: webSocket
@@ -67,6 +51,8 @@
                 durationInMonths: trade.durationInMonths,
                 client: trade.client,
                 dealer: trade.dealer,
+                submittedBy: trade.submittedBy,
+                acceptedBy: trade.acceptedBy,
                 creditEvents: trade.creditEvents,
                 cdsValue: trade.cdsValue,
                 premium: trade.premium,

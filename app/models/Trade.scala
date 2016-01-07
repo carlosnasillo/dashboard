@@ -30,8 +30,10 @@ case class Trade(
                   quoteId: String,
                   timestamp: DateTime,
                   durationInMonths: Int,
-                  client: UserInfo,
-                  dealer: UserInfo,
+                  client: String,
+                  dealer: String,
+                  submittedBy: String,
+                  acceptedBy: String,
                   creditEvents: Set[String],
                   cdsValue: BigDecimal,
                   premium: BigDecimal,
@@ -58,8 +60,8 @@ object Trade {
     tradesTable
       .find(Json.obj(
         "$or" -> Json.arr(
-          Json.obj("client.account" -> account),
-          Json.obj("dealer.account" -> account)
+          Json.obj("client" -> account),
+          Json.obj("dealer" -> account)
         )
       ))
       .sort(Json.obj("timestamp" -> 1))
