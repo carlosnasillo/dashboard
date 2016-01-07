@@ -38,6 +38,12 @@ class Trades extends Controller {
       (in, Channels.outTrades through clientAndDealerFilter)
   }
 
+  def streamAnonymisedTrades = WebSocket.using[JsValue] {
+    request =>
+      val in = Iteratee.ignore[JsValue]
+      (in, Channels.outTrades)
+  }
+
   def submitTrade = HasToken { implicit request =>
     Forms.tradeForm.bindFromRequest.fold(
       formWithErrors => {
@@ -53,5 +59,9 @@ class Trades extends Controller {
 
   def getTradesByAccount(account: String) = HasToken.async {
     Trade.getTradesByAccount(account).map( trades => Ok( Json.toJson(trades) ) )
+  }
+
+  def getTodaysAnonymisedTrades = HasToken.async {
+    Trade.getTodaysAnonymisedTrades.map( trades => Ok( Json.toJson(trades) ) )
   }
 }

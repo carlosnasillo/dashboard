@@ -48,6 +48,11 @@
                 controller: "TradesController",
                 controllerAs: 'vm'
             })
+            .when('/sdr', {
+                templateUrl: "assets/app/sdr/sdr.html",
+                controller: "SdrController",
+                controllerAs: 'vm'
+            })
             .otherwise({ redirectTo: '/' });
     }
 
