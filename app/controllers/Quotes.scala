@@ -31,7 +31,7 @@ class Quotes extends Controller {
   def streamQuotesToClient(account: String) = WebSocket.using[JsValue] {
     request =>
       val accountFilter = Enumeratee.filter[JsValue](jsObj => {
-        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[String]
+        val extractedClient = (jsObj \ "client" \ "account").getOrElse(JsArray()).as[String]
         extractedClient == account
       })
 
@@ -41,7 +41,7 @@ class Quotes extends Controller {
   def streamQuotesToDealer(account: String) = WebSocket.using[JsValue] {
     request =>
       val accountFilter = Enumeratee.filter[JsValue](jsObj => {
-        val extractedDealer = (jsObj \ "dealer").getOrElse(JsArray()).as[String]
+        val extractedDealer = (jsObj \ "dealer" \ "account").getOrElse(JsArray()).as[String]
         extractedDealer == account
       })
 

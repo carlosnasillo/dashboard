@@ -23,17 +23,15 @@
 
     function QuotesService($http, GenericStatesService) {
 
-        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealer, referenceEntities) {
-            var element = {
+        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealerAccount, dealerUsername, referenceEntities) {
+            return $http.post('/api/quotes', {
                 rfqId: rfqId,
                 premium: premium,
                 timeWindowInMinutes: timeWindowInMinutes,
                 client: client,
-                dealer: dealer,
+                dealer: {email: dealerUsername, account: dealerAccount},
                 referenceEntities: referenceEntities
-            };
-
-            return $http.post('/api/quotes', element);
+            });
         };
 
         var getQuotesByClientGroupByRfqId = function(currentAccount) {

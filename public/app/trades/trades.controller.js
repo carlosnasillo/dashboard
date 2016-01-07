@@ -100,8 +100,8 @@
         vm.tradesTable.filters.id = GridTableUtil.idFilterFactory(vm.tradesTable.filters.filterTrades, 'id');
         vm.tradesTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.tradesTable.filters.filterTrades, 'referenceEntities');
         vm.tradesTable.filters.side = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'side');
-        vm.tradesTable.filters.client = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'client');
-        vm.tradesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'dealer');
+        vm.tradesTable.filters.client = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'client.account');
+        vm.tradesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'dealer.account');
         vm.tradesTable.filters.rfqId = GridTableUtil.idFilterFactory(vm.tradesTable.filters.filterTrades, 'rfqId');
         vm.tradesTable.filters.quoteId = GridTableUtil.idFilterFactory(vm.tradesTable.filters.filterTrades, 'quoteId');
         vm.tradesTable.filters.durationInMonths = GridTableUtil.doubleNumberFilterFactory(vm.tradesTable.filters.filterTrades, 'durationInMonths');

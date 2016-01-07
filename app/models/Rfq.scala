@@ -28,7 +28,7 @@ case class Rfq(
                 id: String,
                 timestamp: DateTime,
                 durationInMonths: Int,
-                client: String,
+                client: UserInfo,
                 dealers: Set[String],
                 creditEvents: Set[String],
                 timeWindowInMinutes: Int,
@@ -69,7 +69,7 @@ object Rfq {
     RFQsTable
       .find(Json.obj(
         "timestamp" -> Json.obj("$gte" -> today),
-        "client" -> account
+        "client.account" -> account
       ))
       .sort(Json.obj("timestamp" -> 1))
       .cursor[Rfq]()

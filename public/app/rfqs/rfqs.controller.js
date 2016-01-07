@@ -19,9 +19,9 @@
         .module('app')
         .controller('RFQsController', RFQsController);
 
-    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'TradeService', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'GridTableUtil', '$filter'];
+    RFQsController.$inject = ['RfqsTableService', 'RfqService', 'QuotesTableService', 'QuotesService', '$scope', 'AlertsService', '$timeout', 'AuthenticationService', 'FormUtilsService', 'TimeoutManagerService', 'WebSocketsManager', 'GridTableUtil', '$filter'];
 
-    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, TradeService, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, GridTableUtil, $filter) {
+    function RFQsController(RfqsTableService, RfqService, QuotesTableService, QuotesService, $scope, AlertsService, $timeout, AuthenticationService, FormUtilsService, TimeoutManagerService, WebSocketsManager, GridTableUtil, $filter) {
         var vm = this;
 
         var quotesByRfqId = {};
@@ -196,7 +196,7 @@
         vm.quotesTable.filters.timestampStr = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'timestampStr');
         vm.quotesTable.filters.referenceEntities = GridTableUtil.listFilterFactory(vm.quotesTable.filters.filterQuotes, 'referenceEntities');
         vm.quotesTable.filters.id = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'id');
-        vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer');
+        vm.quotesTable.filters.dealer = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'dealer.account');
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
         vm.quotesTable.filters.state = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'state');
@@ -251,7 +251,7 @@
         };
 
         vm.disableButton = function(quote) {
-            return FormUtilsService.isExpired(quote.timeout) || quote.accepted || quote.rfqExpired;
+            return FormUtilsService.isExpired(quote.timeout) || quote.accepted;
         };
 
         $scope.$on('$destroy', function() {
@@ -261,7 +261,6 @@
 
         function prepareQuote(quote) {
             quote = TimeoutManagerService.setUpTimeout(quote, $scope);
-            quote.rfqExpired = false;
             quote.loading = false;
             quote.timestampStr = $filter('date')(quote.timestamp, 'HH:mm:ss');
             return quote;

@@ -26,16 +26,16 @@ import scala.util.{Failure, Success}
 
 case class Trade(
                   id: String,
-                 rfqId: String,
-                 quoteId: String,
-                 timestamp: DateTime,
-                 durationInMonths: Int,
-                 client: String,
-                 dealer: String,
-                 creditEvents: Set[String],
-                 cdsValue: BigDecimal,
-                 premium: BigDecimal,
-                 referenceEntities: Set[String]
+                  rfqId: String,
+                  quoteId: String,
+                  timestamp: DateTime,
+                  durationInMonths: Int,
+                  client: UserInfo,
+                  dealer: UserInfo,
+                  creditEvents: Set[String],
+                  cdsValue: BigDecimal,
+                  premium: BigDecimal,
+                  referenceEntities: Set[String]
                 )
 
 object Trade {
@@ -58,8 +58,8 @@ object Trade {
     tradesTable
       .find(Json.obj(
         "$or" -> Json.arr(
-          Json.obj("client" -> account),
-          Json.obj("dealer" -> account)
+          Json.obj("client.account" -> account),
+          Json.obj("dealer.account" -> account)
         )
       ))
       .sort(Json.obj("timestamp" -> 1))

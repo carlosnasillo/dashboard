@@ -40,7 +40,8 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.referenceEntities', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
-                        field: 'client',
+                        field: 'client.account',
+                        displayName: 'Client',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('ex: Dealer1, ...', 'vm.quotesTable.filters.client', 'vm.quotesTable.filters.filterQuotes()')
                     },

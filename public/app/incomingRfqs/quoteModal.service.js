@@ -91,6 +91,7 @@
                         $scope.form.windowInMinutes,
                         client,
                         AuthenticationService.getCurrentAccount(),
+                        AuthenticationService.getCurrentUsername(),
                         referenceEntities
                     ).then(
                         AlertsService.quote.success(function() {

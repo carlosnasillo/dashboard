@@ -11,7 +11,7 @@ package utils
 import java.util.UUID
 
 import controllers.LoginFormObj
-import models.{Rfq, Quote, QuoteState, Trade}
+import models._
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
@@ -36,8 +36,8 @@ object Forms {
       "quoteId" -> nonEmptyText,
       "timestamp" -> ignored(DateTime.now()),
       "durationInMonths" -> number,
-      "client" -> nonEmptyText,
-      "dealer" -> nonEmptyText,
+      "client" -> userInfo,
+      "dealer" -> userInfo,
       "creditEvents" -> set(nonEmptyText),
       "cdsValue" -> bigDecimal,
       "premium" -> bigDecimal,
@@ -52,8 +52,8 @@ object Forms {
       "timestamp" -> ignored(DateTime.now()),
       "premium" -> bigDecimal,
       "timeWindowInMinutes" -> number,
-      "client" -> nonEmptyText,
-      "dealer" -> nonEmptyText,
+      "client" -> userInfo,
+      "dealer" -> userInfo,
       "referenceEntities" -> set(nonEmptyText),
       "state" -> ignored(QuoteState.Outstanding)
     )(Quote.apply)(Quote.unapply)
@@ -64,7 +64,7 @@ object Forms {
       "id" -> ignored(UUID.randomUUID().toString),
       "timestamp" -> ignored(DateTime.now()),
       "durationInMonths" -> number,
-      "client" -> nonEmptyText,
+      "client" -> userInfo,
       "dealers" -> set(nonEmptyText),
       "creditEvents" -> set(nonEmptyText),
       "timeWindowInMinutes" -> number,
@@ -73,4 +73,9 @@ object Forms {
       "referenceEntities" -> set(nonEmptyText)
     )(Rfq.apply)(Rfq.unapply)
   )
+
+  def userInfo = mapping (
+      "email" -> email,
+      "account" -> nonEmptyText
+    )(UserInfo.apply)(UserInfo.unapply)
 }

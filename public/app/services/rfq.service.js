@@ -23,18 +23,17 @@
 
     function RfqService($http, GenericStatesService) {
 
-        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, client, referenceEntities) {
-            var element = {
+        var submitRfq = function(duration, creditEvents, counterparty, quoteWindow, cdsValue, clientAccount, clientUsername, referenceEntities) {
+            return $http.post('/api/rfqs', {
                 durationInMonths: duration,
                 creditEvents: creditEvents,
                 dealers: counterparty,
                 timeWindowInMinutes: quoteWindow,
                 cdsValue: cdsValue,
-                client: client,
+                client: {email: clientUsername, account: clientAccount},
                 isValid: true,
                 referenceEntities: referenceEntities
-            };
-            return $http.post('/api/rfqs', element);
+            });
         };
 
         var getRfqById = function(id) {

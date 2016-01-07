@@ -43,7 +43,7 @@ class Rfqs extends Controller {
   def streamRfqToClient(account: String) = WebSocket.using[JsValue] {
     request =>
       val clientFilter = Enumeratee.filter[JsValue](jsObj => {
-        val extractedClient = (jsObj \ "client").getOrElse(JsArray()).as[List[String]]
+        val extractedClient = (jsObj \ "client" \ "account").getOrElse(JsArray()).as[List[String]]
         extractedClient.toString == account
       })
 
@@ -51,7 +51,6 @@ class Rfqs extends Controller {
   }
 
   def submitRFQ = HasToken { implicit request =>
-
     Forms.rfqForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest("Wrong data sent.")
@@ -59,8 +58,7 @@ class Rfqs extends Controller {
       submittedRfq => {
         Rfq.store(submittedRfq)
         Channels.channelRfq push Json.toJson(submittedRfq)
-
-        if (submittedRfq.dealers.contains(Constants.automaticDealer)) {
+        if (submittedRfq.dealers.contains(Constants.automaticDealer.account)) {
           val quote = AutoQuoter.generateQuote(submittedRfq)
           Channels.channelQuotes push Json.toJson(quote)
           Quote.store(quote)
