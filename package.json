@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "1.0.0",
-  "description": "Lattice Markets - Front-end",
+  "description": "PDX - Front-end",
   "main": "app/app.js",
   "dependencies": {
     "grunt": "^0.4.5",
@@ -21,7 +21,7 @@
     "test": "grunt test",
     "postinstall": "grunt dist"
   },
-  "author": "(c) Lattice Markets",
+  "author": "(c) PDX Technology",
   "license": "Unpublished",
   "private": true
 }
