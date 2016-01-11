@@ -39,10 +39,7 @@
             vm.tradesTable.gridApi.core.refresh();
         }, 1000);
 
-        vm.tradesTable.loading = true;
-
         TradeService.getTradesByAccount(currentAccount).success(function(data) {
-            vm.tradesTable.loading = false;
             vm.tradesTable.options.data = data.map(function(tradeObj) {
                 var trade = $.extend(true,{},tradeObj);
                 trade.side = getSide(currentAccount, tradeObj.client);
@@ -54,7 +51,6 @@
         });
 
         WebSocketsManager.webSockets.trades.addCallback(callbackName, function(tradeObject) {
-            vm.tradesTable.loading = false;
             tradeObject.side = getSide(currentAccount, tradeObject.client);
             tradeObject.timestampToFormattedDate = $filter('date')(tradeObject.timestamp, 'dd/MM/yyyy');
 
