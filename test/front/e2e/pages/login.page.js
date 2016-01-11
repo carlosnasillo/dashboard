@@ -16,16 +16,23 @@ var LoginPage = function() {
         browser.get('http://localhost:9000/');
     };
 
-    this.loginDealer1 = function() {
-        element(by.model('vm.username')).sendKeys("dealer1@latticemarkets.com");
-        element(by.model('vm.password')).sendKeys("D$al3r1");
+    function login(dealerNo) {
+        element(by.model('vm.username')).sendKeys("dealer" + dealerNo + "@latticemarkets.com");
+        element(by.model('vm.password')).sendKeys("D$al3r" + dealerNo + "");
         element(by.css('.btn.btn-primary')).click();
+        expect(browser.getLocationAbsUrl()).toBe('/dashboard');
+    }
+
+    this.loginDealer1 = function() {
+        login("1");
     };
 
     this.loginDealer2 = function() {
-        element(by.model('vm.username')).sendKeys("dealer2@latticemarkets.com");
-        element(by.model('vm.password')).sendKeys("D$al3r2");
-        element(by.css('.btn.btn-primary')).click();
+        login("2");
+    };
+
+    this.loginDealer3 = function() {
+        login("3");
     };
 
     this.logout = function() {

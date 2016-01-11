@@ -8,30 +8,24 @@
 
 /**
 * @author : julienderay
-* Created on 11/01/2016
+* Created on 12/01/2016
 */
 
-'use strict';
+"use strict";
 
-var Trades = function() {
-    var cellsLocator = by.css('.ui-grid-cell.ng-scope');
-    var rowsLocator =  by.css('.ui-grid-row.ng-scope');
-
-    this.rowsLocator = rowsLocator;
+var SdrPage = function() {
+    var rowsLocator = by.css('.ui-grid-row.ng-scope');
 
     this.get = function() {
-        browser.get('http://localhost:9000/#/trades');
-    };
-
-    this.waitForTradesTable = function() {
-        browser.wait(protractor.until.elementLocated(rowsLocator), 5000, "The trades table in Trades tab has not been loaded.");
+        browser.get('http://localhost:9000/#/sdr');
+        browser.wait(protractor.until.elementLocated(rowsLocator), 5000, "The trades table in SDR tab has not been loaded.");
     };
 
     this.inTradesTableFirstRow = function(callback) {
         runThroughTradesTable(function(rows) {
             expect(rows.length).toBeGreaterThan(0);
             rows[0]
-                .all(cellsLocator)
+                .all(by.css('.ui-grid-cell.ng-scope'))
                 .then(function(cells) {
                     callback(cells);
                 });
@@ -45,4 +39,4 @@ var Trades = function() {
     }
 };
 
-module.exports = Trades;
+module.exports = SdrPage;

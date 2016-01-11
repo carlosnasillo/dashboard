@@ -14,13 +14,14 @@
 var LoansBookPage = require('../pages/loansbook.page.js');
 var LoginPage = require('../pages/login.page.js');
 var IncomingRfqs = require('../pages/incomingRfqs.page.js');
-var RfqModalWindow = require('../pages/rfqModalWindow.page.js');
 var SubmittedRfqs = require('../pages/submittedRfqs.page.js');
-var TradesPage = require('../pages/trades.page.js');
+var SuccessModal = require('../pages/success.page.js');
 
 describe('Loans book page tests', function() {
     var loansBookPage;
     var cdsRandomValue;
+
+    var submittedRfqs = new SubmittedRfqs();
 
     it('should have a non empty table', function() {
         loansBookPage = new LoansBookPage();
@@ -34,17 +35,15 @@ describe('Loans book page tests', function() {
     });
 
     describe('Modal to send an RFQ', function() {
-        var rfqModalWindow;
 
         it('should have the correct fields', function() {
-            rfqModalWindow = new RfqModalWindow();
-            rfqModalWindow.get();
+            loansBookPage.displayModalFirstRow();
 
-            expect(rfqModalWindow.durationInput.isPresent()).toBe(true);
-            expect(rfqModalWindow.creditEventInput.isPresent()).toBe(true);
-            expect(rfqModalWindow.counterpartyInput.isPresent()).toBe(true);
-            expect(rfqModalWindow.quoteWindowInput.isPresent()).toBe(true);
-            expect(rfqModalWindow.cdsValueInput.isPresent()).toBe(true);
+            expect(loansBookPage.durationInput.isPresent()).toBe(true);
+            expect(loansBookPage.creditEventInput.isPresent()).toBe(true);
+            expect(loansBookPage.counterpartyInput.isPresent()).toBe(true);
+            expect(loansBookPage.quoteWindowInput.isPresent()).toBe(true);
+            expect(loansBookPage.cdsValueInput.isPresent()).toBe(true);
         });
 
         it('should have PDX selected by default in counterparty input', function() {
@@ -58,24 +57,20 @@ describe('Loans book page tests', function() {
                 });
         });
 
-        var successMessage = by.css('.sweet-alert.showSweetAlert.visible');
-
         it('should be able to send an RFQ', function() {
+            var successModal = new SuccessModal();
             cdsRandomValue = (Math.floor(Math.random() * 9999) + 1).toString();
 
-            rfqModalWindow.sendRfq(cdsRandomValue);
-            browser.wait(protractor.until.elementLocated(successMessage), 4000, "No success message displayed.");
+            loansBookPage.sendRfq(cdsRandomValue);
+            successModal.waitForSuccessMessage();
 
-            expect(element(successMessage).isPresent()).toBe(true);
+            expect(element(successModal.modalElement).isPresent()).toBe(true);
+            expect(successModal.alertMessage.getText()).toBe('RFQ submitted !');
 
-            var alertMessage = element(successMessage).element(by.css('p[style="display: block;"]'));
-            expect(alertMessage.getText()).toBe('RFQ submitted !');
+            expect(successModal.okBtn.isPresent()).toBe(true);
+            successModal.okBtn.click();
 
-            var confirmBtn = element(successMessage).element(by.css('button.confirm'));
-            expect(confirmBtn.isPresent()).toBe(true);
-            confirmBtn.click();
-
-            expect(element(successMessage).isPresent()).toBe(false);
+            expect(element(successModal.modalElement).isPresent()).toBe(false);
         });
 
         it('should show a popup displaying PDX\'s autoquoting', function() {
@@ -88,19 +83,18 @@ describe('Loans book page tests', function() {
     });
 
     it('should show the new RFQ in Dealer1\'s submitted RFQs\' table', function() {
-        var submittedRfqs = new SubmittedRfqs();
         submittedRfqs.get();
 
-        var rowsLocator = by.css('.ui-grid-row.ng-scope');
+        submittedRfqs.inRfqsTableFirstRow(function(cells) {
+            var cdsValue = cells[7];
+            expect(cdsValue.getText()).toBe(cdsRandomValue);
+        });
+    });
 
-        element.all(rowsLocator).then(function(rows) {
-            expect(rows.length).toBeGreaterThan(0);
-            rows[0]
-                .all(by.css('.ui-grid-cell.ng-scope.ui-grid-disable-selection'))
-                .then(function(cells) {
-                    var cdsValue = cells[7];
-                    expect(cdsValue.getText()).toBe(cdsRandomValue);
-                });
+    it('should display the automatic quote as Outstanding', function() {
+        submittedRfqs.inQuotesTableFirstRow(function(cells) {
+            var stateCell = cells[5];
+            expect(stateCell.getText()).toBe('Outstanding');
         });
     });
 
@@ -108,21 +102,13 @@ describe('Loans book page tests', function() {
         var loginPage = new LoginPage();
         loginPage.get();
         loginPage.loginDealer2();
-        expect(browser.getLocationAbsUrl()).toBe('/dashboard');
 
         var incomingRfqs = new IncomingRfqs();
         incomingRfqs.get();
 
-        var rowsLocator = by.css('.ui-grid-row.ng-scope');
-
-        element.all(rowsLocator).then(function(rows) {
-            expect(rows.length).toBeGreaterThan(0);
-            rows[0]
-                .all(by.css('.ui-grid-cell.ng-scope.ui-grid-disable-selection'))
-                .then(function(cells) {
-                    var cdsValue = cells[6];
-                    expect(cdsValue.getText()).toBe(cdsRandomValue);
-                });
+        incomingRfqs.inRfqsTableFirstRow(function(cells) {
+            var cdsValue = cells[6];
+            expect(cdsValue.getText()).toBe(cdsRandomValue);
         });
     });
 });
