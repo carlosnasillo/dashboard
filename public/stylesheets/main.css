@@ -42,3 +42,7 @@ div.scrollable {
 div.fixedHeight {
     height: 100px;
 }
+
+.ui-grid-sort-priority-number {
+    visibility: hidden;
+}
