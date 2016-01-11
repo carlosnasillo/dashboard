@@ -35,13 +35,10 @@
          * Top table
          */
         vm.rfqsTable = { options: {} };
-        vm.rfqsTable.loading = true;
-
         vm.rfqsTable.options = RfqsTableService.options();
         var rfqCallbackName = 'clientRfqTable';
 
         WebSocketsManager.webSockets.rfq.client.addCallback(rfqCallbackName, function(rfqObject) {
-            vm.rfqsTable.loading = false;
 
             rfqObject.state = RfqService.states.outstanding;
 
@@ -58,7 +55,6 @@
         });
 
         RfqService.getRfqForClient(currentAccount).success(function(data) {
-            vm.rfqsTable.loading = false;
             vm.rfqsTable.options.data = data.map(function(rfqObj) {
                 var rfq = $.extend(true,{},rfqObj);
 
