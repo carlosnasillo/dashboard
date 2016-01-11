@@ -19,9 +19,9 @@
         .module('app')
         .factory('PopupService', PopupService);
 
-    PopupService.$inject = ['notify', 'RfqService', 'AlertsService', 'QuoteModalService', 'TimeoutManagerService', 'QuotesService', 'AuthenticationService'];
+    PopupService.$inject = ['notify', 'RfqService', 'AlertsService', 'QuoteModalService', 'TimeoutManagerService', 'QuotesService', 'AuthenticationService', '$timeout'];
 
-    function PopupService(notify, RfqService, AlertsService, QuoteModalService, TimeoutManagerService, QuotesService, AuthenticationService) {
+    function PopupService(notify, RfqService, AlertsService, QuoteModalService, TimeoutManagerService, QuotesService, AuthenticationService, $timeout) {
         var newQuoteCallback = function(childScope) {
             return function(quoteObject) {
                 if (quoteObject.state !== QuotesService.states.cancelled && quoteObject.state !== QuotesService.states.accepted) {
@@ -43,7 +43,10 @@
                                 );
                         });
                     };
-                    notify({scope: childScope, templateUrl: 'assets/app/popup/newQuotePopup.html', position: 'right', duration: '10000'});
+
+                    $timeout(function() {
+                        notify({scope: childScope, templateUrl: 'assets/app/popup/newQuotePopup.html', position: 'right', duration: '10000'});
+                    }, 1000);
                 }
             };
         };
@@ -56,7 +59,9 @@
                     closeNotification();
                 };
 
-                notify({scope: childScope, templateUrl: 'assets/app/popup/newRfqPopup.html', position: 'right', duration: '10000'});
+                $timeout(function() {
+                    notify({scope: childScope, templateUrl: 'assets/app/popup/newRfqPopup.html', position: 'right', duration: '10000'});
+                }, 1000);
             };
         };
 
