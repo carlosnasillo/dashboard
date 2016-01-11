@@ -19,9 +19,9 @@
         .module('app')
         .factory('LoanBookService', LoanBookService);
 
-    LoanBookService.$inject = ['$q'];
+    LoanBookService.$inject = ['$http'];
 
-    function LoanBookService($q) {
+    function LoanBookService($http) {
         var mockedLoanBook = [
             { id: 355576, originator: "Lending Club", status: "open", grade: "C", purpose: "Asset purchase", sector: "Leisure & Hospitality", type: "Limited Company", region: "North East", amount: 40000, interest: 0.14, term: 36, principalRemaining: 1000, nextPayment: "23/12/2015", loanDate: "02/12/2015", security: "No asset security"},
             { id: 547866, originator: "Prosper", status: "open", grade: "A", purpose: "Working capital", sector: "Wholesale", type: "Limited Company", region: "North East", amount: 9000, interest: 0.05, term: 36, principalRemaining: 6000, nextPayment: "21/12/2015", loanDate: "02/11/2015", security: "No asset security"},
@@ -44,25 +44,12 @@
             { id: 547740, originator: "Prosper", status: "open", grade: "C", purpose: "Asset purchase", sector: "Wholesale", type: "Limited Company", region: "Scotland", amount: 443000, interest: 0.04, term: 36, principalRemaining: 43000, nextPayment: "23/12/2016", loanDate: "15/12/2015", security: "No asset security"}
         ];
 
-        function loanBookDataPromise() {
-            return $q(function(resolve, reject) {
-                setTimeout(function() {
-                    resolve(mockedLoanBook);
-                }, 1000);
-            });
-        }
-
         var loanBookData = function() {
-            if (loanBookDataPromise) {
-                return loanBookDataPromise;
-            } else {
-                loanBookDataPromise = $http.get("/api/loanbook");
-                return loanBookDataPromise;
-            }
+          return $http.get("/api/loansbook");
         };
 
         return {
-            loanBookData: loanBookData()
+            loanBookData: loanBookData
         };
     }
 })();

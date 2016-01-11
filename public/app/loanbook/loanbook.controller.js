@@ -28,15 +28,15 @@
         vm.loanBookTable.options = LoanBookTableService.options;
         vm.originalData = [];
 
-        LoanBookService.loanBookData().then(function(data) {
-            data.map(function(loan) {
-                loan.loanDateToFormattedDate = $filter('date')(loan.loanDate, "dd/MM/yyyy");
-                loan.interestPerCent = loan.interest * 100;
+        LoanBookService.loanBookData().then(function(result) {
+            result.data.map(function(loan) {
+                loan.loanDateToFormattedDate = $filter('date')(loan.loan_accepted_date, "dd/MM/yyyy");
+                loan.credit_band = loan.credit_band.split(' ')[0];
                 return loan;
             });
 
-            vm.loanBookTable.options.data = data;
-            vm.originalData = data;
+            vm.loanBookTable.options.data = result.data;
+            vm.originalData = result.data;
 
             $timeout(function() {
                 if (vm.loanBookTable.gridApi.selection.selectRow) {
@@ -93,15 +93,15 @@
 
         vm.loanBookTable.filters.originator = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'originator');
         vm.loanBookTable.filters.status = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'status');
-        vm.loanBookTable.filters.grade = GridTableUtil.wordFilterFactory(vm.loanBookTable.filters.filterLoans, 'grade');
-        vm.loanBookTable.filters.purpose = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'purpose');
+        vm.loanBookTable.filters.grade = GridTableUtil.wordFilterFactory(vm.loanBookTable.filters.filterLoans, 'credit_band');
+        vm.loanBookTable.filters.purpose = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'loan_purpose');
         vm.loanBookTable.filters.sector = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'sector');
-        vm.loanBookTable.filters.type = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'type');
-        vm.loanBookTable.filters.region = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'region');
-        vm.loanBookTable.filters.amount = GridTableUtil.doubleNumberFilterFactory(vm.loanBookTable.filters.filterLoans, 'amount');
-        vm.loanBookTable.filters.interestPerCent = GridTableUtil.doublePercentFilterFactory(vm.loanBookTable.filters.filterLoans, 'interestPerCent');
+        vm.loanBookTable.filters.type = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'business_type_name');
+        vm.loanBookTable.filters.region = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'region_name');
+        vm.loanBookTable.filters.amount = GridTableUtil.doubleNumberFilterFactory(vm.loanBookTable.filters.filterLoans, 'loan_amount');
+        vm.loanBookTable.filters.interestPerCent = GridTableUtil.doublePercentFilterFactory(vm.loanBookTable.filters.filterLoans, 'interest_rate');
         vm.loanBookTable.filters.term = GridTableUtil.doubleNumberFilterFactory(vm.loanBookTable.filters.filterLoans, 'term');
-        vm.loanBookTable.filters.security = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'security');
+        vm.loanBookTable.filters.security = GridTableUtil.textFilterFactory(vm.loanBookTable.filters.filterLoans, 'security_taken');
 
         $scope.$watch('vm.loanBookTable.filters.loanDate.start.value', vm.loanBookTable.filters.filterLoans, false);
         $scope.$watch('vm.loanBookTable.filters.loanDate.end.value', vm.loanBookTable.filters.filterLoans, false);

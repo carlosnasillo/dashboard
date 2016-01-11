@@ -40,11 +40,16 @@
             $scope.loading = false;
             $scope.referenceEntities = [];
 
-            LoanBookService.loanBookData().then(function(loans) {
+            LoanBookService.loanBookData().then(function(result) {
                 referenceEntities = referenceEntities.map(function(id) { return parseInt(id); });
-                $scope.referenceEntities = loans.filter(function(loan) {
-                    return referenceEntities.indexOf(loan.id) >= 0;
-                });
+                $scope.referenceEntities = result.data
+                    .filter(function(loan) {
+                        return referenceEntities.indexOf(loan.id) >= 0;
+                    })
+                    .map(function(loan) {
+                        loan.credit_band = loan.credit_band.split(' ')[0];
+                        return loan;
+                    });
             });
 
             $scope.form = {
