@@ -49,7 +49,8 @@
 
             $scope.form = {
                 premium: null,
-                windowInMinutes: null
+                windowInMinutes: null,
+                paymentPeriodicity: null
             };
 
             $scope.conditions = {
@@ -66,6 +67,9 @@
                 },
                 windowInMinutesIsNull: function() {
                     return $scope.form.windowInMinutes === null;
+                },
+                paymentPeriodicityIsNull: function() {
+                    return $scope.form.paymentPeriodicity === null;
                 }
             };
 
@@ -92,7 +96,8 @@
                         client,
                         AuthenticationService.getCurrentAccount(),
                         AuthenticationService.getCurrentUsername(),
-                        referenceEntities
+                        referenceEntities,
+                        $scope.form.paymentPeriodicity
                     ).then(
                         AlertsService.quote.success(function() {
                             closeModal();

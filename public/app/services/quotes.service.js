@@ -23,7 +23,7 @@
 
     function QuotesService($http, GenericStatesService) {
 
-        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealerAccount, dealerUsername, referenceEntities) {
+        var submitQuote = function(rfqId, premium, timeWindowInMinutes, client, dealerAccount, dealerUsername, referenceEntities, paymentPeriodicity) {
             return $http.post('/api/quotes', {
                 rfqId: rfqId,
                 premium: premium,
@@ -31,7 +31,8 @@
                 client: client,
                 dealer: dealerAccount,
                 submittedBy: dealerUsername,
-                referenceEntities: referenceEntities
+                referenceEntities: referenceEntities,
+                paymentPeriodicity: paymentPeriodicity
             });
         };
 

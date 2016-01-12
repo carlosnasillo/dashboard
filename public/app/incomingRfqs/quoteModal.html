@@ -33,6 +33,14 @@
                 <label for="windowInMinutes">Time window (in minutes)</label>
                 <input id="windowInMinutes" type="text" class="form-control" data-ng-model="form.windowInMinutes" ng-enter="ok(conditionsNotMet())" >
             </div>
+            <div class="form-group">
+                <label for="paymentPeriodicity">Payment Periodicity</label>
+                <select class="form-control" id="paymentPeriodicity" data-ng-model="form.paymentPeriodicity">
+                    <option value="Monthly">Monthly</option>
+                    <option value="Quarterly">Quarterly</option>
+                    <option value="Yearly">Yearly</option>
+                </select>
+            </div>
             <div data-ng-show="loading" class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
                 <div class="sk-double-bounce2"></div>

@@ -34,8 +34,11 @@ case class Quote(
                   dealer: String,
                   submittedBy: String,
                   referenceEntities: Set[String],
-                  state: QuoteState.Value
-                )
+                  state: QuoteState.Value,
+                  paymentPeriodicity: String
+                ) {
+  val paymentPeriodicityEnum = PaymentPeriodicity.withName(paymentPeriodicity)
+}
 
 object Quote {
   val collectionName = "quotes"

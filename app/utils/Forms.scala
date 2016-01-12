@@ -58,7 +58,8 @@ object Forms {
       "dealer" -> nonEmptyText,
       "submittedBy" -> email,
       "referenceEntities" -> set(nonEmptyText),
-      "state" -> ignored(QuoteState.Outstanding)
+      "state" -> ignored(QuoteState.Outstanding),
+      "paymentPeriodicity" -> nonEmptyText
     )(Quote.apply)(Quote.unapply)
   )
 
