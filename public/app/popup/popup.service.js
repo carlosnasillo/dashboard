@@ -30,7 +30,7 @@
                         quote.loading = true;
 
                         RfqService.getRfqById(quote.rfqId).success(function(rfq) {
-                            QuotesService.accept(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, AuthenticationService.getCurrentUsername(), quote.dealer, quote.submittedBy, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities)
+                            QuotesService.accept(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, AuthenticationService.getCurrentUsername(), quote.dealer, quote.submittedBy, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities, quote.paymentPeriodicity)
                                 .then(
                                     AlertsService.accept.success(quote, function(quote) {
                                         quote.loading = false;

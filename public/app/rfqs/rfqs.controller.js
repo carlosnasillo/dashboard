@@ -242,7 +242,7 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
+            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities, quote.paymentPeriodicity)
             .then(
                 AlertsService.accept.success(quote, function(quote) {
                     quote.loading = false;

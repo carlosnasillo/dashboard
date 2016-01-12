@@ -84,7 +84,8 @@
                 vm.tradesTable.filters.cdsValue.start.filterFn(tradeObj) &&
                 vm.tradesTable.filters.cdsValue.end.filterFn(tradeObj) &&
                 vm.tradesTable.filters.premium.start.filterFn(tradeObj) &&
-                vm.tradesTable.filters.premium.end.filterFn(tradeObj);
+                vm.tradesTable.filters.premium.end.filterFn(tradeObj) &&
+                vm.tradesTable.filters.paymentPeriodicity.filterFn(tradeObj);
             });
             GridTableUtil.applyDateFilter(
                 vm.tradesTable.filters.timestamp.start.value,
@@ -108,6 +109,7 @@
         vm.tradesTable.filters.creditEvents = GridTableUtil.listFilterFactory(vm.tradesTable.filters.filterTrades, 'creditEvents');
         vm.tradesTable.filters.cdsValue = GridTableUtil.doubleNumberFilterFactory(vm.tradesTable.filters.filterTrades, 'cdsValue');
         vm.tradesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.tradesTable.filters.filterTrades, 'premium');
+        vm.tradesTable.filters.paymentPeriodicity = GridTableUtil.textFilterFactory(vm.tradesTable.filters.filterTrades, 'paymentPeriodicity');
 
         $scope.$watch('vm.tradesTable.filters.timestamp.start.value', vm.tradesTable.filters.filterTrades, false);
         $scope.$watch('vm.tradesTable.filters.timestamp.end.value', vm.tradesTable.filters.filterTrades, false);

@@ -37,8 +37,11 @@ case class Trade(
                   creditEvents: Set[String],
                   cdsValue: BigDecimal,
                   premium: BigDecimal,
-                  referenceEntities: Set[String]
-                )
+                  referenceEntities: Set[String],
+                  paymentPeriodicity: String
+                ) {
+  val paymentPeriodicityEnum: PaymentPeriodicity.Value = PaymentPeriodicity.withName(paymentPeriodicity)
+}
 
 object Trade {
   val collectionName = "trades"

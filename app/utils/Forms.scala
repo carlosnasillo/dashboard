@@ -43,7 +43,8 @@ object Forms {
       "creditEvents" -> set(nonEmptyText),
       "cdsValue" -> bigDecimal,
       "premium" -> bigDecimal,
-      "referenceEntities" -> set(nonEmptyText)
+      "referenceEntities" -> set(nonEmptyText),
+      "paymentPeriodicity" -> nonEmptyText
     )(Trade.apply)(Trade.unapply)
   )
 

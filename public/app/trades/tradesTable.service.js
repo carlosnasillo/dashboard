@@ -93,6 +93,11 @@
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.tradesTable.filters.cdsValue', 'vm.tradesTable.filters.filterTrades()')
                     },
                     {
+                        field: 'paymentPeriodicity',
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.tradesTable.filters.paymentPeriodicity', 'vm.tradesTable.filters.filterTrades()')
+                    },
+                    {
                         field: 'premium',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.tradesTable.filters.premium', 'vm.tradesTable.filters.filterTrades()')

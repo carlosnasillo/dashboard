@@ -68,7 +68,8 @@
                 creditEvents: trade.creditEvents,
                 cdsValue: trade.cdsValue,
                 premium: trade.premium,
-                referenceEntities: trade.referenceEntities
+                referenceEntities: trade.referenceEntities,
+                paymentPeriodicity: trade.paymentPeriodicity
             };
         }
     }
