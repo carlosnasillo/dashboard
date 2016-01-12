@@ -54,6 +54,11 @@
                         filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.dealer', 'vm.quotesTable.filters.filterQuotes()')
                     },
                     {
+                        field: 'paymentPeriodicity',
+                        headerCellClass: 'text-center',
+                        filterHeaderTemplate: GridTableUtil.textFilterTemplateFactory('', 'vm.quotesTable.filters.paymentPeriodicity', 'vm.quotesTable.filters.filterQuotes()')
+                    },
+                    {
                         field: 'premium',
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.quotesTable.filters.premium', 'vm.quotesTable.filters.filterQuotes()')

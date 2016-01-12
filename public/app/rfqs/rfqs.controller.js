@@ -186,6 +186,7 @@
                 vm.quotesTable.filters.referenceEntities.filterFn(quoteObj) &&
                 vm.quotesTable.filters.id.filterFn(quoteObj) &&
                 vm.quotesTable.filters.dealer.filterFn(quoteObj) &&
+                vm.quotesTable.filters.paymentPeriodicity.filterFn(quoteObj) &&
                 vm.quotesTable.filters.premium.start.filterFn(quoteObj) &&
                 vm.quotesTable.filters.premium.end.filterFn(quoteObj) &&
                 vm.quotesTable.filters.timeout.start.filterFn(quoteObj) &&
@@ -201,6 +202,7 @@
         vm.quotesTable.filters.premium = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'premium');
         vm.quotesTable.filters.timeout = GridTableUtil.doubleNumberFilterFactory(vm.quotesTable.filters.filterQuotes, 'timeout');
         vm.quotesTable.filters.state = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'state');
+        vm.quotesTable.filters.paymentPeriodicity = GridTableUtil.textFilterFactory(vm.quotesTable.filters.filterQuotes, 'paymentPeriodicity');
 
         setInterval(function() {
             if (vm.quotesTable.filters.timeout.start.value.length || vm.quotesTable.filters.timeout.end.value.length) {
