@@ -124,6 +124,23 @@ grunt.initConfig({
             ],
             dest: "public/dist/styles.css"
         }
+    },
+    protractor_webdriver: {
+        continuous: {
+            options: {
+                path: 'node_modules/protractor/bin/',
+                command: 'webdriver-manager start'
+            }
+        }
+    },
+    protractor: {
+        continuous: {
+            options: {
+                configFile: "test/front/e2e/conf.js",
+                keepAlive: true,
+                args: {}
+            }
+        }
     }
 });
 
@@ -135,9 +152,11 @@ grunt.initConfig({
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concat-css');
     grunt.loadNpmTasks('grunt-bowercopy');
+    grunt.loadNpmTasks('grunt-protractor-webdriver');
+    grunt.loadNpmTasks('grunt-protractor-runner');
 
     grunt.registerTask('default', ['jshint', 'bower', 'bower_concat', 'uglify:bower', 'concat', 'uglify:dist', 'concat_css', 'bowercopy']);
     grunt.registerTask('dist', ['bower', 'bower_concat', 'uglify:bower', 'concat', 'uglify:dist', 'concat_css', 'bowercopy']);
-    grunt.registerTask('test', ['jshint']);
+    grunt.registerTask('test', ['jshint', 'protractor_webdriver', 'protractor']);
     grunt.registerTask('dev', ['bower', 'bower_concat', 'watch:dev']);
 };

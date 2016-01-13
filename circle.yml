@@ -3,6 +3,10 @@ machine:
     UTC
   java:
     version: oraclejdk8
+  node:
+      version: 5.1.0
+  services:
+      - mongodb
 
 dependencies:
   cache_directories:
@@ -15,10 +19,26 @@ dependencies:
   override:
     - "npm install":
         timeout: 300
+    - "node_modules/protractor/bin/webdriver-manager update":
+        timeout: 300
     - "./activator compile":
         timeout: 300
 
+database:
+  override:
+    - mongoimport -h localhost:27017 -d lattice -c loanAnalytics --file db/test_backup_loanAnalytics.json
+    - mongoimport -h localhost:27017 -d lattice -c loans --file db/test_backup_loans.json
+    - mongoimport -h localhost:27017 -d lattice -c loansbook --file db/test_backup_loansbook.json
+    - mongoimport -h localhost:27017 -d lattice -c userlogin --file db/test_backup_userlogin.json
+
 test:
+  pre:
+    # Packages the app
+    - "./activator stage":
+        timeout: 900
+    # Starts the app to run e2e tests
+    - "target/universal/stage/bin/dashboard":
+        background: true
   override:
     - "./activator test":
         timeout: 900

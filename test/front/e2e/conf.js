@@ -14,10 +14,19 @@
 exports.config = {
     framework: 'jasmine',
     seleniumAddress: 'http://localhost:4444/wd/hub',
+    capabilities: {
+        'browserName': 'chrome'
+    },
     specs: [
         'specs/login.js',
         'specs/loansbook.js',
         'specs/incomingRfqs.js',
         'specs/submittedRfqs.js'
-    ]
+    ],
+    jasmineNodeOpts: {
+        showColors: true,
+        defaultTimeoutInterval: 30000,
+        isVerbose : true,
+        includeStackTrace : true
+    }
 };

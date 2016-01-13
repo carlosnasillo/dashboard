@@ -1,0 +1,3 @@
+{"_id":{"$oid":"566eb8fae4b04af9208cda6b"},"email":"dealer1@latticemarkets.com","password":"$2a$10$cwS5xmgVpvErl5vIciXvpO2IXFjk1B6Rw2k5i0AweEieOG/AUslR6","account":"Dealer1","token":"affa12d5-9f37-480e-9cb7-3f765a82f048"}
+{"_id":{"$oid":"566eb910e4b04af9208cda6c"},"email":"dealer2@latticemarkets.com","password":"$2a$10$OOVtcg4BFAFgY6kdpV4ejel9K9evO4qasCpZ5Tm.NWyjPaTFPNsdu","account":"Dealer2","token":"0a1042ef-ad3b-450c-9bdd-055e6e008806"}
+{"_id":{"$oid":"566eb93ae4b04af9208cda70"},"email":"dealer3@latticemarkets.com","password":"$2a$10$uCIX8E3OXEDhGABOUHyL0.MKQj4fC5zjmEZ43yDo8rCMczjtXUZp.","account":"Dealer3","token":"3b6dbb2d-a75b-4810-9cad-3394bf99270d"}
