@@ -74,15 +74,17 @@ class Quotes extends Controller {
         Future.successful( BadRequest("Wrong data sent.") )
       },
       submittedTrade => {
-        Quote.getById(submittedTrade.quoteId).map (_.filter (_.state == QuoteState.Outstanding).map( quote => {
-            Quote.updateState(submittedTrade.quoteId, QuoteState.Accepted) filter(_.ok) map (_ =>
-              Trade.store(submittedTrade) filter(_.ok) map(resultStoreTrade => {
-                Channels.channelQuotes push Json.toJson(quote.copy(state = QuoteState.Accepted))
-                Channels.channelTrades push Json.toJson(submittedTrade)
-              }))
+        Quote.getById(submittedTrade.quoteId).flatMap (_.filter (_.state == QuoteState.Outstanding) map(quote => {
+          for {
+            quoteUpdateResult <- Quote.updateState(submittedTrade.quoteId, QuoteState.Accepted) if quoteUpdateResult.ok
+            tradeUpdateResult <- Trade.store(submittedTrade) if tradeUpdateResult.ok
+          } yield {
+            Channels.channelQuotes push Json.toJson(quote.copy(state = QuoteState.Accepted))
+            Channels.channelTrades push Json.toJson(submittedTrade)
             Ok
+          }
         })
-          getOrElse BadRequest("Quote's state should be outstanding in order to be accepted."))
+          getOrElse Future.successful(BadRequest("Quote's state should be outstanding in order to be accepted.")))
       }
     )
   }
