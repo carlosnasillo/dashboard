@@ -27,18 +27,41 @@ describe('Loans book page tests', function() {
         loansBookPage = new LoansBookPage();
         loansBookPage.get();
 
-        var rowsLocator = by.css('.ui-grid-row.ng-scope');
-
-        element.all(rowsLocator).then(function(rows) {
+        loansBookPage.runThroughLoansTable(function(rows) {
             expect(rows.length).toBeGreaterThan(0);
-        })
+        });
     });
 
     describe('Modal to send an RFQ', function() {
+        var originatorSelectedLoan;
+        var amountSelectedLoan;
+        var gradeSelectedLoan;
+        var interestSelectedLoan;
 
-        it('should have the correct fields', function() {
+        it('should display the selected loan at the top of the modal', function() {
+            loansBookPage.inFirstRow(function(cells) {
+                originatorSelectedLoan = cells[0].getText();
+                amountSelectedLoan = cells[7].getText();
+                gradeSelectedLoan = cells[2].getText();
+                interestSelectedLoan = cells[8].getText();
+            });
+
             loansBookPage.displayModalFirstRow();
 
+            loansBookPage.runThroughModalTable(function(cells) {
+                var originator = cells[1].getText();
+                var amount = cells[2].getText();
+                var grade = cells[3].getText();
+                var interest = cells[4].getText();
+
+                expect(originatorSelectedLoan).toBe(originator);
+                expect(amountSelectedLoan).toBe(amount);
+                expect(gradeSelectedLoan).toBe(grade);
+                expect(interestSelectedLoan).toBe(interest);
+            });
+        });
+
+        it('should have the correct fields', function() {
             expect(loansBookPage.durationInput.isPresent()).toBe(true);
             expect(loansBookPage.creditEventInput.isPresent()).toBe(true);
             expect(loansBookPage.counterpartyInput.isPresent()).toBe(true);

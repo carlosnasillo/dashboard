@@ -14,7 +14,7 @@
             <table class="table text-left scrollable">
                 <thead> <tr> <th>#</th> <th>Originator</th> <th>Amount</th> <th>Grade</th> <th>Interest</th> </tr> </thead>
                 <tbody data-ng-repeat="loan in selectedLoans">
-                    <tr> <td>{{loan.id}}</td> <td>{{loan.originator}}</td> <td>{{loan.amount | currency}}</td> <td>{{loan.grade}}</td> <td>{{loan.interest | percentage : 2}}</td> </tr>
+                    <tr class="loan"> <td>{{loan.id}}</td> <td>{{loan.originator}}</td> <td>{{loan.amount | currency}}</td> <td>{{loan.grade}}</td> <td>{{loan.interest | percentage : 2}}</td> </tr>
                 </tbody>
             </table>
         </div>
