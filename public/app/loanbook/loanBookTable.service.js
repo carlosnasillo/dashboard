@@ -68,6 +68,7 @@
                 {
                     field: 'amount',
                     headerCellClass: 'text-center',
+                    cellFilter: 'currency',
                     filterHeaderTemplate: GridTableUtil.doubleNumberFilterTemplateFactory('vm.loanBookTable.filters.amount', 'vm.loanBookTable.filters.filterLoans()')
                 },
                 {
