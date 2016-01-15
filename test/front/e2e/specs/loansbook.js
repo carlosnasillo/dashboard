@@ -69,6 +69,7 @@ describe('Loans book page tests', function() {
         it('should be able to hide the modal window by hitting the Cancel button', function() {
             expect(element(loansBookPage.modalLocator).isPresent()).toBeTruthy();
             loansBookPage.modalCancelButtonElement.click();
+            expect(element(loansBookPage.modalLocator).isPresent()).toBeFalsy();
         });
 
         it('should display the selected loan at the top of the modal', function() {

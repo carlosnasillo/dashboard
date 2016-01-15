@@ -43,6 +43,9 @@ var LoansBookPage = function() {
     this.gradeValueInModalTable = function(cells) { return cells[3].getText(); };
     this.interestValueInModalTable = function(cells) { return cells[4].getText(); };
 
+    var modalLocator = by.css('.modal-content');
+    this.modalLocator = modalLocator;
+
     this.get = function() {
         browser.get('http://localhost:9000/#/loanbook');
         browser.wait(protractor.until.elementLocated(rowsLocator), 5000, "The loans table has not been loaded.");
@@ -71,7 +74,6 @@ var LoansBookPage = function() {
             firstRfqButton.click();
         });
 
-        var modalLocator = by.css('.modal-content');
         browser.wait(protractor.until.elementLocated(modalLocator), 2000, "The modal doesn't show.");
         browser.wait(protractor.until.elementLocated(tableLinesLocator), 2000, "The modal's table doesn't show.");
     };
