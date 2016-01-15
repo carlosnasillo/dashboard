@@ -19,11 +19,29 @@ var LoansBookPage = function() {
     this.creditEventInput = element(by.model('form.creditEvent'));
     this.quoteWindowInput = element(by.model('form.quoteWindow'));
     this.cdsValueInput = element(by.model('form.cdsValue'));
+    this.modalCancelButtonElement = element(by.id('cancel'));
 
     var rowsLocator = by.css('.ui-grid-render-container.ng-isolate-scope.ui-grid-render-container-body > .ui-grid-viewport.ng-isolate-scope > .ui-grid-canvas > .ui-grid-row.ng-scope');
     var tableLinesLocator = by.css('tr.loan');
+    var rfqButtonLocator = by.css('span.label.label-primary');
+    var cellsSelector = by.css('.ui-grid-cell.ng-scope');
 
     this.rowsLocator = rowsLocator;
+
+    var originatorValue = function(cells) { return cells[0].getText(); };
+    var amountValue = function(cells) { return cells[7].getText(); };
+    var gradeValue = function(cells) { return cells[2].getText(); };
+    var interestValue = function(cells) { return cells[8].getText(); };
+
+    this.originatorValue = originatorValue;
+    this.amountValue = amountValue;
+    this.gradeValue = gradeValue;
+    this.interestValue = interestValue;
+
+    this.originatorValueInModalTable = function(cells) { return cells[1].getText(); };
+    this.amountValueInModalTable = function(cells) { return cells[2].getText(); };
+    this.gradeValueInModalTable = function(cells) { return cells[3].getText(); };
+    this.interestValueInModalTable = function(cells) { return cells[4].getText(); };
 
     this.get = function() {
         browser.get('http://localhost:9000/#/loanbook');
@@ -40,7 +58,7 @@ var LoansBookPage = function() {
         this.runThroughLoansTable(function(rows) {
             expect(rows.length).toBeGreaterThan(0);
             rows[0]
-                .all(by.css('.ui-grid-cell.ng-scope'))
+                .all(cellsSelector)
                 .then(function(cells) {
                     callback(cells);
                 });
@@ -59,11 +77,50 @@ var LoansBookPage = function() {
     };
 
     this.runThroughModalTable = function(callback) {
-        element.all(tableLinesLocator).then(function(tr) {
-            tr[0].all(by.tagName('td')).then(function(cells) {
+        element.all(tableLinesLocator).then(function(trs) {
+            callback(trs);
+        })
+    };
+
+    this.inFirstRowInModalTable = function(callback) {
+        this.runThroughModalTable(function(trs) {
+            trs[0].all(by.tagName('td')).then(function(cells) {
                 callback(cells);
             });
-        })
+        });
+    };
+
+    this.selectNfirstRows = function(n) {
+        var i;
+        var selectedLoans = [];
+
+        this.runThroughLoansTable(function(rows) {
+            for (i = 0; i < n; i++) {
+                rows[i].all(cellsSelector)
+                    .then(function(cells) {
+                        var loanValues = {};
+                        loanValues.originator = originatorValue(cells);
+                        loanValues.amount = amountValue(cells);
+                        loanValues.grade = gradeValue(cells);
+                        loanValues.interest = interestValue(cells);
+                        selectedLoans.push(loanValues);
+                    });
+            }
+        });
+
+        element.all(by.css('.left.ui-grid-render-container-left.ui-grid-render-container.ui-grid-render-container > .ui-grid-viewport.ng-isolate-scope > .ui-grid-canvas > .ui-grid-row'))
+            .then(function(rows) {
+                var i;
+                for (i = 0; i < n; i++) {
+                    rows[i].click();
+                }
+            });
+
+        this.runThroughLoansTable(function(rows) {
+            rows[i-1].element(rfqButtonLocator).click();
+        });
+
+        return selectedLoans;
     };
 
     this.sendRfq = function(cdsValue) {

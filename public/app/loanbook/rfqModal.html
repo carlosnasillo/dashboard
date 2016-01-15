@@ -60,7 +60,7 @@
                 <div class="text-danger" data-ng-show="conditions.cdsValueNotNumericNatural()">CDS Value should be a number greater than 0.</div>
             </div>
             <div class="col-md-6">
-                <button type="button" class="btn btn-white" data-ng-click="cancel()">Cancel</button>
+                <button type="button" class="btn btn-white" data-ng-click="cancel()" id="cancel">Cancel</button>
                 <button type="button" class="btn btn-primary" data-ng-click="ok()" data-ng-disabled="conditionsNotMet()" id="sendRfq">Submit RFQ</button>
             </div>
         </div>

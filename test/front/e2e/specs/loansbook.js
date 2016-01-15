@@ -17,6 +17,10 @@ var IncomingRfqs = require('../pages/incomingRfqs.page.js');
 var SubmittedRfqs = require('../pages/submittedRfqs.page.js');
 var SuccessModal = require('../pages/success.page.js');
 
+function randomBetween(from, to) {
+    return Math.floor(Math.random() * to) + from;
+}
+
 describe('Loans book page tests', function() {
     var loansBookPage;
     var cdsRandomValue;
@@ -38,21 +42,52 @@ describe('Loans book page tests', function() {
         var gradeSelectedLoan;
         var interestSelectedLoan;
 
+        it('should be able to selected several loans and retrieve them in the loans table in the modal window', function() {
+            var howManyLoansToSelect = randomBetween(2, 10);
+
+            var selectedLoans = loansBookPage.selectNfirstRows(howManyLoansToSelect);
+
+            loansBookPage.runThroughModalTable(function(trs) {
+                expect(trs.length).toBe(howManyLoansToSelect);
+
+                trs.forEach(function(tr, index) {
+                    tr.all(by.tagName('td')).then(function(cells) {
+                        var originator = loansBookPage.originatorValueInModalTable(cells);
+                        var amount =  loansBookPage.amountValueInModalTable(cells);
+                        var grade = loansBookPage.gradeValueInModalTable(cells);
+                        var interest = loansBookPage.interestValueInModalTable(cells);
+
+                        expect(selectedLoans[index].originator).toBe(originator);
+                        expect(selectedLoans[index].amount).toBe(amount);
+                        expect(selectedLoans[index].grade).toBe(grade);
+                        expect(selectedLoans[index].interest).toBe(interest);
+                    });
+                });
+            });
+        });
+
+        it('should be able to hide the modal window by hitting the Cancel button', function() {
+            expect(element(loansBookPage.modalLocator).isPresent()).toBeTruthy();
+            loansBookPage.modalCancelButtonElement.click();
+        });
+
         it('should display the selected loan at the top of the modal', function() {
+            loansBookPage.get();
+
             loansBookPage.inFirstRow(function(cells) {
-                originatorSelectedLoan = cells[0].getText();
-                amountSelectedLoan = cells[7].getText();
-                gradeSelectedLoan = cells[2].getText();
-                interestSelectedLoan = cells[8].getText();
+                originatorSelectedLoan = loansBookPage.originatorValue(cells);
+                amountSelectedLoan = loansBookPage.amountValue(cells);
+                gradeSelectedLoan = loansBookPage.gradeValue(cells);
+                interestSelectedLoan = loansBookPage.interestValue(cells);
             });
 
             loansBookPage.displayModalFirstRow();
 
-            loansBookPage.runThroughModalTable(function(cells) {
-                var originator = cells[1].getText();
-                var amount = cells[2].getText();
-                var grade = cells[3].getText();
-                var interest = cells[4].getText();
+            loansBookPage.inFirstRowInModalTable(function(cells) {
+                var originator = loansBookPage.originatorValueInModalTable(cells);
+                var amount =  loansBookPage.amountValueInModalTable(cells);
+                var grade = loansBookPage.gradeValueInModalTable(cells);
+                var interest = loansBookPage.interestValueInModalTable(cells);
 
                 expect(originatorSelectedLoan).toBe(originator);
                 expect(amountSelectedLoan).toBe(amount);
@@ -82,7 +117,7 @@ describe('Loans book page tests', function() {
 
         it('should be able to send an RFQ', function() {
             var successModal = new SuccessModal();
-            cdsRandomValue = (Math.floor(Math.random() * 9999) + 1).toString();
+            cdsRandomValue = randomBetween(1, 9999).toString();
 
             loansBookPage.sendRfq(cdsRandomValue);
             successModal.waitForSuccessMessage();
