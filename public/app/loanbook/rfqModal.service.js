@@ -34,7 +34,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, clickedLoan, selectedLoans, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
+        function OrderModalInstanceCtrl($scope, $uibModalInstance, clickedLoan, selectedLoans, RfqService, AuthenticationService, AlertsService, FormUtilsService, Constants) {
             $scope.clickedLoan = clickedLoan;
             $scope.selectedLoans = selectedLoans;
 
@@ -125,12 +125,12 @@
             };
 
             $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
+                $uibModalInstance.dismiss('cancel');
             };
 
             function closeModal() {
                 $scope.loading = false;
-                $modalInstance.close();
+                $uibModalInstance.close();
             }
         }
 

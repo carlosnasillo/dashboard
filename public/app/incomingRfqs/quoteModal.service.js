@@ -35,7 +35,7 @@
             });
         };
 
-        function OrderModalInstanceCtrl($scope, $modalInstance, referenceEntities, rfqId, client, timeout, QuotesService, AuthenticationService, AlertsService, FormUtilsService, LoanBookService) {
+        function OrderModalInstanceCtrl($scope, $uibModalInstance, referenceEntities, rfqId, client, timeout, QuotesService, AuthenticationService, AlertsService, FormUtilsService, LoanBookService) {
             $scope.timeout = timeout;
             $scope.loading = false;
             $scope.referenceEntities = [];
@@ -105,12 +105,12 @@
             };
 
             $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
+                $uibModalInstance.dismiss('cancel');
             };
 
             function closeModal() {
                 $scope.loading = false;
-                $modalInstance.close();
+                $uibModalInstance.close();
             }
         }
 
