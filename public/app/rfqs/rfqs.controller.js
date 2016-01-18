@@ -236,15 +236,22 @@
 
         vm.accept = function(quote) {
             quote.loading = true;
-            QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
-            .then(
-                AlertsService.accept.success(quote, function(quote) {
+            AlertsService.accept.warning(function(isAccepted) {
+                if (isAccepted) {
+                    QuotesService.accept(selectedRfq.id, quote.id, selectedRfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, selectedRfq.creditEvents, selectedRfq.cdsValue, quote.premium, quote.referenceEntities)
+                        .then(
+                            AlertsService.accept.success(quote, function (quote) {
+                                quote.loading = false;
+                            }),
+                            AlertsService.accept.error(quote, function (quote) {
+                                quote.loading = false;
+                            })
+                        );
+                }
+                else {
                     quote.loading = false;
-                }),
-                AlertsService.accept.error(quote, function(quote) {
-                    quote.loading = false;
-                })
-            );
+                }
+            });
         };
 
         vm.disableButton = function(quote) {

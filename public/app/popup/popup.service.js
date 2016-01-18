@@ -28,18 +28,22 @@
                     childScope.accept = function(quote, closeNotification) {
                         quote.loading = true;
 
-                        RfqService.getRfqById(quote.rfqId).success(function(rfq) {
-                            QuotesService.accept(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities)
-                                .then(
-                                    AlertsService.accept.success(quote, function(quote) {
-                                        quote.loading = false;
-                                        closeNotification();
-                                    }),
-                                    AlertsService.accept.error(quote, function(quote) {
-                                        quote.loading = false;
-                                        closeNotification();
-                                    })
-                                );
+                        AlertsService.accept.warning(function(isAccepted) {
+                            if (isAccepted) {
+                                RfqService.getRfqById(quote.rfqId).success(function(rfq) {
+                                    QuotesService.accept(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities)
+                                        .then(
+                                            AlertsService.accept.success(quote, function(quote) {
+                                                quote.loading = false;
+                                                closeNotification();
+                                            }),
+                                            AlertsService.accept.error(quote, function(quote) {
+                                                quote.loading = false;
+                                                closeNotification();
+                                            })
+                                        );
+                                });
+                            }
                         });
                     };
                     $timeout(function() {

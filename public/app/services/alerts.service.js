@@ -72,10 +72,24 @@
             callback();
         };
 
+        var confirmAcceptWarning = function(callback) {
+            SweetAlert.swal({
+                    title: "Confirmation asked",
+                    text: "Do you want to accept this quote ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55", confirmButtonText: "Yes, accept it !",
+                    cancelButtonText: "No",
+                    closeOnConfirm: false,
+                    closeOnCancel: true },
+                callback);
+        };
+
         return {
             accept: {
                 success: acceptSuccess,
-                error: genericError
+                error: genericError,
+                warning: confirmAcceptWarning
             },
             order: {
                 success: orderSuccess,
