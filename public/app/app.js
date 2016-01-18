@@ -56,8 +56,9 @@
             .otherwise({ redirectTo: '/dashboard' });
     }
 
-    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager', 'PopupService'];
-    function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService) {
+    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager', 'PopupService', 'ServerTimeService'];
+    function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService, ServerTimeService) {
+        // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
 
         function authorizedPage() { return $.inArray($location.path(), ['', '/']) > -1; }
@@ -76,6 +77,10 @@
             if (!authorizedPage() && (!loggedIn || loggedIn === undefined)) {
                 $location.path('/');
             }
+        });
+
+        ServerTimeService.getServerTimeMillis().then(function(serverTimeMillis) {
+            $rootScope.millisDiffWithServer = serverTimeMillis.data - moment().valueOf();
         });
     }
 })();

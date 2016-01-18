@@ -5,6 +5,8 @@
 # Home page
 GET     /                                                                           controllers.Application.index
 
+GET     /api/serverTime                                                             controllers.Application.getServerDateTime
+
 POST    /api/authenticate                                                           controllers.Login.authentication
 
 GET     /api/analytics/lendingClub                                                  controllers.Analytics.lendingClubAnalytics

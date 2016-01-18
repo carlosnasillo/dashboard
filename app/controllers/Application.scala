@@ -9,11 +9,16 @@
 
 package controllers
 
+import org.joda.time.DateTime
 import play.api.mvc._
 
 class Application extends Controller {
 
   def index = Action {
     Ok(views.html.index())
+  }
+
+  def getServerDateTime = Action {
+    Ok(DateTime.now.getMillis.toString)
   }
 }

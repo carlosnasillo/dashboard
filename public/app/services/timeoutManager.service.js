@@ -19,11 +19,11 @@
         .module('app')
         .factory('TimeoutManagerService', TimeoutManagerService);
 
-    TimeoutManagerService.$inject = ['QuotesService', 'GenericStatesService'];
+    TimeoutManagerService.$inject = ['QuotesService', 'GenericStatesService', '$rootScope'];
 
-    function TimeoutManagerService(QuotesService, GenericStatesService) {
+    function TimeoutManagerService(QuotesService, GenericStatesService, $rootScope) {
         function setUpTimeout(object, $scope, cancelFn) {
-            var now = moment();
+            var now = moment().subtract($rootScope.millisDiffWithServer, 'milliseconds');
             var newObj = $.extend({},object);
             var deadline = moment(object.timestamp * 1).add(object.timeWindowInSeconds, 'seconds');
             var diff = deadline.diff(now);
