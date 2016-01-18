@@ -11,6 +11,8 @@
 * Created on 07/01/2016
 */
 
+"use strict";
+
 var LoansBookPage = require('../pages/loansbook.page.js');
 var LoginPage = require('../pages/login.page.js');
 var IncomingRfqs = require('../pages/incomingRfqs.page.js');
