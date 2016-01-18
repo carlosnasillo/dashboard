@@ -22,7 +22,7 @@
     TimeoutManagerService.$inject = ['QuotesService', 'GenericStatesService'];
 
     function TimeoutManagerService(QuotesService, GenericStatesService) {
-        function setUpTimeout(object, $scope) {
+        function setUpTimeout(object, $scope, cancelFn) {
             var now = moment();
             var newObj = $.extend({},object);
             var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
@@ -44,6 +44,7 @@
                             newObj.timeout = duration;
                         }
                         else {
+                            if (cancelFn) cancelFn();
                             newObj.timeout = 0;
                             newObj.state = GenericStatesService.expired;
                             clearInterval(counter);
