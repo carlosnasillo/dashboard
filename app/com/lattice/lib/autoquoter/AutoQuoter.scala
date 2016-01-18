@@ -24,7 +24,7 @@ import scala.util.Random
 
 object AutoQuoter {
   def generateQuote(rfq: Rfq): Quote = {
-    Quote(UUID.randomUUID.toString, rfq.id, DateTime.now, randomBetween10and100, 10, rfq.client, Constants.automaticDealerAccount, Constants.automaticDealerEmail, rfq.referenceEntities, QuoteState.Outstanding)
+    Quote(UUID.randomUUID.toString, rfq.id, DateTime.now, randomBetween10and100, 10*60, rfq.client, Constants.automaticDealerAccount, Constants.automaticDealerEmail, rfq.referenceEntities, QuoteState.Outstanding)
   }
 
   private def randomBetween10and100: Int = {

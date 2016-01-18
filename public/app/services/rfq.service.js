@@ -28,7 +28,7 @@
                 durationInMonths: duration,
                 creditEvents: creditEvents,
                 dealers: counterparty,
-                timeWindowInMinutes: quoteWindow,
+                timeWindowInSeconds: quoteWindow * 60,
                 cdsValue: cdsValue,
                 client: clientAccount,
                 submittedBy: clientUsername,
@@ -60,7 +60,7 @@
                 dealers: rfq.dealers,
                 submittedBy: rfq.submittedBy,
                 creditEvents: rfq.creditEvents,
-                timeWindowInMinutes: rfq.timeWindowInMinutes,
+                timeWindowInSeconds: rfq.timeWindowInSeconds,
                 cdsValue: rfq.cdsValue,
                 referenceEntities: rfq.referenceEntities
             };

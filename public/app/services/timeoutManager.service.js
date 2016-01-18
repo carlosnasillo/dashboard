@@ -25,7 +25,7 @@
         function setUpTimeout(object, $scope, cancelFn) {
             var now = moment();
             var newObj = $.extend({},object);
-            var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
+            var deadline = moment(object.timestamp * 1).add(object.timeWindowInSeconds, 'seconds');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());
             var counter = setInterval(function () {

@@ -27,7 +27,7 @@
             return $http.post('/api/quotes', {
                 rfqId: rfqId,
                 premium: premium,
-                timeWindowInMinutes: timeWindowInMinutes,
+                timeWindowInSeconds: timeWindowInMinutes * 60,
                 client: client,
                 dealer: dealerAccount,
                 submittedBy: dealerUsername,
@@ -91,7 +91,7 @@
                 rfqId: quote.rfqId,
                 timestamp: quote.timestamp,
                 premium: quote.premium,
-                timeWindowInMinutes: quote.timeWindowInMinutes,
+                timeWindowInSeconds: quote.timeWindowInSeconds,
                 client: quote.client,
                 dealer: quote.dealer,
                 submittedBy: quote.submittedBy,

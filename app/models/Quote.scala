@@ -29,7 +29,7 @@ case class Quote(
                   rfqId: String,
                   timestamp: DateTime,
                   premium: BigDecimal,
-                  timeWindowInMinutes: Int,
+                  timeWindowInSeconds: Int,
                   client: String,
                   dealer: String,
                   submittedBy: String,
