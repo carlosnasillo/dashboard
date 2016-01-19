@@ -19,9 +19,9 @@
         .module('app')
         .factory('WebSocketsManager', WebSocketsManager);
 
-    WebSocketsManager.$inject = ['RfqService', 'QuotesService', 'TradeService', '$location', 'PopupService'];
+    WebSocketsManager.$inject = ['RfqService', 'QuotesService', 'TradeService', '$location'];
 
-    function WebSocketsManager(RfqService, QuotesService, TradeService, $location, PopupService) {
+    function WebSocketsManager(RfqService, QuotesService, TradeService, $location) {
         var keepAliveTimeouts = [];
 
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
