@@ -53,28 +53,29 @@
                 controller: "SdrController",
                 controllerAs: 'vm'
             })
-            .otherwise({ redirectTo: '/' });
+            .otherwise({ redirectTo: '/dashboard' });
     }
 
     run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager', 'PopupService'];
     function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService) {
-        // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
-        if ($rootScope.globals.currentUser) {
+
+        function authorizedPage() { return $.inArray($location.path(), ['', '/']) > -1; }
+
+        if ($rootScope.globals.currentUser && !authorizedPage()) {
             $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
-            WebSocketsManager.startAllWS($rootScope.globals.currentUser.account);
-            WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope.$new()));
-            WebSocketsManager.webSockets.rfq.dealer.addCallback('rfqPopup', PopupService.newRfqCallback($rootScope.$new()));
+            WebSocketsManager.startUp($rootScope.globals.currentUser.account, function() {
+                WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope.$new(), $rootScope.globals.currentUser.username));
+                WebSocketsManager.webSockets.rfq.dealer.addCallback('rfqPopup', PopupService.newRfqCallback($rootScope.$new()));
+            });
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             // redirect to login page if not logged in and trying to access a restricted page
-            var restrictedPage = $.inArray($location.path(), ['/', '/register']) === -1;
             var loggedIn = $rootScope.globals.currentUser;
-            if (restrictedPage && !loggedIn) {
+            if (!authorizedPage() && (!loggedIn || loggedIn === undefined)) {
                 $location.path('/');
             }
         });
     }
-
 })();

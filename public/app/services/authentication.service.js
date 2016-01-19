@@ -18,8 +18,8 @@
         .module('app')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', 'WebSocketsManager'];
-    function AuthenticationService($http, $cookieStore, $rootScope, WebSocketsManager) {
+    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', 'WebSocketsManager', 'PopupService'];
+    function AuthenticationService($http, $cookieStore, $rootScope, WebSocketsManager, PopupService) {
         var service = {};
 
         service.login = login;
@@ -49,7 +49,10 @@
             $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
             $cookieStore.put('globals', $rootScope.globals);
 
-            WebSocketsManager.startAllWS($rootScope.globals.currentUser.account);
+            WebSocketsManager.startUp($rootScope.globals.currentUser.account, function() {
+                WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope.$new(), getCurrentUsername()));
+                WebSocketsManager.webSockets.rfq.dealer.addCallback('rfqPopup', PopupService.newRfqCallback($rootScope.$new()));
+            });
         }
 
         function logout() {

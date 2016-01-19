@@ -71,7 +71,7 @@
                     {
                         field: 'timestamp',
                         displayName: 'Created on',
-                        cellFilter: 'date:"dd/MM/yyyy"',
+                        cellFilter: 'date:"dd/MM/yyyy HH:mm:ss"',
                         sort: { direction: uiGridConstants.DESC, priority: 0 },
                         headerCellClass: 'text-center',
                         filterHeaderTemplate: GridTableUtil.dateFilterTemplateFactory('vm.tradesTable.filters.timestamp')
