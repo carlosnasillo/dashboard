@@ -60,22 +60,23 @@
     function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService) {
         $rootScope.globals = $cookieStore.get('globals') || {};
 
-        var loggedIn = $rootScope.globals.currentUser;
-        var restrictedPage = $.inArray($location.path(), ['', '/', '/register']) === -1;
-        if (loggedIn && restrictedPage) {
+        function authorizedPage() { return $.inArray($location.path(), ['', '/']) > -1; }
+
+        if ($rootScope.globals.currentUser && !authorizedPage()) {
             $http.defaults.headers.common['X-TOKEN'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
             WebSocketsManager.startUp($rootScope.globals.currentUser.account, function() {
-                WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope.$new(), loggedIn));
+                WebSocketsManager.webSockets.quotes.client.addCallback('quotePopup', PopupService.newQuoteCallback($rootScope.$new(), $rootScope.globals.currentUser));
                 WebSocketsManager.webSockets.rfq.dealer.addCallback('rfqPopup', PopupService.newRfqCallback($rootScope.$new()));
             });
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             // redirect to login page if not logged in and trying to access a restricted page
-            if (restrictedPage && (!loggedIn || loggedIn === undefined)) {
+            var loggedIn = $rootScope.globals.currentUser;
+            console.log(loggedIn);
+            if (!authorizedPage() && (!loggedIn || loggedIn === undefined)) {
                 $location.path('/');
             }
         });
     }
-
 })();
