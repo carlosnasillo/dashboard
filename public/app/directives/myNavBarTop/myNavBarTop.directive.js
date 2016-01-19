@@ -28,7 +28,7 @@
             templateUrl: 'assets/app/directives/myNavBarTop/my-nav-bar-top.html',
             link: function(scope) {
                 scope.logout = function() {
-                    AuthenticationService.clearCredentials();
+                    AuthenticationService.logout();
                     $location.path('/');
                 };
             }

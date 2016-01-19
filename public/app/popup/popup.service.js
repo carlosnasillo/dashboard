@@ -19,10 +19,10 @@
         .module('app')
         .factory('PopupService', PopupService);
 
-    PopupService.$inject = ['notify', 'RfqService', 'AlertsService', 'QuoteModalService', 'TimeoutManagerService', 'QuotesService', 'AuthenticationService'];
+    PopupService.$inject = ['notify', 'RfqService', 'AlertsService', 'QuoteModalService', 'TimeoutManagerService', 'QuotesService'];
 
-    function PopupService(notify, RfqService, AlertsService, QuoteModalService, TimeoutManagerService, QuotesService, AuthenticationService) {
-        var newQuoteCallback = function(childScope) {
+    function PopupService(notify, RfqService, AlertsService, QuoteModalService, TimeoutManagerService, QuotesService) {
+        var newQuoteCallback = function(childScope, currentUsername) {
             return function(quoteObject) {
                 if (quoteObject.state !== QuotesService.states.cancelled && quoteObject.state !== QuotesService.states.accepted) {
                     childScope.quote = TimeoutManagerService.setUpTimeout(quoteObject, childScope);
@@ -30,7 +30,7 @@
                         quote.loading = true;
 
                         RfqService.getRfqById(quote.rfqId).success(function(rfq) {
-                            QuotesService.accept(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, AuthenticationService.getCurrentUsername(), quote.dealer, quote.submittedBy, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities)
+                            QuotesService.accept(quote.rfqId, quote.id, rfq.durationInMonths, quote.client, currentUsername, quote.dealer, quote.submittedBy, rfq.creditEvents, rfq.cdsValue, quote.premium, quote.referenceEntities)
                                 .then(
                                     AlertsService.accept.success(quote, function(quote) {
                                         quote.loading = false;

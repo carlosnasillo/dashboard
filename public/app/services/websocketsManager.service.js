@@ -19,9 +19,11 @@
         .module('app')
         .factory('WebSocketsManager', WebSocketsManager);
 
-    WebSocketsManager.$inject = ['RfqService', 'QuotesService', 'TradeService', '$location'];
+    WebSocketsManager.$inject = ['RfqService', 'QuotesService', 'TradeService', '$location', 'PopupService'];
 
-    function WebSocketsManager(RfqService, QuotesService, TradeService, $location) {
+    function WebSocketsManager(RfqService, QuotesService, TradeService, $location, PopupService) {
+        var keepAliveTimeouts = [];
+
         var protocol = ($location.protocol() == "https") ? "wss" : "ws";
 
         var rfqDealer = webSocketFactory(RfqService.dealerWs.uri, RfqService.dealerWs.name, RfqService.dealerWs.parsingFunction);
@@ -33,13 +35,9 @@
         var trade = webSocketFactory(TradeService.webSocket.uri, TradeService.webSocket.name, TradeService.webSocket.parsingFunction);
         var tradesAnonymised = webSocketFactory(TradeService.webSocketAnonymised.uri, TradeService.webSocketAnonymised.name, TradeService.webSocketAnonymised.parsingFunction);
 
-        var startAllWS = function(account) {
-            rfqDealer.openStream(account);
-            rfqClient.openStream(account);
-            quoteDealer.openStream(account);
-            quoteClient.openStream(account);
-            trade.openStream(account);
-            tradesAnonymised.openStream('');
+        var startUp = function(account, callback) {
+            startAllWS(account);
+            callback();
         };
 
         var closeAllWS = function() {
@@ -49,6 +47,11 @@
             quoteClient.closeStream();
             trade.closeStream();
             tradesAnonymised.closeStream();
+
+            for(var i = keepAliveTimeouts.length -1; i >= 0 ; i--){
+                clearInterval( keepAliveTimeouts[i] );
+                keepAliveTimeouts.splice(i, 1);
+            }
         };
 
         var webSockets = {
@@ -66,9 +69,18 @@
 
         return {
             webSockets: webSockets,
-            startAllWS: startAllWS,
+            startUp: startUp,
             closeAllWS: closeAllWS
         };
+
+        function startAllWS(account) {
+            rfqDealer.openStream(account);
+            rfqClient.openStream(account);
+            quoteDealer.openStream(account);
+            quoteClient.openStream(account);
+            trade.openStream(account);
+            tradesAnonymised.openStream('');
+        }
 
         function webSocketFactory(uri, name, parsingFunction) {
             var webSocketService = {};
@@ -90,9 +102,9 @@
                     console.log(name + ' WebSocket Error :', evt);
                 };
 
-                setInterval(function() {
+                keepAliveTimeouts.push(setInterval(function() {
                     webSocketService.webSocket.send(JSON.stringify("Keep alive !"));
-                }, 30000);
+                }, 30000));
 
                 webSocketService.webSocket.onopen = onOpen;
                 webSocketService.webSocket.onclose = onClose;
