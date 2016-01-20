@@ -12,11 +12,15 @@ dependencies:
     - ~/.m2
     - bower_components
     - node_modules
+    - mongodb-linux-x86_64-ubuntu1204-3.2.0
   override:
     - "npm install":
         timeout: 300
     - "./activator compile":
         timeout: 300
+    - if [[ ! -d mongodb-linux-x86_64-ubuntu1204-3.2.0 ]]; then wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1204-3.2.0.tgz && tar xvzf mongodb-linux-x86_64-ubuntu1204-3.2.0.tgz; fi
+    - sudo stop mongodb
+    - sudo cp mongodb-linux-x86_64-ubuntu1204-3.2.0/bin/* /usr/bin
 
 test:
   override:
@@ -27,6 +31,16 @@ test:
   post:
     - "mkdir -p $CIRCLE_TEST_REPORTS/junit/"
     - "cp target/test-reports/*.xml $CIRCLE_TEST_REPORTS/junit/ 2>/dev/null || :"
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - mongo $MONGOLAB_PROD_URI -u $DB_CONSOLE_USER -p $DB_CONSOLE_PASSWORD --eval 'db.trades.drop(); db.rfqs.drop(); db.quotes.drop();'
+  staging:
+    branch: develop
+    commands:
+      - mongo $MONGOLAB_DEV_URI -u $DB_CONSOLE_USER -p $DB_CONSOLE_PASSWORD --eval 'db.trades.drop(); db.rfqs.drop(); db.quotes.drop();'
 
 ##notify:
 ##  webhooks:
