@@ -105,6 +105,13 @@ grunt.initConfig({
             options: {
                 atBegin: true
             }
+        },
+        test: {
+            files: [ 'Gruntfile.js', 'public/app/**/*.js', 'public/**/*.html', 'test/front/unit/**/*.spec.js' ],
+            tasks: [ 'jshint', 'concat', 'concat_css', 'bowercopy', 'jasmine' ],
+            options: {
+                atBegin: true
+            }
         }
     },
     concat_css: {
@@ -131,9 +138,7 @@ grunt.initConfig({
         // Your Jasmine spec files
         options: {
             specs : 'test/front/unit/**/*.spec.js'
-        },
-        // Your spec helper files
-        helpers : 'test/front/unit/helpers/*.js'
+        }
     }
 });
 
@@ -151,4 +156,5 @@ grunt.initConfig({
     grunt.registerTask('dist', ['bower', 'bower_concat', 'uglify:bower', 'concat', 'uglify:dist', 'concat_css', 'bowercopy']);
     grunt.registerTask('test', ['jshint','jasmine']);
     grunt.registerTask('dev', ['bower', 'bower_concat', 'watch:dev']);
+    grunt.registerTask('dev-test', ['bower', 'bower_concat', 'watch:test']);
 };
