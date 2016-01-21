@@ -23,14 +23,24 @@
 
     function FormUtilsService() {
         var isNumeric = function(n) {
-            return !isNaN(parseFloat(n)) && isFinite(n) || n === null;
+            return !isNaN(parseFloat(n)) && isFinite(n);
         };
 
         var isAtLeastOneTrue = function(conditions) {
-            return $.map(conditions, function(v) {
-                    return v();
-                })
-                .reduce(function(nl1, n) { return nl1 || n; });
+            if (conditions) {
+                if (conditions.length > 0) {
+                    return $.map(conditions, function(v) {
+                            return v();
+                        })
+                        .reduce(function(nl1, n) { return nl1 || n; });
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
         };
 
         var isExpired = function(timeout) {
