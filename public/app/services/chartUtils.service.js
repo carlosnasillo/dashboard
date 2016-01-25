@@ -37,9 +37,8 @@
 
         var splitObjectInArray = function(obj) {
             var labels = Object.keys(obj);
-            var array = [];
-            $.map(obj, function(v, i) {
-                array.push(v);
+            var array = $.map(obj, function(v, i) {
+                return v;
             });
             return {
                 labels: labels,
