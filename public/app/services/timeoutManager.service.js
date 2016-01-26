@@ -19,13 +19,13 @@
         .module('app')
         .factory('TimeoutManagerService', TimeoutManagerService);
 
-    TimeoutManagerService.$inject = ['QuotesService', 'GenericStatesService'];
+    TimeoutManagerService.$inject = ['QuotesService', 'GenericStatesService', '$rootScope'];
 
-    function TimeoutManagerService(QuotesService, GenericStatesService) {
-        function setUpTimeout(object, $scope) {
-            var now = moment();
+    function TimeoutManagerService(QuotesService, GenericStatesService, $rootScope) {
+        function setUpTimeout(object, $scope, cancelFn) {
+            var now = moment().subtract($rootScope.millisDiffWithServer, 'milliseconds');
             var newObj = $.extend({},object);
-            var deadline = moment(object.timestamp * 1).add(object.timeWindowInMinutes, 'minutes');
+            var deadline = moment(object.timestamp * 1).add(object.timeWindowInSeconds, 'seconds');
             var diff = deadline.diff(now);
             var duration = Math.round(moment.duration(diff).asSeconds());
             var counter = setInterval(function () {
@@ -44,6 +44,7 @@
                             newObj.timeout = duration;
                         }
                         else {
+                            if (cancelFn) cancelFn();
                             newObj.timeout = 0;
                             newObj.state = GenericStatesService.expired;
                             clearInterval(counter);

@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.grid', 'ui.grid.selection', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'daterangepicker', 'nsPopover', 'cgNotify'])
+        .module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angular-peity', 'ui.bootstrap', 'oitozero.ngSweetAlert', 'daterangepicker', 'nsPopover', 'cgNotify'])
         .config(config)
         .run(run);
 
@@ -56,8 +56,9 @@
             .otherwise({ redirectTo: '/dashboard' });
     }
 
-    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager', 'PopupService'];
-    function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService) {
+    run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'WebSocketsManager', 'PopupService', 'ServerTimeService'];
+    function run($rootScope, $location, $cookieStore, $http, WebSocketsManager, PopupService, ServerTimeService) {
+        // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
 
         function authorizedPage() { return $.inArray($location.path(), ['', '/']) > -1; }
@@ -76,6 +77,10 @@
             if (!authorizedPage() && (!loggedIn || loggedIn === undefined)) {
                 $location.path('/');
             }
+        });
+
+        ServerTimeService.getServerTimeMillis().then(function(serverTimeMillis) {
+            $rootScope.millisDiffWithServer = serverTimeMillis.data - moment().valueOf();
         });
     }
 })();

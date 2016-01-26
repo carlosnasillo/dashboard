@@ -32,7 +32,7 @@ case class Rfq(
                 dealers: Set[String],
                 submittedBy: String,
                 creditEvents: Set[String],
-                timeWindowInMinutes: Int,
+                timeWindowInSeconds: Int,
                 isValid: Boolean,
                 cdsValue: BigDecimal,
                 referenceEntities: Set[String]

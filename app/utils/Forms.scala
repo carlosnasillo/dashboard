@@ -53,7 +53,7 @@ object Forms {
       "rfqId" -> nonEmptyText,
       "timestamp" -> ignored(DateTime.now()),
       "premium" -> bigDecimal,
-      "timeWindowInMinutes" -> number,
+      "timeWindowInSeconds" -> number,
       "client" -> nonEmptyText,
       "dealer" -> nonEmptyText,
       "submittedBy" -> email,
@@ -71,7 +71,7 @@ object Forms {
       "dealers" -> set(nonEmptyText),
       "submittedBy" -> email,
       "creditEvents" -> set(nonEmptyText),
-      "timeWindowInMinutes" -> number,
+      "timeWindowInSeconds" -> number,
       "isValid" -> boolean,
       "cdsValue" -> bigDecimal,
       "referenceEntities" -> set(nonEmptyText)
