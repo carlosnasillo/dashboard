@@ -105,6 +105,13 @@ grunt.initConfig({
             options: {
                 atBegin: true
             }
+        },
+        test: {
+            files: [ 'Gruntfile.js', 'public/app/**/*.js', 'public/**/*.html', 'test/front/unit/**/*.spec.js' ],
+            tasks: [ 'jshint', 'concat', 'concat_css', 'bowercopy', 'jasmine' ],
+            options: {
+                atBegin: true
+            }
         }
     },
     concat_css: {
@@ -124,6 +131,14 @@ grunt.initConfig({
             ],
             dest: "public/dist/styles.css"
         }
+    },
+    jasmine : {
+        // Your project's source files
+        src : ['public/dist/bower.js', 'public/app/**/*.js'],
+        // Your Jasmine spec files
+        options: {
+            specs : 'test/front/unit/**/*.spec.js'
+        }
     }
 });
 
@@ -135,9 +150,11 @@ grunt.initConfig({
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concat-css');
     grunt.loadNpmTasks('grunt-bowercopy');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
 
     grunt.registerTask('default', ['jshint', 'bower', 'bower_concat', 'uglify:bower', 'concat', 'uglify:dist', 'concat_css', 'bowercopy']);
     grunt.registerTask('dist', ['bower', 'bower_concat', 'uglify:bower', 'concat', 'uglify:dist', 'concat_css', 'bowercopy']);
-    grunt.registerTask('test', ['jshint']);
+    grunt.registerTask('test', ['jshint','jasmine']);
     grunt.registerTask('dev', ['bower', 'bower_concat', 'watch:dev']);
+    grunt.registerTask('dev-test', ['bower', 'bower_concat', 'watch:test']);
 };

@@ -37,9 +37,8 @@
 
         var splitObjectInArray = function(obj) {
             var labels = Object.keys(obj);
-            var array = [];
-            $.map(obj, function(v, i) {
-                array.push(v);
+            var array = $.map(obj, function(v, i) {
+                return v;
             });
             return {
                 labels: labels,
@@ -48,25 +47,27 @@
         };
 
         var doubleDoubleToPercents = function(obj) {
+            var searchValue = /([0-9]+.[0-9]+);([0-9]+.[0-9]+)/;
             var objWithAdaptedKeys = {};
             for (var k in obj) {
                 if ( obj.hasOwnProperty(k) ) {
-                    objWithAdaptedKeys[k.replace(';','-') + "%"] = obj[k];
+                    objWithAdaptedKeys[k.replace(searchValue, '$1-$2%')] = obj[k];
                 }
             }
             return objWithAdaptedKeys;
         };
 
         var moveGradeFromValueToKey = function(threeDimensionsObj) {
-            var invertedData = { 'A':{}, 'B':{}, 'C':{}, 'D':{}, 'E':{}, 'F':{}, 'G':{} };
+            var grades = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+            var invertedData = function() {
+                var res = {};
+                grades.forEach(function(grade) { res[grade] = {}; });
+                return res;
+            }();
             $.map(threeDimensionsObj, function(v, i) {
-                invertedData.A[i] = v.A;
-                invertedData.B[i] = v.B;
-                invertedData.C[i] = v.C;
-                invertedData.D[i] = v.D;
-                invertedData.E[i] = v.E;
-                invertedData.F[i] = v.F;
-                invertedData.G[i] = v.G;
+                grades.forEach(function(grade) {
+                    if (v.hasOwnProperty(grade)) { invertedData[grade][i] = v[grade]; }
+                });
             });
             return invertedData;
         };
@@ -75,7 +76,7 @@
             var res = {};
             $.map(threeDimensionObj, function(v, i) {
                 var objToArray = [];
-                $.map(v, function(v, i) {
+                $.map(v, function(v) {
                     objToArray.push(v);
                 });
                 res[i] = objToArray;
