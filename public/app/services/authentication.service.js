@@ -56,7 +56,7 @@
         }
 
         function logout() {
-            clearCredentials();
+            service.clearCredentials();
             WebSocketsManager.closeAllWS();
         }
 
@@ -67,11 +67,31 @@
         }
 
         function getCurrentUsername() {
-            return $rootScope.globals.currentUser.username;
+            if ($rootScope.hasOwnProperty('globals')) {
+                if ($rootScope.globals.hasOwnProperty('currentUser')) {
+                   return $rootScope.globals.currentUser.username;
+                }
+                else {
+                    return undefined;
+                }
+            }
+            else {
+                return undefined;
+            }
         }
 
         function getCurrentAccount() {
-            return $rootScope.globals.currentUser.account;
+            if ($rootScope.hasOwnProperty('globals')) {
+                if ($rootScope.globals.hasOwnProperty('currentUser')) {
+                    return $rootScope.globals.currentUser.account;
+                }
+                else {
+                    return undefined;
+                }
+            }
+            else {
+                return undefined;
+            }
         }
     }
 })();

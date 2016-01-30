@@ -55,11 +55,11 @@
             $scope.conditions = {
                 premiumNotNumericNatural: function() {
                     var premium = $scope.form.premium;
-                    return ( !FormUtilsService.isNumeric(premium) || premium <= 0 ) && premium !== null;
+                    return ( !FormUtilsService.isNumeric(premium) || premium === null || premium <= 0 ) && premium !== null;
                 },
                 windowInMinutesNotNumericNatural: function() {
                     var windowInMinutes = $scope.form.windowInMinutes;
-                    return ( !FormUtilsService.isNumeric(windowInMinutes) || windowInMinutes <= 0 ) && windowInMinutes !== null;
+                    return ( !FormUtilsService.isNumeric(windowInMinutes) || windowInMinutes === null || windowInMinutes <= 0 ) && windowInMinutes !== null;
                 },
                 premiumIsNull: function() {
                     return $scope.form.premium === null;

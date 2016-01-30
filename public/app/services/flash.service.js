@@ -19,33 +19,10 @@
         .factory('FlashService', FlashService);
 
     FlashService.$inject = ['$rootScope'];
-    function FlashService($rootScope) {
-        var service = {};
 
-        service.Success = flashSuccess;
-        service.Error = flashError;
+    function FlashService($rootScope) {
 
         initService();
-
-        return service;
-
-        function initService() {
-            $rootScope.$on('$locationChangeStart', function () {
-                clearFlashMessage();
-            });
-
-            function clearFlashMessage() {
-                var flash = $rootScope.flash;
-                if (flash) {
-                    if (!flash.keepAfterLocationChange) {
-                        delete $rootScope.flash;
-                    } else {
-                        // only keep for a single location change
-                        flash.keepAfterLocationChange = false;
-                    }
-                }
-            }
-        }
 
         function flashSuccess(message, keepAfterLocationChange) {
             $rootScope.flash = {
@@ -61,6 +38,29 @@
                 type: 'error',
                 keepAfterLocationChange: keepAfterLocationChange
             };
+        }
+        return {
+            Success: flashSuccess,
+            Error: flashError
+        };
+
+        function initService() {
+            $rootScope.$on('$locationChangeStart', function () {
+                clearFlashMessage();
+            });
+
+        }
+
+        function clearFlashMessage() {
+            var flash = $rootScope.flash;
+            if (flash) {
+                if (!flash.keepAfterLocationChange) {
+                    delete $rootScope.flash;
+                } else {
+                    // only keep for a single location change
+                    flash.keepAfterLocationChange = false;
+                }
+            }
         }
     }
 })();

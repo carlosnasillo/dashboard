@@ -20,9 +20,9 @@
         .factory('GridTableUtil', GridTableUtil);
 
 
-    GridTableUtil.$inject = ['$filter'];
+    GridTableUtil.$inject = ['$filter', 'UtilsService'];
 
-    function GridTableUtil($filter) {
+    function GridTableUtil($filter, UtilsService) {
 
         var datePickerOptions = { singleDatePicker: true };
 
@@ -38,7 +38,7 @@
             callback(data);
 
             function dateFilter(filter, newDate, data) {
-                if ( newDate !== null ) {
+                if ( newDate !== null && data.length > 0 ) {
                     var searchDate = newDate.toDate();
                     return data.filter(function(loanObj) {
                         var cellDate = parseEuDate(loanObj[filterKey]);
@@ -134,7 +134,7 @@
                     start.value,
                     end.value,
                     filterKey,
-                    originalData,
+                    originalDate,
                     callback);
             };
 
@@ -151,12 +151,12 @@
         var singleFilterFactory = function(postResetCallback, filterFn) {
             var initialValue = "";
 
-            var gradeFilter = {};
-            gradeFilter.value = initialValue;
-            gradeFilter.reset = resetFactory(gradeFilter, initialValue, postResetCallback);
-            gradeFilter.filterFn = filterFnFactory(gradeFilter, filterFn);
+            var filter = {};
+            filter.value = initialValue;
+            filter.reset = resetFactory(filter, initialValue, postResetCallback);
+            filter.filterFn = filterFnFactory(filter, filterFn);
 
-            return gradeFilter;
+            return filter;
         };
 
         var doubleFilterFactory = function(postResetCallback, filterFnStart, filterFnEnd, formatter) {
@@ -196,23 +196,35 @@
         var idFilterFactory = function(postResetCallback, filter) {
             return singleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return String( getProperty(objToFilter, filter) ).startsWith( filterTerm ); }
+                function(objToFilter, filterTerm) { return UtilsService.stringStartsWith( UtilsService.getProperty(objToFilter, filter), filterTerm ); }
             );
         };
 
         var doubleNumberFilterFactory = function(postResetCallback, filter) {
             return doubleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) > filterTerm; },
-                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) < filterTerm; }
+                function(objToFilter, filterTerm) {
+                    var property = UtilsService.getProperty(objToFilter, filter);
+                    return property ? property > filterTerm : true;
+                },
+                function(objToFilter, filterTerm) {
+                    var property = UtilsService.getProperty(objToFilter, filter);
+                    return property  ? property < filterTerm : true;
+                }
             );
         };
 
         var doublePercentFilterFactory = function(postResetCallback, filter) {
             return doubleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) > filterTerm; },
-                function(objToFilter, filterTerm) { return getProperty(objToFilter, filter) < filterTerm; },
+                function(objToFilter, filterTerm) {
+                    var property = UtilsService.getProperty(objToFilter, filter);
+                    return  property ? property > filterTerm : true;
+                },
+                function(objToFilter, filterTerm) {
+                    var property = UtilsService.getProperty(objToFilter, filter);
+                    return  property ? property < filterTerm : true;
+                },
                 function(value) { return value + ' %'; }
             );
         };
@@ -224,7 +236,7 @@
                     var searchTerms = filterTerm.split(',').map(function(search) { return search.trim(); });
                     for (var i in searchTerms) {
                         if ( searchTerms.hasOwnProperty(i) && searchTerms[i].length > 0) {
-                            if (getProperty(objToFilter, filter).startsWith(searchTerms[i])) return true;
+                            if (UtilsService.stringStartsWith(UtilsService.getProperty(objToFilter, filter), searchTerms[i])) return true;
                         }
                     }
                     return false;
@@ -235,7 +247,7 @@
         var wordFilterFactory = function(postResetCallback, filter) {
             return singleFilterFactory(
                 postResetCallback,
-                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(getProperty(objToFilter, filter)) >= 0; }
+                function(objToFilter, filterTerm) { return filterTerm.split(',').map(function(search) { return search.trim(); }).indexOf(UtilsService.getProperty(objToFilter, filter)) >= 0; }
             );
         };
 
@@ -246,7 +258,7 @@
                     var termAsArray = filterTerm.split(',').map(function(term) { return term.trim(); });
                     return arrayToFilter[filter].some(function(tableElem) {
                         return termAsArray.some(function(term) {
-                            return tableElem.startsWith(term);
+                            return UtilsService.stringStartsWith(tableElem, term);
                         });
                     });
                 }
@@ -274,27 +286,5 @@
             wordFilterFactory: wordFilterFactory,
             listFilterFactory: listFilterFactory
         };
-
-        function getProperty(obj, prop) {
-            var parts = prop.split('.');
-
-            if (Array.isArray(parts)) {
-                var last = parts.pop(),
-                    l = parts.length,
-                    i = 1,
-                    current = parts[0];
-
-                while (l > 0 && (obj = obj[current]) && i < l) {
-                    current = parts[i];
-                    i++;
-                }
-
-                if(obj) {
-                    return obj[last];
-                }
-            } else {
-                throw 'parts is not valid array';
-            }
-        }
     }
 })();
